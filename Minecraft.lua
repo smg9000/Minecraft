@@ -268,11 +268,11 @@ SMODS.Joker({
 				})
 			SMODS.eval_this(card, {
 				Xchip_mod = card.ability.extra.Xchips,
-				message = localize({ type = 'variable',  key = 'a_Xchips', vars = {number_format(card.ability.extra.Xchips)} })
+				message = localize({ type = 'variable',  key = 'a_xchips', vars = {number_format(card.ability.extra.Xchips)} })
 				})
 			SMODS.eval_this(card, {
 				Xmult_mod = card.ability.extra.Xmult,
-				message = localize({ type = 'variable',  key = 'a_Xmult', vars = {number_format(card.ability.extra.Xmult)} })
+				message = localize({ type = 'variable',  key = 'a_xmult', vars = {number_format(card.ability.extra.Xmult)} })
 				})
 			
 			return{

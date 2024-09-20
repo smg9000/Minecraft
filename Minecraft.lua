@@ -4,8 +4,8 @@
 --- PREFIX: mc
 --- MOD_AUTHOR: [SMG9000, ]
 --- MOD_DESCRIPTION: a mod that adds minecraft to balatro in a way that you would not expect
---- DEPENDENCIES: [Cryptid, Talisman]
---- VERSION: 0.0.1
+--- DEPENDENCIES: [Talisman]
+--- VERSION: 0.0.1b
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -141,7 +141,16 @@ SMODS.Atlas({
     py = 95,
 })
 --Jokers--
-SMODS.Joker({
+
+
+
+
+
+if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
+    local cry_config = SMODS.load_mod_config({id = "Cryptid", path = SMODS.Mods.Cryptid.path}) -- loads Cryptid configs
+
+    if cry_config["Exotic Jokers"] then -- check if exotic jokers are enabled
+        SMODS.Joker({
     key = "steve",
     loc_txt = {
         name = "Steve",
@@ -292,6 +301,9 @@ SMODS.Joker({
     end,
 })
     
+
+    end
+end
     
     
     
@@ -303,6 +315,6 @@ SMODS.Joker({
     
     
     
-    
+
     
 

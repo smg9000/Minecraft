@@ -195,7 +195,10 @@ function craft_joker(card)
     discover_card(obj)
     card:set_sprites(obj)
     if key == "mc_bucket" then
-        SMODS.create_card{key = "j_mc_bucket" }
+       local bucket = SMODS.create_card{key = "j_mc_bucket" }
+	G.jokers:emplace(bucket)
+	bucket:add_to_deck()
+			
     end
 end
 

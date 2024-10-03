@@ -2,15 +2,295 @@
 --- MOD_NAME: Minecraft
 --- MOD_ID: Minecraft
 --- PREFIX: mc
---- MOD_AUTHOR: [SMG9000, ]
+--- MOD_AUTHOR: [SMG9000, Mathguy ]
 --- MOD_DESCRIPTION: a mod that adds minecraft to balatro in a way that you would not expect
 --- DEPENDENCIES: [Talisman]
---- VERSION: 0.0.1b
+--- VERSION: 0.0.2
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
 
+function SMODS.SAVE_UNLOCKS()
+    boot_print_stage("Saving Unlocks")
+	G:save_progress()
+    -------------------------------------
+    local TESTHELPER_unlocks = false and not _RELEASE_MODE
+    -------------------------------------
+    if not love.filesystem.getInfo(G.SETTINGS.profile .. '') then
+        love.filesystem.createDirectory(G.SETTINGS.profile ..
+            '')
+    end
+    if not love.filesystem.getInfo(G.SETTINGS.profile .. '/' .. 'meta.jkr') then
+        love.filesystem.append(
+            G.SETTINGS.profile .. '/' .. 'meta.jkr', 'return {}')
+    end
+
+    convert_save_to_meta()
+
+    local meta = STR_UNPACK(get_compressed(G.SETTINGS.profile .. '/' .. 'meta.jkr') or 'return {}')
+    meta.unlocked = meta.unlocked or {}
+    meta.discovered = meta.discovered or {}
+    meta.alerted = meta.alerted or {}
+
+    G.P_LOCKED = {}
+    for k, v in pairs(G.P_CENTERS) do
+        if not v.wip and not v.demo then
+            if TESTHELPER_unlocks then
+                v.unlocked = true; v.discovered = true; v.alerted = true
+            end --REMOVE THIS
+            if not v.unlocked and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^v_')) and meta.unlocked[k] then
+                v.unlocked = true
+            end
+            if not v.unlocked and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^v_')) then
+                G.P_LOCKED[#G.P_LOCKED + 1] = v
+            end
+            if not v.discovered and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^e_') or string.find(k, '^c_') or string.find(k, '^p_') or string.find(k, '^v_')) and meta.discovered[k] then
+                v.discovered = true
+            end
+            if v.discovered and meta.alerted[k] or v.set == 'Back' or v.start_alerted then
+                v.alerted = true
+            elseif v.discovered then
+                v.alerted = false
+            end
+        end
+    end
+
+	table.sort(G.P_LOCKED, function (a, b) return a.order and b.order and a.order < b.order end)
+
+	for k, v in pairs(G.P_BLINDS) do
+        v.key = k
+        if not v.wip and not v.demo then 
+            if TESTHELPER_unlocks then v.discovered = true; v.alerted = true  end --REMOVE THIS
+            if not v.discovered and meta.discovered[k] then 
+                v.discovered = true
+            end
+            if v.discovered and meta.alerted[k] then 
+                v.alerted = true
+            elseif v.discovered then
+                v.alerted = false
+            end
+        end
+    end
+	for k, v in pairs(G.P_TAGS) do
+        v.key = k
+        if not v.wip and not v.demo then 
+            if TESTHELPER_unlocks then v.discovered = true; v.alerted = true  end --REMOVE THIS
+            if not v.discovered and meta.discovered[k] then 
+                v.discovered = true
+            end
+            if v.discovered and meta.alerted[k] then 
+                v.alerted = true
+            elseif v.discovered then
+                v.alerted = false
+            end
+        end
+    end
+	for k, v in pairs(G.P_CRAFTS) do
+        v.key = k
+        if not v.wip and not v.demo then 
+            if TESTHELPER_unlocks then
+                v.unlocked = true; v.discovered = true; v.alerted = true
+            end --REMOVE THIS
+            if not v.unlocked and meta.unlocked[k] then
+                v.unlocked = true
+            end
+            if not v.discovered and meta.discovered[k] then
+                v.discovered = true
+            end
+            if v.discovered then
+                v.alerted = false
+            end
+        end
+    end
+    for k, v in pairs(G.P_SEALS) do
+        v.key = k
+        if not v.wip and not v.demo then
+            if TESTHELPER_unlocks then
+                v.discovered = true; v.alerted = true
+            end                                                                   --REMOVE THIS
+            if not v.discovered and meta.discovered[k] then
+                v.discovered = true
+            end
+            if v.discovered and meta.alerted[k] then
+                v.alerted = true
+            elseif v.discovered then
+                v.alerted = false
+            end
+        end
+    end
+    for _, t in ipairs{
+        G.P_CENTERS,
+        G.P_BLINDS,
+        G.P_TAGS,
+        G.P_SEALS,
+        G.P_CRAFTS,
+    } do
+        for k, v in pairs(t) do
+            v._discovered_unlocked_overwritten = true
+        end
+    end
+end
+
+
+
+
+
+local function get_crafts()
+    local shown_crafts = {}
+    for i, j in pairs(G.P_CENTER_POOLS['Craft']) do
+        if j.unlocked then
+			local valid = true
+            if valid then
+                    shown_crafts[#shown_crafts + 1] = {j, true}
+            end
+        end
+    end
+    return shown_crafts
+end
+function G.UIDEF.learned_craft()
+    local shown_crafts = get_crafts()
+    if not use_page then
+        crafts_page = nil
+    end
+    local adding = 15  * ((crafts_page or 1) - 1)
+    local rows = {}	
+    for i = 1, 3 do
+        table.insert(rows, {})
+        for j = 0, 4 do
+            if shown_crafts[j*5+i+adding] then
+                table.insert(rows[i], shown_crafts[j*5+i+adding][1])
+            end
+        end
+    end
+    G.areas = {}
+    area_table = {}
+    for j = 1, math.max(1,math.min(3, math.ceil(#shown_crafts/5))) do
+        G.areas[j] = CardArea(
+            G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,
+            (5.25)*G.CARD_W,
+            1.25*G.CARD_W, 
+            {card_limit = 5, type = 'joker', highlight_limit = 1, craft_table = true})
+        table.insert(area_table, 
+        {n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true}, nodes={
+            {n=G.UIT.O, config={object = G.areas[j]}}
+        }}
+        )
+    end
+
+
+
+function craft_joker(card)
+    local obj = card.config.center
+    local key = obj.key
+    G.GAME.crafts[key] = true
+   G.GAME.craft_dirt = G.GAME.craft_dirt - obj.dirt_req
+   G.GAME.craft_coal = G.GAME.craft_coal - obj.coal_req
+   G.GAME.craft_iron = G.GAME.craft_iron - obj.iron_req
+   G.GAME.craft_gold = G.GAME.craft_gold - obj.gold_req
+   G.GAME.craft_copper = G.GAME.craft_copper - obj.copper_req
+   G.GAME.craft_diamond = G.GAME.craft_diamond - obj.diamond_req
+   G.GAME.craft_emerald = G.GAME.craft_emerald - obj.emerald_req
+   G.GAME.craft_netherite = G.GAME.craft_netherite - obj.netherite_req
+    discover_card(obj)
+    card:set_sprites(obj)
+    if key == "mc_bucket" then
+        SMODS.create_card{key = "j_mc_bucket" }
+    end
+end
+
+G.FUNCS.can_craft = function(e)
+    if e.config.ref_table and e.config.ref_table.config and e.config.ref_table.config.center and e.config.ref_table.config.center.key  and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.dirt_req or (G.GAME.craft_dirt < e.config.ref_table.config.center.dirt_req)))  and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.coal_req or (G.GAME.craft_coal < e.config.ref_table.config.center.coal_req)))  and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.iron_req or (G.GAME.craft_iron < e.config.ref_table.config.center.iron_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.gold_req or (G.GAME.craft_gold < e.config.ref_table.config.center.gold_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.copper_req or (G.GAME.craft_copper < e.config.ref_table.config.center.copper_req)))and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.diamond_req or (G.GAME.craft_diamond < e.config.ref_table.config.center.diamond_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.emerald_req or (G.GAME.craft_emerald < e.config.ref_table.config.center.emerald_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.netherite_req or (G.GAME.craft_netherite < e.config.ref_table.config.center.netherite_req))) then
+        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+        e.config.button = 'do_nothing'
+    else
+        e.config.colour = G.C.ORANGE
+        e.config.button = 'craft_joker'
+    end
+end
+
+G.FUNCS.craft_joker = function(e)
+    craft_joker(e.config.ref_table)
+    if G.OVERLAY_MENU then
+        local tab_but = G.OVERLAY_MENU:get_UIE_by_ID("tab_but_" .. localize('b_craft'))
+        use_page = true
+        G.FUNCS.change_tab(tab_but)
+        use_page = nil
+    end
+end
+
+G.FUNCS.do_nothing = function(e)
+end
+
+G.FUNCS.your_game_craft_page = function(args)
+    local shown_crafts = get_crafts()
+    if not args or not args.cycle_config then return end
+    crafts_page = args.cycle_config.current_option
+    for j = 1, #G.areas do
+        for i = #G.areas[j].cards,1, -1 do
+            local c = G.areas[j]:remove_card(G.areas[j].cards[i])
+            c:remove()
+            c = nil
+        end
+    end
+    for i = 1, 5 do
+        for j = 1, 3 do
+            local adding = 3  * (args.cycle_config.current_option - 1)
+            local center = shown_crafts[i+(j-1)*5 + 5 * adding]
+            if not center then break end
+            local card = Card(G.areas[j].T.x + G.areas[j].T.w, G.areas[j].T.y, G.CARD_W, G.CARD_H, G.P_CARDS.empty, center[1])
+            G.areas[j]:emplace(card)
+        end
+    end
+end
+
+    local craft_options = {}
+    for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/15))) do
+        table.insert(craft_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(math.max(1, math.ceil(#shown_crafts/15)))))
+    end
+
+    for j = 1, #G.areas do
+        for i = 1, 5 do
+            if (i+(j-1)*(5)+adding) <= #shown_crafts then
+                local center = shown_crafts[i+(j-1)*(5)+adding][1]
+                local card = Card(G.areas[j].T.x + G.areas[j].T.w, G.areas[j].T.y, G.CARD_W, G.CARD_H, nil, center)
+                card:start_materialize(nil, i>1 or j>1)
+                G.areas[j]:emplace(card)
+            end
+        end
+    end
+
+  local text = "Crafts"
+
+    local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
+        {n=G.UIT.R, config={align = "cm"}, nodes={
+            {n=G.UIT.O, config={object = DynaText({string = text, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
+        }},
+        {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
+            {n=G.UIT.R, config={align = "cm"}, nodes={
+                create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
+        }}
+      }}
+    return t
+end
+
+
+
+function SMODS.current_mod.process_loc_text()
+ G.localization.misc.dictionary['b_crafting'] = "Crafting"
+ G.localization.misc.dictionary["b_craft"] = "CRAFT"
+ G.localization.misc.dictionary["k_craft"] = "Craft"
+	G.localization.descriptions.Craft = {
+        mc_bucket = {
+            name = "Bucket",
+            text = {
+                "Carry over %5 of total overscored chips ",
+                "to next blind",
+                "{C:inactive}Ex: blind is 300 chips and you score 400{}",
+                "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
+                "{C:inactive}so you start the next blind with 5 chips{}",
+            }}}
+end
 
 
 --Consumables--
@@ -139,6 +419,13 @@ SMODS.Atlas({
     path = "j_placeholder.png",
     px = 71,
     py = 95,
+})
+SMODS.Atlas({
+	key = "crafted_jokers",
+	atlas_table = "ASSET_ATLAS",
+	path = "crafted_jokers.png",
+	px = 71,
+	py = 95
 })
 --Jokers--
 
@@ -304,17 +591,39 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
 
     end
 end
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
-    
+SMODS.Joker({
+    key = "bucket",
+    loc_txt = {
+        name = "bucket",
+        text = {"Carry over %5 of total overscored chips ",
+                "to next blind",
+                "{C:inactive}Ex: blind is 300 chips and you score 400{}",
+                "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
+                "{C:inactive}so you start the next blind with 5 chips{}",
+				}
+			},
+    config = {extra ={chips_gain = 0  }},
+    rarity = 3,
+    pos = { x = 0, y = 0 },
+    atlas = 'crafted_jokers',
+    cost = 5,
+    blueprint_compat = true,
+	loc_vars = function(self, info_queue, center)
+		return { vars = { center.ability.extra.chips_gain} }
+	end,
+    calculate = function(self, card, context)
+        if context.end_of_round and not (context.individual or context.repetition) then
+            card.ability.extra.chips_gain = ( to_big(G.GAME.chips) - to_big(G.GAME.blind.chips) ) * 0.05
+            return
+        elseif context.setting_blind then
+            G.GAME.chips = to_big(G.GAME.chips) + card.ability.extra.chips_gain
+            card.ability.extra.chips_gain = 0
+            G.E_MANAGER:add_event(Event({
+                        func = function() card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize("k_upgrade_ex"), colour = G.C.DARK_EDITION}); return true
+                        end}))
+            return
+        end
+	end
+})
 

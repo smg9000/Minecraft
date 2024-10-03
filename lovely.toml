@@ -1,0 +1,181 @@
+[manifest]
+version = "1.0.0"
+dump_lua = true
+priority = 0
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''chips_text = '0','''
+position = 'after'
+payload = '''crafts = {},
+craft_dirt = 0,
+craft_coal = 0,
+craft_iron = 0,
+craft_gold = 0,
+craft_copper = 0,
+craft_diamond = 0,
+craft_emerald = 0,
+craft_netherite = 0,
+'''
+match_indent = true
+
+
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''(_c.set == 'Joker' and G.C.RARITY[_c.rarity]) or'''
+position = 'after'
+payload = '''(_c.set == 'Craft' and G.C.YELLOW) or'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''Stake = {},'''
+position = 'after'
+payload = '''Craft = {},'''
+match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = 'functions/misc_functions.lua'
+pattern = '''total = {tally = 0, of = 0},'''
+position = 'before'
+payload = '''crafts = {tally = 0, of = 0},
+'''
+match_indent = true
+
+
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''self.P_LOCKED = {}'''
+position = 'after'
+payload = '''self.P_CRAFTS = {
+   mc_bucket = {order = 1, key = 'mc_bucket', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Bucket", dirt_req = 0 , coal_req = 0, iron_req = 3, gold_req = 0 , copper_req = 0, diamond_req = 0, emerald_req = 0 , netherite_req = 0, pos = {x=0,y=0}, set = "Craft", config = {},},
+}'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''local meta = STR_UNPACK(get_compressed(G.SETTINGS.profile..'/'..'meta.jkr') or 'return {}')'''
+position = 'after'
+payload = '''for k, v in pairs(G.P_CRAFTS) do
+    SMODS._save_d_u(v)
+    v._discovered_unlocked_overwritten = true
+end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''table.sort(self.P_CENTER_POOLS["Seal"], function (a, b) return a.order < b.order end)'''
+position = 'after'
+payload = '''table.sort(self.P_CENTER_POOLS["Craft"], function (a, b) return a.order < b.order end)'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''elseif _c.set == 'Joker' then'''
+position = 'before'
+payload = '''elseif _c.set == 'Craft' then
+    if card and card.area and card.area.config.craft_table and card.config.center and not G.GAME.crafts[card.config.center.key] then
+        localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = loc_vars}
+    end
+    if specific_vars and specific_vars.sticker then info_queue[#info_queue+1] = {key = string.lower(specific_vars.sticker)..'_sticker', set = 'Other'} end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''elseif card.ability.set == 'Voucher' then'''
+position = 'before'
+payload = '''elseif card.ability.set == 'Craft' then
+    craft_joker(card)
+    G.GAME.crafts[card.key] = true'''
+match_indent = true
+
+
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''for k, v in pairs(self.P_STAKES) do'''
+position = 'before'
+payload = '''for k, v in pairs(self.P_CRAFTS) do
+    v.key = k
+    if not v.wip and not v.demo then 
+        if TESTHELPER_unlocks then v.discovered = true; v.alerted = true  end --REMOVE THIS
+        if not v.unlocked and meta.unlocked[k] then 
+            v.unlocked = true
+        end
+        if not v.discovered and meta.discovered[k] then 
+            v.discovered = true
+        end
+        if v.discovered and meta.alerted[k] then 
+            v.alerted = true
+        elseif v.discovered then
+            v.alerted = false
+        end
+        table.insert(self.P_CENTER_POOLS['Craft'], v)
+    end
+end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/button_callbacks.lua'
+pattern = '''for k, v in pairs(G.P_CENTERS) do'''
+position = 'before'
+payload = '''for k, v in pairs(G.P_CRAFTS) do
+    if not v.demo and not v.wip then 
+        v.alerted = true
+        v.discovered = true
+        v.unlocked = true
+    end
+end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''G.ARGS.save_progress.PROFILE = G.PROFILES[G.SETTINGS.profile]'''
+position = 'after'
+payload = '''for k, v in pairs(self.P_CRAFTS) do
+    G.ARGS.save_progress.UDA[k] = (v.unlocked and 'u' or '')..(v.discovered and 'd' or '')..(v.alerted and 'a' or '')
+end'''
+match_indent = true
+
+
+
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''G.GAME.stake > 1 and {'''
+position = 'before'
+payload = '''{
+    label = localize('b_crafting'),
+    tab_definition_function = G.UIDEF.learned_craft,
+},'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''elseif card.area and card.area == G.pack_cards then'''
+position = 'before'
+payload = '''elseif card and card.area and card.area.config.craft_table then
+    return {
+      n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
+        {n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, maxw = 0.9*card.T.w - 0.15, minh = 0.3*card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'craft_joker', func = 'can_craft'}, nodes={
+          {n=G.UIT.T, config={text = localize('b_craft'),colour = G.C.UI.TEXT_LIGHT, scale = 0.45, shadow = true}}
+        }},
+    }}'''
+match_indent = true

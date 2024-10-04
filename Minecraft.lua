@@ -183,7 +183,6 @@ function G.UIDEF.learned_craft()
 function craft_joker(card)
     local obj = card.config.center
     local key = obj.key
-    G.GAME.crafts[key] = true
    G.GAME.craft_dirt = G.GAME.craft_dirt - obj.dirt_req
    G.GAME.craft_coal = G.GAME.craft_coal - obj.coal_req
    G.GAME.craft_iron = G.GAME.craft_iron - obj.iron_req
@@ -203,7 +202,15 @@ function craft_joker(card)
 end
 
 G.FUNCS.can_craft = function(e)
-    if e.config.ref_table and e.config.ref_table.config and e.config.ref_table.config.center and e.config.ref_table.config.center.key  and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.dirt_req or (G.GAME.craft_dirt < e.config.ref_table.config.center.dirt_req)))  and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.coal_req or (G.GAME.craft_coal < e.config.ref_table.config.center.coal_req)))  and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.iron_req or (G.GAME.craft_iron < e.config.ref_table.config.center.iron_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.gold_req or (G.GAME.craft_gold < e.config.ref_table.config.center.gold_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.copper_req or (G.GAME.craft_copper < e.config.ref_table.config.center.copper_req)))and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.diamond_req or (G.GAME.craft_diamond < e.config.ref_table.config.center.diamond_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.emerald_req or (G.GAME.craft_emerald < e.config.ref_table.config.center.emerald_req))) and (G.GAME.crafts[e.config.ref_table.config.center.key] or (not e.config.ref_table.config.center.netherite_req or (G.GAME.craft_netherite < e.config.ref_table.config.center.netherite_req))) then
+    if e.config.ref_table and e.config.ref_table.config and e.config.ref_table.config.center and e.config.ref_table.config.center.key  and 
+			((not e.config.ref_table.config.center.dirt_req or (G.GAME.craft_dirt < e.config.ref_table.config.center.dirt_req)))  and 
+			((not e.config.ref_table.config.center.coal_req or (G.GAME.craft_coal < e.config.ref_table.config.center.coal_req)))  and 
+			((not e.config.ref_table.config.center.iron_req or (G.GAME.craft_iron < e.config.ref_table.config.center.iron_req))) and 
+			((not e.config.ref_table.config.center.gold_req or (G.GAME.craft_gold < e.config.ref_table.config.center.gold_req))) and 
+			((not e.config.ref_table.config.center.copper_req or (G.GAME.craft_copper < e.config.ref_table.config.center.copper_req))) and 
+			((not e.config.ref_table.config.center.diamond_req or (G.GAME.craft_diamond < e.config.ref_table.config.center.diamond_req))) and 
+			((not e.config.ref_table.config.center.emerald_req or (G.GAME.craft_emerald < e.config.ref_table.config.center.emerald_req))) and 
+			((not e.config.ref_table.config.center.netherite_req or (G.GAME.craft_netherite < e.config.ref_table.config.center.netherite_req))) then
         e.config.colour = G.C.UI.BACKGROUND_INACTIVE
         e.config.button = 'do_nothing'
     else

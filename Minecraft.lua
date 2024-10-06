@@ -5,7 +5,7 @@
 --- MOD_AUTHOR: [SMG9000, Mathguy ]
 --- MOD_DESCRIPTION: a mod that adds minecraft to balatro in a way that you would not expect
 --- DEPENDENCIES: [Talisman]
---- VERSION: 0.0.2
+--- VERSION: 0.0.2b
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -183,6 +183,7 @@ function G.UIDEF.learned_craft()
 function craft_joker(card)
     local obj = card.config.center
     local key = obj.key
+    
    G.GAME.craft_dirt = G.GAME.craft_dirt - obj.dirt_req
    G.GAME.craft_coal = G.GAME.craft_coal - obj.coal_req
    G.GAME.craft_iron = G.GAME.craft_iron - obj.iron_req
@@ -191,26 +192,23 @@ function craft_joker(card)
    G.GAME.craft_diamond = G.GAME.craft_diamond - obj.diamond_req
    G.GAME.craft_emerald = G.GAME.craft_emerald - obj.emerald_req
    G.GAME.craft_netherite = G.GAME.craft_netherite - obj.netherite_req
-    discover_card(obj)
-    card:set_sprites(obj)
     if key == "mc_bucket" then
-       local bucket = SMODS.create_card{key = "j_mc_bucket" }
-	G.jokers:emplace(bucket)
-	bucket:add_to_deck()
-			
+        local bucket = SMODS.create_card{key = "j_mc_bucket" }
+		G.jokers:emplace(bucket)
+		card:add_to_deck()
     end
 end
 
 G.FUNCS.can_craft = function(e)
-    if e.config.ref_table and e.config.ref_table.config and e.config.ref_table.config.center and e.config.ref_table.config.center.key  and 
-			((not e.config.ref_table.config.center.dirt_req or (G.GAME.craft_dirt < e.config.ref_table.config.center.dirt_req)))  and 
-			((not e.config.ref_table.config.center.coal_req or (G.GAME.craft_coal < e.config.ref_table.config.center.coal_req)))  and 
-			((not e.config.ref_table.config.center.iron_req or (G.GAME.craft_iron < e.config.ref_table.config.center.iron_req))) and 
-			((not e.config.ref_table.config.center.gold_req or (G.GAME.craft_gold < e.config.ref_table.config.center.gold_req))) and 
-			((not e.config.ref_table.config.center.copper_req or (G.GAME.craft_copper < e.config.ref_table.config.center.copper_req))) and 
-			((not e.config.ref_table.config.center.diamond_req or (G.GAME.craft_diamond < e.config.ref_table.config.center.diamond_req))) and 
-			((not e.config.ref_table.config.center.emerald_req or (G.GAME.craft_emerald < e.config.ref_table.config.center.emerald_req))) and 
-			((not e.config.ref_table.config.center.netherite_req or (G.GAME.craft_netherite < e.config.ref_table.config.center.netherite_req))) then
+    if e.config.ref_table and e.config.ref_table.config and e.config.ref_table.config.center and e.config.ref_table.config.center.key  and
+	((not e.config.ref_table.config.center.dirt_req or (G.GAME.craft_dirt < e.config.ref_table.config.center.dirt_req)))  and
+	((not e.config.ref_table.config.center.coal_req or (G.GAME.craft_coal < e.config.ref_table.config.center.coal_req)))  and
+	((not e.config.ref_table.config.center.iron_req or (G.GAME.craft_iron < e.config.ref_table.config.center.iron_req))) and
+	((not e.config.ref_table.config.center.gold_req or (G.GAME.craft_gold < e.config.ref_table.config.center.gold_req))) and
+	((not e.config.ref_table.config.center.copper_req or (G.GAME.craft_copper < e.config.ref_table.config.center.copper_req)))and
+	((not e.config.ref_table.config.center.diamond_req or (G.GAME.craft_diamond < e.config.ref_table.config.center.diamond_req))) and
+	((not e.config.ref_table.config.center.emerald_req or (G.GAME.craft_emerald < e.config.ref_table.config.center.emerald_req))) and
+	((not e.config.ref_table.config.center.netherite_req or (G.GAME.craft_netherite < e.config.ref_table.config.center.netherite_req))) then
         e.config.colour = G.C.UI.BACKGROUND_INACTIVE
         e.config.button = 'do_nothing'
     else
@@ -411,6 +409,58 @@ SMODS.Consumable({
 
 
 
+
+
+
+
+SMODS.Spectral {
+    key = 'deep',
+    loc_txt = {
+        name = "Deep",
+        text = {
+            "Enhances {C:attention}#1#",
+            "selected card to",
+            "{C:attention}#2#s"
+        }
+    },
+    atlas = "consumables",
+    pos = {x = 0, y = 0},
+    config = {mod_conv = 'm_mc_deepslate', max_highlighted = 1},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS[card and card.ability.mod_conv or 'm_mc_deepslate']
+        return {vars = {(card and card.ability.max_highlighted or 1), localize{type = 'name_text', set = 'Enhanced', key = (card and card.ability.mod_conv or 'm_mc_deepslate')}}}
+    end,
+}
+
+
+--Consumable--
+local deepslate_card = SMODS.Enhancement {
+    key = 'deepslate',
+    loc_txt = {
+        name = 'Deepslate Card',
+        text = {
+            "{C:chips}+#1#{} Chips",
+			"no rank or suit",
+        }
+    },
+    atlas = 'enhancement',
+    config = {bonus = 150},
+	no_suit = true,
+	no_rank = true,
+	replace_base_card = true,
+	always_scores = true,
+    pos = {x = 0, y = 0},
+	loc_vars = function(self, info_queue, card)
+        return {vars = {card and card.ability.bonus or 150}}
+    end,
+	
+    }
+deepslate_card.loc_subtract_extra_chips = deepslate_card.config.bonus
+
+
+
+
+
 --Atlas--
 SMODS.Atlas({
     key = "resource",
@@ -436,6 +486,18 @@ SMODS.Atlas({
 	path = "crafted_jokers.png",
 	px = 71,
 	py = 95
+})
+SMODS.Atlas({
+    key = "enhancement",
+    path = "enhancement.png",
+    px = 71,
+    py = 95,
+})
+SMODS.Atlas({
+    key = "consumables",
+    path = "consumables.png",
+    px = 71,
+    py = 95,
 })
 --Jokers--
 

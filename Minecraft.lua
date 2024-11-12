@@ -5,7 +5,7 @@
 --- MOD_AUTHOR: [SMG9000, Mathguy ]
 --- MOD_DESCRIPTION: a mod that adds minecraft to balatro in a way that you would not expect
 --- DEPENDENCIES: [Talisman]
---- VERSION: 0.0.2b
+--- VERSION: 0.0.2
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -39,13 +39,13 @@ function SMODS.SAVE_UNLOCKS()
             if TESTHELPER_unlocks then
                 v.unlocked = true; v.discovered = true; v.alerted = true
             end --REMOVE THIS
-            if not v.unlocked and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^v_')) and meta.unlocked[k] then
+            if not v.unlocked and meta.unlocked[k] then
                 v.unlocked = true
             end
-            if not v.unlocked and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^v_')) then
+            if not v.unlocked then
                 G.P_LOCKED[#G.P_LOCKED + 1] = v
             end
-            if not v.discovered and (string.find(k, '^j_') or string.find(k, '^b_') or string.find(k, '^e_') or string.find(k, '^c_') or string.find(k, '^p_') or string.find(k, '^v_')) and meta.discovered[k] then
+            if not v.discovered and meta.discovered[k] then
                 v.discovered = true
             end
             if v.discovered and meta.alerted[k] or v.set == 'Back' or v.start_alerted then
@@ -86,23 +86,6 @@ function SMODS.SAVE_UNLOCKS()
             end
         end
     end
-	for k, v in pairs(G.P_CRAFTS) do
-        v.key = k
-        if not v.wip and not v.demo then 
-            if TESTHELPER_unlocks then
-                v.unlocked = true; v.discovered = true; v.alerted = true
-            end --REMOVE THIS
-            if not v.unlocked and meta.unlocked[k] then
-                v.unlocked = true
-            end
-            if not v.discovered and meta.discovered[k] then
-                v.discovered = true
-            end
-            if v.discovered then
-                v.alerted = false
-            end
-        end
-    end
     for k, v in pairs(G.P_SEALS) do
         v.key = k
         if not v.wip and not v.demo then
@@ -119,12 +102,49 @@ function SMODS.SAVE_UNLOCKS()
             end
         end
     end
+
+	for k, v in pairs(G.P_SKILLS or {}) do
+        v.key = k
+        if not v.wip and not v.demo then 
+            if TESTHELPER_unlocks then
+                v.unlocked = true; v.discovered = true; v.alerted = true
+            end --REMOVE THIS
+            if not v.unlocked and meta.unlocked[k] then
+                v.unlocked = true
+            end
+            if not v.discovered and meta.discovered[k] then
+                v.discovered = true
+            end
+            if v.discovered then
+                v.alerted = false
+            end
+        end
+    end
+
+    for k, v in pairs(G.P_CRAFTS or {}) do
+        v.key = k
+        if not v.wip and not v.demo then 
+            if TESTHELPER_unlocks then
+                v.unlocked = true; v.discovered = true; v.alerted = true
+            end --REMOVE THIS
+            if not v.unlocked and meta.unlocked[k] then
+                v.unlocked = true
+            end
+            if not v.discovered and meta.discovered[k] then
+                v.discovered = true
+            end
+            if v.discovered then
+                v.alerted = false
+            end
+        end
+    end
     for _, t in ipairs{
         G.P_CENTERS,
         G.P_BLINDS,
         G.P_TAGS,
         G.P_SEALS,
-        G.P_CRAFTS,
+        G.P_SKILLS or {},
+        G.P_CRAFTS or {},
     } do
         for k, v in pairs(t) do
             v._discovered_unlocked_overwritten = true
@@ -183,32 +203,22 @@ function G.UIDEF.learned_craft()
 function craft_joker(card)
     local obj = card.config.center
     local key = obj.key
-    
-   G.GAME.craft_dirt = G.GAME.craft_dirt - obj.dirt_req
-   G.GAME.craft_coal = G.GAME.craft_coal - obj.coal_req
-   G.GAME.craft_iron = G.GAME.craft_iron - obj.iron_req
-   G.GAME.craft_gold = G.GAME.craft_gold - obj.gold_req
-   G.GAME.craft_copper = G.GAME.craft_copper - obj.copper_req
-   G.GAME.craft_diamond = G.GAME.craft_diamond - obj.diamond_req
-   G.GAME.craft_emerald = G.GAME.craft_emerald - obj.emerald_req
-   G.GAME.craft_netherite = G.GAME.craft_netherite - obj.netherite_req
+    for i,j in pairs(obj.req) do
+		G.GAME.craftr[i] = G.GAME.craftr[i] - j 
+	end
     if key == "mc_bucket" then
         local bucket = SMODS.create_card{key = "j_mc_bucket" }
 		G.jokers:emplace(bucket)
-		card:add_to_deck()
+		bucket:add_to_deck()
     end
 end
 
 G.FUNCS.can_craft = function(e)
-    if e.config.ref_table and e.config.ref_table.config and e.config.ref_table.config.center and e.config.ref_table.config.center.key  and
-	((not e.config.ref_table.config.center.dirt_req or (G.GAME.craft_dirt < e.config.ref_table.config.center.dirt_req)))  and
-	((not e.config.ref_table.config.center.coal_req or (G.GAME.craft_coal < e.config.ref_table.config.center.coal_req)))  and
-	((not e.config.ref_table.config.center.iron_req or (G.GAME.craft_iron < e.config.ref_table.config.center.iron_req))) and
-	((not e.config.ref_table.config.center.gold_req or (G.GAME.craft_gold < e.config.ref_table.config.center.gold_req))) and
-	((not e.config.ref_table.config.center.copper_req or (G.GAME.craft_copper < e.config.ref_table.config.center.copper_req)))and
-	((not e.config.ref_table.config.center.diamond_req or (G.GAME.craft_diamond < e.config.ref_table.config.center.diamond_req))) and
-	((not e.config.ref_table.config.center.emerald_req or (G.GAME.craft_emerald < e.config.ref_table.config.center.emerald_req))) and
-	((not e.config.ref_table.config.center.netherite_req or (G.GAME.craft_netherite < e.config.ref_table.config.center.netherite_req))) then
+	local craft_req = true
+	for i,j in pairs(e.config.ref_table.config.center.req) do
+		if G.GAME.craftr[i] < j then craft_req = false end
+	end
+	if not craft_req then
         e.config.colour = G.C.UI.BACKGROUND_INACTIVE
         e.config.button = 'do_nothing'
     else
@@ -282,12 +292,32 @@ end
     return t
 end
 
-
+function add_craft_resource(section, amount, card, message_)
+    local message = true
+    if message_ ~= nil then
+        message = message_
+    end
+        G.GAME.craftr[section] = G.GAME.craftr[section] + amount
+    
+    if card and message and (amount ~= 0) then
+        card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type='variable',key='gain_craftr',vars={amount, localize(section)}},colour = HEX("a37c12")	, delay = 0.45})
+    end
+end
 
 function SMODS.current_mod.process_loc_text()
+ G.localization.misc.quips['aww_man'] ={ "Aww Man"}
+ G.localization.misc.v_dictionary["gain_craftr"] = "+#1# #2#"
  G.localization.misc.dictionary['b_crafting'] = "Crafting"
  G.localization.misc.dictionary["b_craft"] = "CRAFT"
  G.localization.misc.dictionary["k_craft"] = "Craft"
+ G.localization.misc.dictionary['dirt'] = "Dirt"
+ G.localization.misc.dictionary['coal'] = "Coal"
+ G.localization.misc.dictionary['copper'] = "Copper"
+ G.localization.misc.dictionary['iron'] = "Iron"
+ G.localization.misc.dictionary['gold'] = "Gold"
+ G.localization.misc.dictionary['diamond'] = "Diamond"
+ G.localization.misc.dictionary['emerald'] = "Emerald"
+ G.localization.misc.dictionary['netherite'] = "Netherite"
 	G.localization.descriptions.Craft = {
         mc_bucket = {
             name = "Bucket",
@@ -317,6 +347,12 @@ SMODS.ConsumableType({
         },
         },
     shop_rate = 1,
+    rarities = {
+        {key = 'Common', rate = 75},
+        {key = 'Uncommon', rate = 20},
+        {key = 'Rare', rate = 4},
+        {key = 'Legendary', rate = 1},
+		},
     default = ' ',
     can_stack = true,
     can_divide = true,
@@ -325,7 +361,7 @@ SMODS.ConsumableType({
 SMODS.UndiscoveredSprite {
     key = 'resource',
     atlas = 'resource',
-    pos = {x = 3, y = 3},
+    pos = {x = 0, y = 2},
 }
     
 SMODS.Consumable({
@@ -341,6 +377,13 @@ SMODS.Consumable({
     },
     cost = 4,
     atlas = "resource",
+	rarity = "Common",
+	use = function(self, card, area, copier)
+		return add_craft_resource("dirt",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
 })
 
 SMODS.Consumable({
@@ -356,6 +399,13 @@ SMODS.Consumable({
     },
     cost = 4,
     atlas = "resource",
+	rarity = "Common",
+	use = function(self, card, area, copier)
+		return add_craft_resource("coal",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
 })
 
 SMODS.Consumable({
@@ -371,6 +421,13 @@ SMODS.Consumable({
     },
     cost = 8,
     atlas = "resource",
+	rarity = "Uncommon",
+	use = function(self, card, area, copier)
+		return add_craft_resource("copper",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
 })
 
 SMODS.Consumable({
@@ -386,24 +443,98 @@ SMODS.Consumable({
     },
     cost = 8,
     atlas = "resource",
+	rarity = "Uncommon",
+	use = function(self, card, area, copier)
+		return add_craft_resource("iron",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
 })
 SMODS.Consumable({
     key = "gold",
     set = "resource",
-    pos = {x=3,y=0},
+    pos = {x=0,y=1},
 	config = {},
     loc_txt = {
         name = 'Gold',
         text = {
-			"uncommon resource."
+			"rare resource."
         },
     },
     cost = 8,
     atlas = "resource",
+	rarity = "Rare",
+	use = function(self, card, area, copier)
+		return add_craft_resource("gold",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
 })
-
-
-
+SMODS.Consumable({
+    key = "diamond",
+    set = "resource",
+    pos = {x=1,y=1},
+	config = {},
+    loc_txt = {
+        name = 'Diamond',
+        text = {
+			"rare resource."
+        },
+    },
+    cost = 8,
+    atlas = "resource",
+	rarity = "Rare",
+	use = function(self, card, area, copier)
+		return add_craft_resource("gold",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
+})
+SMODS.Consumable({
+    key = "emerald",
+    set = "resource",
+    pos = {x=2,y=1},
+	config = {},
+    loc_txt = {
+        name = 'Emerald',
+        text = {
+			"rare resource."
+        },
+    },
+    cost = 8,
+    atlas = "resource",
+	rarity = "Rare",
+	use = function(self, card, area, copier)
+		return add_craft_resource("gold",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
+})
+SMODS.Consumable({
+    key = "netherite",
+    set = "resource",
+    pos = {x=3,y=1},
+	config = {},
+    loc_txt = {
+        name = 'Netherite',
+        text = {
+			"legendary resource."
+        },
+    },
+    cost = 8,
+    atlas = "resource",
+	rarity = "Legendary",
+	use = function(self, card, area, copier)
+		return add_craft_resource("gold",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
+})
 
 
 
@@ -458,8 +589,61 @@ local deepslate_card = SMODS.Enhancement {
 deepslate_card.loc_subtract_extra_chips = deepslate_card.config.bonus
 
 
-
-
+--Blinds--
+SMODS.Blind{
+	key = "creeper",
+	loc_txt = {
+ 		name = 'The Creeper',
+ 		text = { "Ends run if not",
+			"beaten in #1#"},
+ 	},
+	name = "The Creeper",
+	dollars = 5,
+	mult = 2,
+	boss= {min = 3, max = 10},
+	boss_colour = HEX("297711"),
+	atlas = "mc_blinds",
+    pos = { x = 0, y = 0},
+    vars = {"0:20"},
+	config = {},
+	set_blind = function(self)
+        G.GAME.blind.config.creepertiming = 20
+    end,
+    loc_vars = function(self, info_queue, card)
+        if G.GAME.blind.config.creepertiming == nil then
+            return {vars = {"0:20.00"}}
+        end
+        local m = math.floor(G.GAME.blind.config.creepertiming / 60)
+        local s = (G.GAME.blind.config.creepertiming - (60 * m))
+        local d = math.floor(100 * (s - math.floor(s)))
+        s = tostring(math.floor(s))
+        if string.len(s) == 1 then
+            s = "0" .. s
+        end
+        d = tostring(d)
+        if string.len(d) == 1 then
+            d = "0" .. d
+        end
+        m = tostring(m)
+        return {vars = {m .. ":" .. s .. "." .. d}}
+    end,
+}
+SMODS.Blind{
+	key = "wither",
+	loc_txt = {
+ 		name = 'Midnight Wither',
+ 		text = { "All cards scored gain",
+			"Wither sticker"},
+ 	},
+	dollars = 5,
+	mult = 3,
+	boss= {showdown = true, min = 10, max = 10}, 
+	boss_colour = HEX("1a1a1a"),
+	atlas = "mc_blinds",
+    pos = { x = 0, y = 1},
+    vars = {},
+	config = {},
+}
 
 --Atlas--
 SMODS.Atlas({
@@ -499,11 +683,42 @@ SMODS.Atlas({
     px = 71,
     py = 95,
 })
+SMODS.Atlas({
+    key = "mc_blinds",
+	atlas_table = "ANIMATION_ATLAS",
+    path = "mc_blinds.png",
+    px = 34,
+    py = 34,
+	frames = 21,
+})
 --Jokers--
 
 
 
-
+SMODS.Joker({
+	
+	name = "mc_bundle",
+	key = "bundle",
+	loc_txt = {
+        name = "Bundle",
+        text = {"gains 2 consumable slots",
+            },
+    },
+	pos = { x = 1, y = 0 },
+	config = { extra = { bundle = 2 } },
+	rarity = 2,
+	cost = 6,
+	atlas = "jokeratlas",
+	loc_vars = function(self, info_queue, center)
+		return { vars = { center.ability.extra.bundle } }
+	end,
+	add_to_deck = function(self, card, from_debuff) 
+		G.consumeables.config.card_limit = G.consumeables.config.card_limit + card.ability.extra.bundle
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		G.consumeables.config.card_limit = G.consumeables.config.card_limit - card.ability.extra.bundle
+	end,
+})
 
 if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
     local cry_config = SMODS.load_mod_config({id = "Cryptid", path = SMODS.Mods.Cryptid.path}) -- loads Cryptid configs
@@ -699,3 +914,29 @@ SMODS.Joker({
 	end
 })
 
+local upd = Game.update
+function Game:update(dt)
+    upd(self,dt)
+    if G.GAME and G.GAME.round_resets and G.GAME.blind and G.GAME.blind.name == "The Creeper" and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil) and not G.GAME.blind.disabled then
+        if Talisman then
+            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        else
+            if (G.GAME.chips) < (G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        end
+		if Talisman then
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+				end_round{}
+			end
+		else
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not G.GAME.chips < G.GAME.blind.chips then
+				end_round{}
+			end
+		end
+    end
+end

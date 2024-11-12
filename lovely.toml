@@ -9,14 +9,16 @@ target = 'game.lua'
 pattern = '''chips_text = '0','''
 position = 'after'
 payload = '''crafts = {},
-craft_dirt = 0,
-craft_coal = 0,
-craft_iron = 0,
-craft_gold = 0,
-craft_copper = 0,
-craft_diamond = 0,
-craft_emerald = 0,
-craft_netherite = 0,
+craftr = {
+	dirt = 0,
+	coal = 0,
+	iron = 0,
+	gold = 0,
+	copper = 0,
+	diamond = 0,
+	emerald = 0,
+	netherite = 0,
+	},
 '''
 match_indent = true
 
@@ -49,6 +51,39 @@ payload = '''crafts = {tally = 0, of = 0},
 match_indent = true
 
 
+[[patches]]
+[patches.pattern]
+target = 'game.lua'
+pattern = '''Jimbo:add_speech_bubble('lq_'..math.random(1,10), nil, {quip = true})'''
+position = 'at'
+payload = '''if G.GAME.blind.name == "The Creeper" then
+Jimbo:add_speech_bubble("aww_man", nil, {quip = true})
+else
+Jimbo:add_speech_bubble('lq_'..math.random(1,10), nil, {quip = true})
+end
+
+
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'blind.lua'
+pattern = '''function Blind:load(blindTable)'''
+position = 'after'
+payload = '''self.config.creepertiming = blindTable.creepertimer or 0
+
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'blind.lua'
+pattern = '''return blindTable'''
+position = 'before'
+payload = '''blindTable.creepertimer = self.config.creepertiming or 0
+'''
+match_indent = true
 
 [[patches]]
 [patches.pattern]
@@ -56,7 +91,7 @@ target = 'game.lua'
 pattern = '''self.P_LOCKED = {}'''
 position = 'after'
 payload = '''self.P_CRAFTS = {
-   mc_bucket = {order = 1, key = 'mc_bucket', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Bucket", dirt_req = 0 , coal_req = 0, iron_req = 3, gold_req = 0 , copper_req = 0, diamond_req = 0, emerald_req = 0 , netherite_req = 0, pos = {x=0,y=0}, set = "Craft", config = {},},
+   mc_bucket = {order = 1, key = 'mc_bucket', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Bucket", req = {iron = 3}, pos = {x=0,y=0}, set = "Craft", config = {},},
 }'''
 match_indent = true
 
@@ -174,7 +209,7 @@ position = 'before'
 payload = '''elseif card and card.area and card.area.config.craft_table then
     return {
       n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
-        {n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, maxw = 0.9*card.T.w - 0.15, minh = 0.3*card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'craft_joker', func = 'can_craft'}, nodes={
+        {n=G.UIT.R, config={ref_table = card, r = 0.08, padding = 0.1, align = "bm", minw = 0.5*card.T.w - 0.15, maxw = 0.9*card.T.w - 0.15, minh = 0.3*card.T.h, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, button = 'craft_joker', func = 'can_craft'}, nodes={
           {n=G.UIT.T, config={text = localize('b_craft'),colour = G.C.UI.TEXT_LIGHT, scale = 0.45, shadow = true}}
         }},
     }}'''

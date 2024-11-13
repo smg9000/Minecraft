@@ -278,11 +278,48 @@ end
         end
     end
 
-  local text = "Crafts"
+  local text = "Resources"
+  local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
+  local textb = "Coal: " .. tostring(G.GAME.craftr["coal"])
+  local textc = "Copper: " .. tostring(G.GAME.craftr["copper"])
+  local textd = "Iron: " .. tostring(G.GAME.craftr["iron"])
+  local texte = "Gold: " .. tostring(G.GAME.craftr["gold"])
+  local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
+  local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
+  local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
+  local texti = "Crafts"
+  
 
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
-        {n=G.UIT.R, config={align = "cm"}, nodes={
-            {n=G.UIT.O, config={object = DynaText({string = text, colours = {G.C.UI.TEXT_LIGHT}, bump = true, scale = 0.6})}}
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textb, scale = 0.35, colour = HEX("252525"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textc, scale = 0.35, colour = HEX("E27753"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textd, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texte, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textf, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textg, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
         }},
         {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
             {n=G.UIT.R, config={align = "cm"}, nodes={
@@ -322,8 +359,8 @@ function SMODS.current_mod.process_loc_text()
         mc_bucket = {
             name = "Bucket",
             text = {
-                "Carry over %5 of total overscored chips ",
-                "to next blind",
+                "Carry over {C:attention}5%{} of total ",
+                "overscored {C:blue}chips{} to next {C:attention}blind{}",
                 "{C:inactive}Ex: blind is 300 chips and you score 400{}",
                 "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
                 "{C:inactive}so you start the next blind with 5 chips{}",
@@ -487,7 +524,7 @@ SMODS.Consumable({
     atlas = "resource",
 	rarity = "Rare",
 	use = function(self, card, area, copier)
-		return add_craft_resource("gold",1,card,true)
+		return add_craft_resource("diamond",1,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -508,7 +545,7 @@ SMODS.Consumable({
     atlas = "resource",
 	rarity = "Rare",
 	use = function(self, card, area, copier)
-		return add_craft_resource("gold",1,card,true)
+		return add_craft_resource("emerald",1,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -529,7 +566,7 @@ SMODS.Consumable({
     atlas = "resource",
 	rarity = "Legendary",
 	use = function(self, card, area, copier)
-		return add_craft_resource("gold",1,card,true)
+		return add_craft_resource("netherite",1,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -883,8 +920,8 @@ SMODS.Joker({
     key = "bucket",
     loc_txt = {
         name = "bucket",
-        text = {"Carry over %5 of total overscored chips ",
-                "to next blind",
+        text = {"Carry over {C:attention}5%{} of total ",
+                "overscored {C:blue}chips{} to next {C:attention}blind{}",
                 "{C:inactive}Ex: blind is 300 chips and you score 400{}",
                 "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
                 "{C:inactive}so you start the next blind with 5 chips{}",
@@ -896,6 +933,9 @@ SMODS.Joker({
     atlas = 'crafted_jokers',
     cost = 5,
     blueprint_compat = true,
+	in_pool = function(self)
+		return false
+	end,
 	loc_vars = function(self, info_queue, center)
 		return { vars = { center.ability.extra.chips_gain} }
 	end,

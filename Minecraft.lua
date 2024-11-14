@@ -728,6 +728,138 @@ SMODS.Atlas({
     py = 34,
 	frames = 21,
 })
+SMODS.Atlas({
+    key = "mc_packs",
+    path = "mc_packs.png",
+    px = 71,
+    py = 95,
+})
+--Packs-
+
+SMODS.Booster {
+    key = 'resource_normal1',
+    atlas = 'mc_packs',
+    group_key = 'k_mc_resource_pack',
+    loc_txt = {
+        name = "Resource Pack",
+        text = {
+            "Choose {C:attention}#1#{} of up to",
+            "{C:attention}#2#{C:attention} Resource{} cards to",
+            "use or save"
+        }
+    },
+    weight = 3,
+    cost = 4,
+    name = "Resource Pack",
+    pos = {x = 0, y = 0},
+    config = {extra = 3, choose = 1,},
+    create_card = function(self, card)
+        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+    end,
+    in_pool = function(self)
+        return true
+    end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.config.center.config.choose, card.ability.extra } }
+	end,
+    draw_hand = false
+}
+SMODS.Booster {
+    key = 'resource_normal2',
+    atlas = 'mc_packs',
+    group_key = 'k_mc_resource_pack',
+    loc_txt = {
+        name = "Resource Pack",
+        text = {
+            "Choose {C:attention}#1#{} of up to",
+            "{C:attention}#2#{C:attention} Resource{} cards to",
+            "use or save"
+        }
+    },
+    weight = 3,
+    cost = 4,
+    name = "Resource Pack",
+    pos = {x = 1, y = 0},
+    config = {extra = 3, choose = 1,},
+    create_card = function(self, card)
+        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+    end,
+    in_pool = function(self)
+        return true
+    end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.config.center.config.choose, card.ability.extra } }
+	end,
+    draw_hand = false
+}
+SMODS.Booster {
+    key = 'resource_jumbo',
+    atlas = 'mc_packs',
+    group_key = 'k_mc_resource_pack',
+    loc_txt = {
+        name = "Jumbo Resource Pack",
+        text = {
+            "Choose {C:attention}#1#{} of up to",
+            "{C:attention}#2#{C:attention} Resource{} cards to",
+            "use or save"
+        }
+    },
+    weight = 2,
+    cost = 4,
+    name = "Jumbo Resource Pack",
+    pos = {x = 2, y = 0},
+    config = {extra = 5, choose = 1,},
+    create_card = function(self, card)
+        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+    end,
+    in_pool = function(self)
+        return true
+    end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.config.center.config.choose, card.ability.extra } }
+	end,
+    draw_hand = false
+}
+SMODS.Booster {
+    key = 'resource_mega',
+    atlas = 'mc_packs',
+    group_key = 'k_mc_resource_pack',
+    loc_txt = {
+        name = "Mega Resource Pack",
+        text = {
+            "Choose {C:attention}#1#{} of up to",
+            "{C:attention}#2#{C:attention} Resource{} cards to",
+            "use or save"
+        }
+    },
+    weight = 1.5,
+    cost = 4,
+    name = "Mega Resource Pack",
+    pos = {x = 3, y = 0},
+    config = {extra = 5, choose = 2,},
+    create_card = function(self, card)
+        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+    end,
+    in_pool = function(self)
+        return true
+    end,
+	loc_vars = function(self, info_queue, card)
+		return { vars = { card.config.center.config.choose, card.ability.extra } }
+	end,
+    draw_hand = false
+}
+
+
+
+
+
+
+
+
+
+
+
+
 --Jokers--
 
 

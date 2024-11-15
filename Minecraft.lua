@@ -384,7 +384,7 @@ local resourceType = SMODS.ConsumableType {
             text = { 'no' },
         },
     },
-    shop_rate = 1000,
+    shop_rate = 1,
     default = 'c_mc_dirt',
     can_stack = true,
     can_divide = true,

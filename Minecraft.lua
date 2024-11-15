@@ -369,8 +369,9 @@ end
 
 
 --Consumables--
-SMODS.ConsumableType({
-    key = "resource",
+
+local resourceType = SMODS.ConsumableType {
+    key = "mc_Resource",
     primary_colour = HEX("6A5700"),
     secondary_colour = HEX("02BF0E"),
     collection_rows = {4,4}, 
@@ -380,36 +381,37 @@ SMODS.ConsumableType({
         label = "Resource",
         undiscovered = {
             name = 'Undiscovered Resource',
-            text = { 'idk stuff ig' },
+            text = { 'no' },
         },
-        },
-    shop_rate = 1,
-    rarities = {
-        {key = 'Common', rate = 75},
-        {key = 'Uncommon', rate = 20},
-        {key = 'Rare', rate = 4},
-        {key = 'Legendary', rate = 1},
-		},
-    default = ' ',
+    },
+    shop_rate = 1000,
+    default = 'c_mc_dirt',
     can_stack = true,
     can_divide = true,
-})
+}
 
+SMODS.MC_Resource = SMODS.Consumable:extend {
+    set = "mc_Resource",
+    can_use = function(self, card) 
+        return true
+    end,
+    cost = 1
+}
 SMODS.UndiscoveredSprite {
-    key = 'resource',
+    key = 'Resource',
     atlas = 'resource',
     pos = {x = 0, y = 2},
 }
     
-SMODS.Consumable({
-    key = "dirt",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_dirt",
+    set = "mc_Resource",
     pos = {x=0,y=0},
 	config = {},
     loc_txt = {
         name = 'Dirt',
         text = {
-			"common resource."
+			"I've Got a jar o' Dirrrt."
         },
     },
     cost = 4,
@@ -421,11 +423,15 @@ SMODS.Consumable({
 	can_use = function(self, card)
         return true
     end,
+	in_pool = function(self)
+        return true
+    end,x
+	
 })
 
-SMODS.Consumable({
-    key = "coal",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_coal",
+    set = "mc_Resource",
     pos = {x=1,y=0},
 	config = {},
     loc_txt = {
@@ -443,11 +449,14 @@ SMODS.Consumable({
 	can_use = function(self, card)
         return true
     end,
+	in_pool = function(self)
+        return true
+    end,
 })
 
-SMODS.Consumable({
-    key = "copper",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_copper",
+    set = "mc_Resource",
     pos = {x=3,y=0},
 	config = {},
     loc_txt = {
@@ -465,11 +474,14 @@ SMODS.Consumable({
 	can_use = function(self, card)
         return true
     end,
+	in_pool = function(self)
+        return true
+    end,
 })
 
-SMODS.Consumable({
-    key = "iron",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_iron",
+    set = "mc_Resource",
     pos = {x=2,y=0},
 	config = {},
     loc_txt = {
@@ -487,10 +499,13 @@ SMODS.Consumable({
 	can_use = function(self, card)
         return true
     end,
+	in_pool = function(self)
+        return true
+    end,
 })
-SMODS.Consumable({
-    key = "gold",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_gold",
+    set = "mc_Resource",
     pos = {x=0,y=1},
 	config = {},
     loc_txt = {
@@ -508,10 +523,13 @@ SMODS.Consumable({
 	can_use = function(self, card)
         return true
     end,
+	in_pool = function(self)
+        return true
+    end,
 })
-SMODS.Consumable({
-    key = "diamond",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_diamond",
+    set = "mc_Resource",
     pos = {x=1,y=1},
 	config = {},
     loc_txt = {
@@ -529,10 +547,13 @@ SMODS.Consumable({
 	can_use = function(self, card)
         return true
     end,
+	in_pool = function(self)
+        return true
+    end,
 })
-SMODS.Consumable({
-    key = "emerald",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_emerald",
+    set = "mc_Resource",
     pos = {x=2,y=1},
 	config = {},
     loc_txt = {
@@ -550,10 +571,13 @@ SMODS.Consumable({
 	can_use = function(self, card)
         return true
     end,
+	in_pool = function(self)
+        return true
+    end,
 })
-SMODS.Consumable({
-    key = "netherite",
-    set = "resource",
+SMODS.MC_Resource({
+    key = "mc_netherite",
+    set = "mc_Resource",
     pos = {x=3,y=1},
 	config = {},
     loc_txt = {
@@ -569,6 +593,9 @@ SMODS.Consumable({
 		return add_craft_resource("netherite",1,card,true)
 	end,
 	can_use = function(self, card)
+        return true
+    end,
+	in_pool = function(self)
         return true
     end,
 })
@@ -752,9 +779,9 @@ SMODS.Booster {
     cost = 4,
     name = "Resource Pack",
     pos = {x = 0, y = 0},
-    config = {extra = 3, choose = 1,},
+    config = {extra = 3, choose = 1},
     create_card = function(self, card)
-        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true
@@ -780,9 +807,9 @@ SMODS.Booster {
     cost = 4,
     name = "Resource Pack",
     pos = {x = 1, y = 0},
-    config = {extra = 3, choose = 1,},
-    create_card = function(self, card)
-        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+    config = {extra = 3, choose = 1},
+	create_card = function(self, card)
+        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true
@@ -808,9 +835,9 @@ SMODS.Booster {
     cost = 4,
     name = "Jumbo Resource Pack",
     pos = {x = 2, y = 0},
-    config = {extra = 5, choose = 1,},
+    config = {extra = 5, choose = 1},
     create_card = function(self, card)
-        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true
@@ -836,9 +863,9 @@ SMODS.Booster {
     cost = 4,
     name = "Mega Resource Pack",
     pos = {x = 3, y = 0},
-    config = {extra = 5, choose = 2,},
+    config = {extra = 5, choose = 2},
     create_card = function(self, card)
-        return {set = "mc_resource", area = G.pack_cards, skip_materialize = true}
+        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true
@@ -927,7 +954,7 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
             local destructable_resource = {}
 	    local quota = 1
             for i = 1, #G.consumeables.cards do
-                if G.consumeables.cards[i].ability.set == 'resource' and not G.consumeables.cards[i].getting_sliced and not G.consumeables.cards[i].ability.eternal then 
+                if G.consumeables.cards[i].ability.set == 'Resource' and not G.consumeables.cards[i].getting_sliced and not G.consumeables.cards[i].ability.eternal then 
 				destructable_resource[#destructable_resource+1] = G.consumeables.cards[i] end
             end
             local resource_to_destroy = #destructable_resource > 0 and pseudorandom_element(destructable_resource, pseudoseed('steve')) or nil

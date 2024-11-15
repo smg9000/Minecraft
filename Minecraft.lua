@@ -395,6 +395,20 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
     can_use = function(self, card) 
         return true
     end,
+    set_badges = function(self, card, badges)
+        local colours = {
+            Common = HEX('FE5F55'),
+            Uncommon =  HEX('8867a5'),
+            Rare = HEX("fda200"),
+            Legendary = {0,0,0,1}
+        }
+        if G and G.C and G.C.DARK_EDITION then
+            colours["Legendary"] = G.C.DARK_EDITION
+        end
+        local len = string.len(self.rarity)
+        local size = 1.3 - (len > 5 and 0.02 * (len - 5) or 0)
+        badges[#badges + 1] = create_badge(self.rarity, colours[self.rarity], nil, size)
+    end,
     cost = 1
 }
 SMODS.UndiscoveredSprite {
@@ -412,6 +426,8 @@ SMODS.MC_Resource({
         name = 'Dirt',
         text = {
 			"I've Got a jar o' Dirrrt."
+			"Gives {C:HEX("B38159")}+1 Dirt{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 4,
@@ -437,7 +453,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Coal',
         text = {
-			"common resource."
+			"Gives {C:HEX("252525")}+1 Coal{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 4,
@@ -462,7 +479,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Copper',
         text = {
-			"uncommon resource."
+			"Gives {C:HEX("E27753")}+1 Copper{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 8,
@@ -487,7 +505,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Iron',
         text = {
-			"uncommon resource."
+			"Gives {C:HEX("D1D1D1")}+1 Iron{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 8,
@@ -511,7 +530,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Gold',
         text = {
-			"rare resource."
+			"Gives {C:HEX("F4ED5C")}+1 Gold{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 8,
@@ -535,7 +555,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Diamond',
         text = {
-			"rare resource."
+			"Gives {C:HEX("6CEEE6")}+1 Diamond{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 8,
@@ -559,7 +580,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Emerald',
         text = {
-			"rare resource."
+			"Gives {C:HEX("16D65F")}+1 Emerald{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 8,
@@ -583,7 +605,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Netherite',
         text = {
-			"legendary resource."
+			"Gives {C:HEX("101010")}+1 Netherite{} Resource"
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
     cost = 8,

@@ -204,6 +204,17 @@ match_indent = true
 [[patches]]
 [patches.pattern]
 target = 'functions/UI_definitions.lua'
+pattern = '''G.GAME.stake > 1 and {'''
+position = 'before'
+payload = '''{
+    label = localize('b_resources'),
+    tab_definition_function = G.UIDEF.resource_list,
+},'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
 pattern = '''elseif card.area and card.area == G.pack_cards then'''
 position = 'before'
 payload = '''elseif card and card.area and card.area.config.craft_table then

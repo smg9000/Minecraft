@@ -206,7 +206,7 @@ function craft_joker(card)
     for i,j in pairs(obj.req) do
 		G.GAME.craftr[i] = G.GAME.craftr[i] - j 
 	end
-    if key == "mc_bucket" then
+    if key == "mc_bucket"  then
         local bucket = SMODS.create_card{key = "j_mc_bucket" }
 		G.jokers:emplace(bucket)
 		bucket:add_to_deck()
@@ -214,7 +214,7 @@ function craft_joker(card)
 end
 
 G.FUNCS.can_craft = function(e)
-	local craft_req = true
+	local craft_req = #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit
 	for i,j in pairs(e.config.ref_table.config.center.req) do
 		if G.GAME.craftr[i] < j then craft_req = false end
 	end

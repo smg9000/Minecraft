@@ -278,6 +278,26 @@ end
         end
     end
 
+ 
+  local texti = "Crafts"
+  
+
+    local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+        }},
+        {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
+            {n=G.UIT.R, config={align = "cm"}, nodes={
+                create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
+        }}
+      }}
+    return t
+end
+function G.UIDEF.resource_list()
+G.FUNCS.craft_planks = function(e)
+end
+G.FUNCS.craft_sticks = function(e)
+end
   local text = "Resources"
   local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
   local textb = "Coal: " .. tostring(G.GAME.craftr["coal"])
@@ -287,14 +307,11 @@ end
   local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
   local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
   local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
-  local texti = "Crafts"
-  
-
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
         {n=G.UIT.R, config={align = "cm"},nodes={
 			{n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
+		{n=G.UIT.R, config={align = "lm"},nodes={
 			{n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
         }},
 		{n=G.UIT.R, config={align = "cm"},nodes={
@@ -318,17 +335,16 @@ end
 		{n=G.UIT.R, config={align = "cm"},nodes={
 			{n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
-        }},
-        {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
-            {n=G.UIT.R, config={align = "cm"}, nodes={
-                create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
-        }}
+		{n=G.UIT.B, config={h=0.5,w=0,align = "cm"},nodes={}},
+		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5 - 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('eff2ac'), button = 'craft_planks',}, nodes={
+			{n=G.UIT.T, config={text = localize('b_craft_planks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}},
+		}},
+		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5- 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('eff2ac'), button = 'craft_sticks'}, nodes={
+			{n=G.UIT.T, config={text = localize('b_craft_sticks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}}
+		}}
       }}
     return t
 end
-
 function add_craft_resource(section, amount, card, message_)
     local message = true
     if message_ ~= nil then
@@ -345,7 +361,10 @@ function SMODS.current_mod.process_loc_text()
  G.localization.misc.quips['aww_man'] ={ "Aww Man"}
  G.localization.misc.v_dictionary["gain_craftr"] = "+#1# #2#"
  G.localization.misc.dictionary['b_crafting'] = "Crafting"
+ G.localization.misc.dictionary['b_resources'] = "Resources"
  G.localization.misc.dictionary["b_craft"] = "CRAFT"
+ G.localization.misc.dictionary["b_craft_planks"] = "Craft Planks"
+ G.localization.misc.dictionary["b_craft_sticks"] = "Craft Sticks"
  G.localization.misc.dictionary["k_craft"] = "Craft"
  G.localization.misc.dictionary['dirt'] = "Dirt"
  G.localization.misc.dictionary['coal'] = "Coal"
@@ -384,6 +403,7 @@ local resourceType = SMODS.ConsumableType {
             text = { 'no' },
         },
     },
+	
     shop_rate = 1,
     default = 'c_mc_dirt',
     can_stack = true,
@@ -425,8 +445,8 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Dirt',
         text = {
-			"I've Got a jar o' Dirrrt."
-			"Gives {C:HEX("B38159")}+1 Dirt{} Resource"
+			"I've Got a jar o' Dirrrt.",
+			"Gives {C:HEX('B38159')}+1 Dirt{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -453,7 +473,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Coal',
         text = {
-			"Gives {C:HEX("252525")}+1 Coal{} Resource"
+			"Gives {C:HEX('252525')}+1 Coal{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -479,7 +499,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Copper',
         text = {
-			"Gives {C:HEX("E27753")}+1 Copper{} Resource"
+			"Gives {C:HEX('E27753')}+1 Copper{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -505,7 +525,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Iron',
         text = {
-			"Gives {C:HEX("D1D1D1")}+1 Iron{} Resource"
+			"Gives {C:HEX('D1D1D1')}+1 Iron{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -530,7 +550,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Gold',
         text = {
-			"Gives {C:HEX("F4ED5C")}+1 Gold{} Resource"
+			"Gives {C:HEX('F4ED5C'}+1 Gold{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -555,7 +575,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Diamond',
         text = {
-			"Gives {C:HEX("6CEEE6")}+1 Diamond{} Resource"
+			"Gives {C:HEX('6CEEE6')}+1 Diamond{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -580,7 +600,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Emerald',
         text = {
-			"Gives {C:HEX("16D65F")}+1 Emerald{} Resource"
+			"Gives {C:HEX('16D65F')}+1 Emerald{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -605,7 +625,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Netherite',
         text = {
-			"Gives {C:HEX("101010")}+1 Netherite{} Resource"
+			"Gives {C:HEX('101010')}+1 Netherite{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -798,7 +818,7 @@ SMODS.Booster {
             "use or save"
         }
     },
-    weight = 3,
+    weight = 2,
     cost = 4,
     name = "Resource Pack",
     pos = {x = 0, y = 0},
@@ -826,7 +846,7 @@ SMODS.Booster {
             "use or save"
         }
     },
-    weight = 3,
+    weight = 2,
     cost = 4,
     name = "Resource Pack",
     pos = {x = 1, y = 0},
@@ -854,7 +874,7 @@ SMODS.Booster {
             "use or save"
         }
     },
-    weight = 2,
+    weight = 1.5,
     cost = 4,
     name = "Jumbo Resource Pack",
     pos = {x = 2, y = 0},
@@ -882,7 +902,7 @@ SMODS.Booster {
             "use or save"
         }
     },
-    weight = 1.5,
+    weight = 1,
     cost = 4,
     name = "Mega Resource Pack",
     pos = {x = 3, y = 0},

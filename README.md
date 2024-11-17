@@ -8,3 +8,6 @@ Big thanks to Mathguy for letting me use the skill code to make the crafting sys
 
 
 and big thanks to Rees for helping a lot with the commiting process!! : )
+
+Join the discord: https://discord.gg/XaYkFjSN
+

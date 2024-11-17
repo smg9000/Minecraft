@@ -18,6 +18,12 @@ craftr = {
 	diamond = 0,
 	emerald = 0,
 	netherite = 0,
+	lapis = 0,
+	redstone = 0,
+	quartz = 0,
+	logs = 0,
+	planks = 0,
+	sticks = 0,
 	},
 '''
 match_indent = true

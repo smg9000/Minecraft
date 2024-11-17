@@ -529,7 +529,7 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Common",
 	use = function(self, card, area, copier)
-		return add_craft_resource("logs",1,card,true)
+		return add_craft_resource("dirt",1,card,true)
 	end,
 	can_use = function(self, card)
         return true

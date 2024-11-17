@@ -206,7 +206,7 @@ function craft_joker(card)
     for i,j in pairs(obj.req) do
 		G.GAME.craftr[i] = G.GAME.craftr[i] - j 
 	end
-    if key == "mc_bucket" then
+    if key == "mc_bucket"  then
         local bucket = SMODS.create_card{key = "j_mc_bucket" }
 		G.jokers:emplace(bucket)
 		bucket:add_to_deck()

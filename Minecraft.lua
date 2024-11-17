@@ -727,7 +727,7 @@ SMODS.Resource({
 SMODS.Resource({
     key = "mc_redstone",
     set = "Resource",
-    pos = {x=2,y=3},
+    pos = {x=2,y=2},
 	config = {},
     loc_txt = {
         name = 'Redstone',

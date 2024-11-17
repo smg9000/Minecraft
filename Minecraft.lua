@@ -230,7 +230,7 @@ end
 G.FUNCS.craft_joker = function(e)
     craft_joker(e.config.ref_table)
     if G.OVERLAY_MENU then
-        local tab_but = G.OVERLAY_MENU:get_UIE_by_ID("tab_but_" .. localize('b_craft'))
+        local tab_but = G.OVERLAY_MENU:get_UIE_by_ID("tab_but_" .. localize('b_crafting'))
         use_page = true
         G.FUNCS.change_tab(tab_but)
         use_page = nil
@@ -294,9 +294,51 @@ end
     return t
 end
 function G.UIDEF.resource_list()
+G.FUNCS.can_plank = function(e)
+	local craft_req = true
+	
+		if G.GAME.craftr["logs"] < 1 then craft_req = false end
+	
+	if not craft_req then
+        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+        e.config.button = 'do_nothing'
+    else
+        e.config.colour = G.C.ORANGE
+        e.config.button = 'craft_planks'
+    end
+end
+G.FUNCS.can_stick = function(e)
+		local craft_req = true
+	
+		if G.GAME.craftr["planks"] < 2 then craft_req = false end
+	
+	if not craft_req then
+        e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+        e.config.button = 'do_nothing'
+    else
+        e.config.colour = G.C.ORANGE
+        e.config.button = 'craft_sticks'
+    end
+end
 G.FUNCS.craft_planks = function(e)
+	G.GAME.craftr["logs"]= G.GAME.craftr["logs"] - 1
+	G.GAME.craftr["planks"] = G.GAME.craftr["planks"] + 4
+	if G.OVERLAY_MENU then
+        local tab_but = G.OVERLAY_MENU:get_UIE_by_ID("tab_but_" .. localize('b_resources'))
+        use_page = true
+        G.FUNCS.change_tab(tab_but)
+        use_page = nil
+    end
 end
 G.FUNCS.craft_sticks = function(e)
+	G.GAME.craftr["planks"]= G.GAME.craftr["planks"] - 2
+	G.GAME.craftr["sticks"] = G.GAME.craftr["sticks"] + 4
+    if G.OVERLAY_MENU then
+        local tab_but = G.OVERLAY_MENU:get_UIE_by_ID("tab_but_" .. localize('b_resources'))
+        use_page = true
+        G.FUNCS.change_tab(tab_but)
+        use_page = nil
+    end
 end
   local text = "Resources"
   local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
@@ -307,11 +349,19 @@ end
   local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
   local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
   local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
+  local textj = "Logs: " .. tostring(G.GAME.craftr["logs"])
+  local textk = "Planks: " .. tostring(G.GAME.craftr["planks"])
+  local textl = "Sticks: " .. tostring(G.GAME.craftr["sticks"])
+  local lapis = "Lapis: " .. tostring(G.GAME.craftr["lapis"])
+  local redstone = "Redstone: " .. tostring(G.GAME.craftr["redstone"])
+  local quartz = "Quartz: " .. tostring(G.GAME.craftr["quartz"])
+  
+  local texti = "  " 
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
         {n=G.UIT.R, config={align = "cm"},nodes={
 			{n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "lm"},nodes={
+		{n=G.UIT.R, config={align = "cm"},nodes={
 			{n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
         }},
 		{n=G.UIT.R, config={align = "cm"},nodes={
@@ -335,11 +385,35 @@ end
 		{n=G.UIT.R, config={align = "cm"},nodes={
 			{n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = lapis, scale = 0.35, colour = HEX("26619c"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = redstone, scale = 0.35, colour = HEX("d40000"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = quartz, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textj, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textk, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = textl, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        }},
 		{n=G.UIT.B, config={h=0.5,w=0,align = "cm"},nodes={}},
-		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5 - 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('eff2ac'), button = 'craft_planks',}, nodes={
+		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5 - 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_planks',func = "can_plank"}, nodes={
 			{n=G.UIT.T, config={text = localize('b_craft_planks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}},
 		}},
-		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5- 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('eff2ac'), button = 'craft_sticks'}, nodes={
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        }},
+		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5- 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_sticks',func = "can_stick"}, nodes={
 			{n=G.UIT.T, config={text = localize('b_craft_sticks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}}
 		}}
       }}
@@ -387,10 +461,13 @@ function SMODS.current_mod.process_loc_text()
 end
 
 
+
+
+
 --Consumables--
 
 local resourceType = SMODS.ConsumableType {
-    key = "mc_Resource",
+    key = "Resource",
     primary_colour = HEX("6A5700"),
     secondary_colour = HEX("02BF0E"),
     collection_rows = {4,4}, 
@@ -403,15 +480,14 @@ local resourceType = SMODS.ConsumableType {
             text = { 'no' },
         },
     },
-	
     shop_rate = 1,
     default = 'c_mc_dirt',
     can_stack = true,
     can_divide = true,
 }
 
-SMODS.MC_Resource = SMODS.Consumable:extend {
-    set = "mc_Resource",
+SMODS.Resource = SMODS.Consumable:extend {
+    set = "Resource",
     can_use = function(self, card) 
         return true
     end,
@@ -429,7 +505,6 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
         local size = 1.3 - (len > 5 and 0.02 * (len - 5) or 0)
         badges[#badges + 1] = create_badge(self.rarity, colours[self.rarity], nil, size)
     end,
-    cost = 1
 }
 SMODS.UndiscoveredSprite {
     key = 'Resource',
@@ -437,9 +512,9 @@ SMODS.UndiscoveredSprite {
     pos = {x = 0, y = 2},
 }
     
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_dirt",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=0,y=0},
 	config = {},
     loc_txt = {
@@ -459,15 +534,13 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
-        return true
-    end,x
+	
 	
 })
 
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_coal",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=1,y=0},
 	config = {},
     loc_txt = {
@@ -486,14 +559,12 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
-        return true
-    end,
+	
 })
 
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_copper",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=3,y=0},
 	config = {},
     loc_txt = {
@@ -503,7 +574,7 @@ SMODS.MC_Resource({
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
-    cost = 8,
+    cost = 6,
     atlas = "resource",
 	rarity = "Uncommon",
 	use = function(self, card, area, copier)
@@ -512,14 +583,12 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
-        return true
-    end,
+	
 })
 
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_iron",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=2,y=0},
 	config = {},
     loc_txt = {
@@ -529,7 +598,7 @@ SMODS.MC_Resource({
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
-    cost = 8,
+    cost = 6,
     atlas = "resource",
 	rarity = "Uncommon",
 	use = function(self, card, area, copier)
@@ -538,13 +607,11 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
-        return true
-    end,
+	
 })
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_gold",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=0,y=1},
 	config = {},
     loc_txt = {
@@ -563,13 +630,11 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
-        return true
-    end,
+	
 })
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_diamond",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=1,y=1},
 	config = {},
     loc_txt = {
@@ -588,13 +653,11 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
-        return true
-    end,
+	
 })
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_emerald",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=2,y=1},
 	config = {},
     loc_txt = {
@@ -613,13 +676,11 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
-        return true
-    end,
+	
 })
-SMODS.MC_Resource({
+SMODS.Resource({
     key = "mc_netherite",
-    set = "mc_Resource",
+    set = "Resource",
     pos = {x=3,y=1},
 	config = {},
     loc_txt = {
@@ -629,7 +690,7 @@ SMODS.MC_Resource({
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
-    cost = 8,
+    cost = 10,
     atlas = "resource",
 	rarity = "Legendary",
 	use = function(self, card, area, copier)
@@ -638,11 +699,77 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	in_pool = function(self)
+	
+})
+SMODS.Resource({
+    key = "mc_lapis",
+    set = "Resource",
+    pos = {x=1,y=2},
+	config = {},
+    loc_txt = {
+        name = 'Lapis',
+        text = {
+			"Gives {C:HEX('101010')}+1 Lapis{} Resource",
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
+        },
+    },
+    cost = 6,
+    atlas = "resource",
+	rarity = "Uncommon",
+	use = function(self, card, area, copier)
+		return add_craft_resource("lapis",1,card,true)
+	end,
+	can_use = function(self, card)
         return true
     end,
+	
 })
-
+SMODS.Resource({
+    key = "mc_redstone",
+    set = "Resource",
+    pos = {x=2,y=2},
+	config = {},
+    loc_txt = {
+        name = 'Redstone',
+        text = {
+			"Gives {C:HEX('101010')}+1 Redstone{} Resource",
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
+        },
+    },
+    cost = 6,
+    atlas = "resource",
+	rarity = "Uncommon",
+	use = function(self, card, area, copier)
+		return add_craft_resource("redstone",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
+	
+})
+SMODS.Resource({
+    key = "mc_quartz",
+    set = "Resource",
+    pos = {x=3,y=2},
+	config = {},
+    loc_txt = {
+        name = 'Quartz',
+        text = {
+			"Gives {C:HEX('101010')}+1 Quartz{} Resource",
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
+        },
+    },
+    cost = 8,
+    atlas = "resource",
+	rarity = "Rare",
+	use = function(self, card, area, copier)
+		return add_craft_resource("quartz",1,card,true)
+	end,
+	can_use = function(self, card)
+        return true
+    end,
+	
+})
 
 
 
@@ -824,7 +951,7 @@ SMODS.Booster {
     pos = {x = 0, y = 0},
     config = {extra = 3, choose = 1},
     create_card = function(self, card)
-        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
+        return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true
@@ -852,7 +979,7 @@ SMODS.Booster {
     pos = {x = 1, y = 0},
     config = {extra = 3, choose = 1},
 	create_card = function(self, card)
-        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
+        return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true
@@ -880,7 +1007,7 @@ SMODS.Booster {
     pos = {x = 2, y = 0},
     config = {extra = 5, choose = 1},
     create_card = function(self, card)
-        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
+        return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true
@@ -908,7 +1035,7 @@ SMODS.Booster {
     pos = {x = 3, y = 0},
     config = {extra = 5, choose = 2},
     create_card = function(self, card)
-        return {set = "mc_Resource", area = G.pack_cards, skip_materialize = true}
+        return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
     in_pool = function(self)
         return true

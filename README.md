@@ -5,3 +5,4 @@ If you want to help with texures please message me on discord or @ me in the dis
 
 
 Big thanks to Mathguy for letting me use the skill code to make the crafting system!
+end big thanks to rees for helpign a lot witht eh commiting process!! : )

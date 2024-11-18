@@ -448,6 +448,11 @@ function SMODS.current_mod.process_loc_text()
  G.localization.misc.dictionary['diamond'] = "Diamond"
  G.localization.misc.dictionary['emerald'] = "Emerald"
  G.localization.misc.dictionary['netherite'] = "Netherite"
+ G.localization.misc.dictionary['lapis'] = "Lapis"
+ G.localization.misc.dictionary['redstone'] = "Redstone"
+ G.localization.misc.dictionary['quartz'] = "Quartz"
+ G.localization.misc.dictionary['logs'] = "Logs"
+ 
 	G.localization.descriptions.Craft = {
         mc_bucket = {
             name = "Bucket",
@@ -1276,10 +1281,76 @@ SMODS.Joker({
             G.GAME.chips = to_big(G.GAME.chips) + card.ability.extra.chips_gain
             card.ability.extra.chips_gain = 0
             G.E_MANAGER:add_event(Event({
-                        func = function() card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize("k_upgrade_ex"), colour = G.C.DARK_EDITION}); return true
+                        func = function() card_eval_status_text(card, 'extra', nil, nil, nil, {message = "Pour", colour = G.C.DARK_EDITION}); return true
                         end}))
+				if to_big(G.GAME.chips) > to_big(G.GAME.chips) then
+					stop_use()
+					G.STATE = G.STATES.NEW_ROUND
+					end_round()
+				end
             return
         end
+	end
+})
+
+SMODS.Joker({
+	
+	name = "mc_oak_tree",
+	key = "oak_tree",
+	loc_txt = {
+        name = "Oak Tree",
+        text = {"at end of Round give #1# logs",
+				"Destroy after #2# Rounds",
+            },
+    },
+	pos = { x = 2, y = 0 },
+	config = { extra = { logs = 1, life = 5, } },
+	rarity = 2,
+	cost = 6,
+	atlas = "jokeratlas",
+	loc_vars = function(self, info_queue, center)
+		return { vars = { center.ability.extra.logs, center.ability.extra.life } }
+	end,
+	calculate = function(self, card, context)
+		if
+			context.end_of_round
+			and not context.blueprint
+			and not context.individual
+			and not context.repetition
+			and not context.retrigger_joker
+		then
+			add_craft_resource("logs",card.ability.extra.logs ,card,true)
+			card.ability.extra.life = card.ability.extra.life - 1
+			if card.ability.extra.life > 0 then
+				return {
+					message = { "-1 Round" },
+					colour = G.C.FILTER,
+				}
+			end
+			if card.ability.extra.life < 1 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						play_sound("tarot1")
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({
+							trigger = "after",
+							delay = 0.3,
+							blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+								return true
+							end,
+						}))
+						return true
+					end,
+				}))
+			end
+		end
 	end
 })
 
@@ -1308,4 +1379,117 @@ function Game:update(dt)
 			end
 		end
     end
+end
+local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons
+function G.UIDEF.use_and_sell_buttons(card)
+	if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable then --Add a use button
+		if card.ability.set == "Resource" then
+			return {
+				n = G.UIT.ROOT,
+				config = { padding = -0.1, colour = G.C.CLEAR },
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = {
+							ref_table = card,
+							r = 0.08,
+							padding = 0.1,
+							align = "bm",
+							minw = 0.5 * card.T.w - 0.15,
+							minh = 0.7 * card.T.h,
+							maxw = 0.7 * card.T.w - 0.15,
+							hover = true,
+							shadow = true,
+							colour = G.C.UI.BACKGROUND_INACTIVE,
+							one_press = true,
+							button = "use_card",
+							func = "can_reserve_card",
+						},
+						nodes = {
+							{
+								n = G.UIT.T,
+								config = {
+									text = "PULL",
+									colour = G.C.UI.TEXT_LIGHT,
+									scale = 0.55,
+									shadow = true,
+								},
+							},
+						},
+					},
+					{
+						n = G.UIT.R,
+						config = {
+							ref_table = card,
+							r = 0.08,
+							padding = 0.1,
+							align = "bm",
+							minw = 0.5 * card.T.w - 0.15,
+							maxw = 0.9 * card.T.w - 0.15,
+							minh = 0.1 * card.T.h,
+							hover = true,
+							shadow = true,
+							colour = G.C.UI.BACKGROUND_INACTIVE,
+							one_press = true,
+							button = "Do you know that this parameter does nothing?",
+							func = "can_use_consumeable",
+						},
+						nodes = {
+							{
+								n = G.UIT.T,
+								config = {
+									text = " USE ",
+									colour = G.C.UI.TEXT_LIGHT,
+									scale = 0.45,
+									shadow = true,
+								},
+							},
+						},
+					},
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					-- Betmma can't explain it, neither can I
+				},
+	}
+		end
+	end
+	return G_UIDEF_use_and_sell_buttons_ref(card)
+end
+--Code from Betmma's Vouchers
+G.FUNCS.can_reserve_card = function(e)
+	if #G.consumeables.cards < G.consumeables.config.card_limit then
+		e.config.colour = G.C.GREEN
+		e.config.button = "reserve_card"
+	else
+		e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+		e.config.button = nil
+	end
+end
+G.FUNCS.reserve_card = function(e)
+	local c1 = e.config.ref_table
+	G.E_MANAGER:add_event(Event({
+		trigger = "after",
+		delay = 0.1,
+		func = function()
+			c1.area:remove_card(c1)
+			c1:add_to_deck()
+			if c1.children.price then
+				c1.children.price:remove()
+			end
+			c1.children.price = nil
+			if c1.children.buy_button then
+				c1.children.buy_button:remove()
+			end
+			c1.children.buy_button = nil
+			remove_nils(c1.children)
+			G.consumeables:emplace(c1)
+			G.GAME.pack_choices = G.GAME.pack_choices - 1
+			if G.GAME.pack_choices <= 0 then
+				G.FUNCS.end_consumeable(nil, delay_fac)
+			end
+			return true
+		end,
+	}))
 end

@@ -513,7 +513,9 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
         badges[#badges + 1] = create_badge(self.rarity, colours[self.rarity], nil, size)
     end,
     loc_vars = function(self)
-        return {vars = {self.config.extra.amount} }end
+        return {vars = {self.config.extra.amount} }
+    end
+    --This makes it so much nicer to add shit to the resource cards Oh my god
 }
 SMODS.UndiscoveredSprite {
     key = 'Resource',
@@ -799,13 +801,6 @@ SMODS.MC_Resource({
     end,
 	
 })
-
-
-
-
-
-
-
 
 SMODS.Spectral {
     key = 'deep',

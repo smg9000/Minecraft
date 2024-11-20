@@ -1271,6 +1271,33 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                         )
                     }
                 )
+				SMODS.eval_this(
+                    card,
+                    {
+                        echips_mod = card.ability.extra.Echips,
+                        message = localize(
+                            {type = "variable", key = "a_echips", vars = {number_format(card.ability.extra.Echips)}}
+                        )
+                    }
+                )
+				SMODS.eval_this(
+                    card,
+                    {
+                        eemult_mod = card.ability.extra.Emult,
+                        message = localize(
+                            {type = "variable", key = "a_emult", vars = {number_format(card.ability.extra.Emult)}}
+                        )
+                    }
+                )
+				SMODS.eval_this(
+                    card,
+                    {
+                        eemult_mod = card.ability.extra.Tmult,
+                        message = localize(
+                            {type = "variable", key = "a_eemult", vars = {number_format(card.ability.extra.Tmult)}}
+                        )
+                    }
+                )
     
                 return {}
             end

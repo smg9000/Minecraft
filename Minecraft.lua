@@ -521,12 +521,12 @@ SMODS.Resource({
     key = "mc_dirt",
     set = "Resource",
     pos = {x=0,y=0},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Dirt',
         text = {
 			"I've Got a jar o' Dirrrt.",
-			"Gives {C:HEX('B38159')}+1 Dirt{} Resource",
+			"Gives {C:HEX('B38159')}#1# Dirt{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -534,7 +534,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Common",
 	use = function(self, card, area, copier)
-		return add_craft_resource("dirt",1,card,true)
+		return add_craft_resource("dirt",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("dirt",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -547,11 +550,11 @@ SMODS.Resource({
     key = "mc_coal",
     set = "Resource",
     pos = {x=1,y=0},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Coal',
         text = {
-			"Gives {C:HEX('252525')}+1 Coal{} Resource",
+			"Gives {C:HEX('252525')}#1# Coal{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -559,7 +562,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Common",
 	use = function(self, card, area, copier)
-		return add_craft_resource("coal",1,card,true)
+		return add_craft_resource("coal",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("coal",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -571,11 +577,11 @@ SMODS.Resource({
     key = "mc_copper",
     set = "Resource",
     pos = {x=3,y=0},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Copper',
         text = {
-			"Gives {C:HEX('E27753')}+1 Copper{} Resource",
+			"Gives {C:HEX('E27753')}#1# Copper{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -583,7 +589,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Uncommon",
 	use = function(self, card, area, copier)
-		return add_craft_resource("copper",1,card,true)
+		return add_craft_resource("copper",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("copper",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -595,11 +604,11 @@ SMODS.Resource({
     key = "mc_iron",
     set = "Resource",
     pos = {x=2,y=0},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Iron',
         text = {
-			"Gives {C:HEX('D1D1D1')}+1 Iron{} Resource",
+			"Gives {C:HEX('D1D1D1')}#1# Iron{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -607,7 +616,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Uncommon",
 	use = function(self, card, area, copier)
-		return add_craft_resource("iron",1,card,true)
+		return add_craft_resource("iron",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("iron",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -618,11 +630,11 @@ SMODS.Resource({
     key = "mc_gold",
     set = "Resource",
     pos = {x=0,y=1},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Gold',
         text = {
-			"Gives {C:HEX('F4ED5C'}+1 Gold{} Resource",
+			"Gives {C:HEX('F4ED5C'}#1# Gold{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -630,7 +642,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Rare",
 	use = function(self, card, area, copier)
-		return add_craft_resource("gold",1,card,true)
+		return add_craft_resource("gold",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("gold",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -641,11 +656,11 @@ SMODS.Resource({
     key = "mc_diamond",
     set = "Resource",
     pos = {x=1,y=1},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Diamond',
         text = {
-			"Gives {C:HEX('6CEEE6')}+1 Diamond{} Resource",
+			"Gives {C:HEX('6CEEE6')}#1# Diamond{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -653,7 +668,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Rare",
 	use = function(self, card, area, copier)
-		return add_craft_resource("diamond",1,card,true)
+		return add_craft_resource("diamond",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("diamond",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -664,11 +682,11 @@ SMODS.Resource({
     key = "mc_emerald",
     set = "Resource",
     pos = {x=2,y=1},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Emerald',
         text = {
-			"Gives {C:HEX('16D65F')}+1 Emerald{} Resource",
+			"Gives {C:HEX('16D65F')}#1# Emerald{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -676,7 +694,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Rare",
 	use = function(self, card, area, copier)
-		return add_craft_resource("emerald",1,card,true)
+		return add_craft_resource("emerald",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("emerald",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -687,11 +708,11 @@ SMODS.Resource({
     key = "mc_netherite",
     set = "Resource",
     pos = {x=3,y=1},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Netherite',
         text = {
-			"Gives {C:HEX('101010')}+1 Netherite{} Resource",
+			"Gives {C:HEX('101010')}#1# Netherite{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -699,7 +720,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Legendary",
 	use = function(self, card, area, copier)
-		return add_craft_resource("netherite",1,card,true)
+		return add_craft_resource("netherite",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("netherite",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -710,11 +734,11 @@ SMODS.Resource({
     key = "mc_lapis",
     set = "Resource",
     pos = {x=1,y=2},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Lapis',
         text = {
-			"Gives {C:HEX('101010')}+1 Lapis{} Resource",
+			"Gives {C:HEX('101010')}#1# Lapis{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -722,7 +746,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Uncommon",
 	use = function(self, card, area, copier)
-		return add_craft_resource("lapis",1,card,true)
+		return add_craft_resource("lapis",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("lapis",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -733,11 +760,11 @@ SMODS.Resource({
     key = "mc_redstone",
     set = "Resource",
     pos = {x=2,y=2},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Redstone',
         text = {
-			"Gives {C:HEX('101010')}+1 Redstone{} Resource",
+			"Gives {C:HEX('101010')}#1# Redstone{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -745,7 +772,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Uncommon",
 	use = function(self, card, area, copier)
-		return add_craft_resource("redstone",1,card,true)
+		return add_craft_resource("redstone",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("redstone",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -756,11 +786,11 @@ SMODS.Resource({
     key = "mc_quartz",
     set = "Resource",
     pos = {x=3,y=2},
-	config = {},
+	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Quartz',
         text = {
-			"Gives {C:HEX('101010')}+1 Quartz{} Resource",
+			"Gives {C:HEX('101010')}#1# Quartz{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -768,7 +798,10 @@ SMODS.Resource({
     atlas = "resource",
 	rarity = "Rare",
 	use = function(self, card, area, copier)
-		return add_craft_resource("quartz",1,card,true)
+		return add_craft_resource("quartz",card.ability.extra.amount,card,true)
+	end,
+	bulk_use = function(self, card, area, copier, number)
+		return add_craft_resource("quartz",card.ability.extra.amount*number,card,true)
 	end,
 	can_use = function(self, card)
         return true
@@ -1090,6 +1123,10 @@ SMODS.Joker({
 		G.consumeables.config.card_limit = G.consumeables.config.card_limit - card.ability.extra.bundle
 	end,
 })
+
+
+
+
 
 if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
     local cry_config = SMODS.load_mod_config({id = "Cryptid", path = SMODS.Mods.Cryptid.path}) -- loads Cryptid configs
@@ -1492,4 +1529,11 @@ G.FUNCS.reserve_card = function(e)
 			return true
 		end,
 	}))
+end
+function Game:update(dt)
+	upd(self, dt)
+	if Incantation and not McIncanCompat then
+		AllowBulkUse("Resource")
+		McIncanCompat = true
+	end
 end

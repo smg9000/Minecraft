@@ -497,6 +497,7 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
     can_use = function(self, card) 
         return true
     end,
+    config = {extra = {amount = 1 }},
     set_badges = function(self, card, badges)
         local colours = {
             Common = HEX('FE5F55'),
@@ -511,6 +512,8 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
         local size = 1.3 - (len > 5 and 0.02 * (len - 5) or 0)
         badges[#badges + 1] = create_badge(self.rarity, colours[self.rarity], nil, size)
     end,
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }end
 }
 SMODS.UndiscoveredSprite {
     key = 'Resource',
@@ -522,13 +525,12 @@ SMODS.MC_Resource({
     key = "mc_dirt",
     steveEat = true,
     pos = {x=0,y=0},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Dirt',
         text = {
-			"I've Got a jar o' Dirrrt.",
-			"Gives {C:HEX('B38159')}#1# Dirt{} Resource",
-			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
+            "Gives {C:HEX('B38159')}#1# Dirt{} Resource",
+			"{C:inactive}Go to Run Info and Crafting to see the crafts{}",
+			"I've Got a jar o' Dirrrt."
         },
     },
     cost = 4,
@@ -551,7 +553,6 @@ SMODS.MC_Resource({
     key = "mc_coal",
     steveEat = true,
     pos = {x=1,y=0},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Coal',
         text = {
@@ -578,7 +579,6 @@ SMODS.MC_Resource({
     key = "mc_copper",
     steveEat = true,
     pos = {x=3,y=0},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Copper',
         text = {
@@ -605,7 +605,6 @@ SMODS.MC_Resource({
     key = "mc_iron",
     steveEat = true,
     pos = {x=2,y=0},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Iron',
         text = {
@@ -631,7 +630,6 @@ SMODS.MC_Resource({
     key = "mc_gold",
     steveEat = true,
     pos = {x=0,y=1},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Gold',
         text = {
@@ -657,7 +655,6 @@ SMODS.MC_Resource({
     key = "mc_diamond",
     steveEat = true,
     pos = {x=1,y=1},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Diamond',
         text = {
@@ -683,7 +680,6 @@ SMODS.MC_Resource({
     key = "mc_emerald",
     steveEat = true,
     pos = {x=2,y=1},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Emerald',
         text = {
@@ -709,7 +705,6 @@ SMODS.MC_Resource({
     key = "mc_netherite",
     steveEat = true,
     pos = {x=3,y=1},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Netherite',
         text = {
@@ -734,7 +729,6 @@ SMODS.MC_Resource({
 SMODS.MC_Resource({
     key = "mc_lapis",
     pos = {x=1,y=2},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Lapis',
         text = {
@@ -759,7 +753,6 @@ SMODS.MC_Resource({
 SMODS.MC_Resource({
     key = "mc_redstone",
     pos = {x=2,y=2},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Redstone',
         text = {
@@ -785,7 +778,6 @@ SMODS.MC_Resource({
     key = "mc_quartz",
     set = "Resource",
     pos = {x=3,y=2},
-	config = {extra = {amount = 1 }},
     loc_txt = {
         name = 'Quartz',
         text = {

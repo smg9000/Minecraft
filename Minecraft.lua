@@ -1282,12 +1282,13 @@ end
 SMODS.Joker({
     key = "bucket",
     loc_txt = {
-        name = "bucket",
+        name = "Bucket",
         text = {"Carry over {C:attention}5%{} of total ",
                 "overscored {C:blue}chips{} to next {C:attention}blind{}",
                 "{C:inactive}Ex: blind is 300 chips and you score 400{}",
                 "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
                 "{C:inactive}so you start the next blind with 5 chips{}",
+                "{C:inactive}Can I haz bukket{}"
 				}
 			},
     config = {extra ={chips_gain = 0  }},

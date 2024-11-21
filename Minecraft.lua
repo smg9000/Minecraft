@@ -1222,42 +1222,22 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
             end
         else
             if context.cardarea == G.jokers and context.joker_main and not context.before and not context.after then
-                SMODS.eval_this(
-                    card,
-                    {
-                        chip_mod = card.ability.extra.chips,
-                        message = localize(
-                            {type = "variable", key = "a_chips", vars = {number_format(card.ability.extra.chips)}}
-                        )
-                    }
-                )
-                SMODS.eval_this(
-                    card,
-                    {
-                        mult_mod = card.ability.extra.mult,
-                        message = localize(
-                            {type = "variable", key = "a_mult", vars = {number_format(card.ability.extra.mult)}}
-                        )
-                    }
-                )
-                SMODS.eval_this(
-                    card,
-                    {
-                        Xchip_mod = card.ability.extra.Xchips,
-                        message = localize(
-                            {type = "variable", key = "a_xchips", vars = {number_format(card.ability.extra.Xchips)}}
-                        )
-                    }
-                )
-                SMODS.eval_this(
-                    card,
-                    {
-                        Xmult_mod = card.ability.extra.Xmult,
-                        message = localize(
-                            {type = "variable", key = "a_xmult", vars = {number_format(card.ability.extra.Xmult)}}
-                        )
-                    }
-                )
+                SMODS.eval_this(card, {
+                    chip_mod = card.ability.extra.chips,
+                    message = localize({type = "variable", key = "a_chips", vars = {number_format(card.ability.extra.chips)}})
+                })
+                SMODS.eval_this(card, {
+                    mult_mod = card.ability.extra.mult,
+                    message = localize({type = "variable", key = "a_mult", vars = {number_format(card.ability.extra.mult)}})
+                })
+                SMODS.eval_this(card, {
+                    Xchip_mod = card.ability.extra.Xchips,
+                    message = localize({type = "variable", key = "a_xchips", vars = {number_format(card.ability.extra.Xchips)}})
+                })
+                SMODS.eval_this(card, {
+                    Xmult_mod = card.ability.extra.Xmult,
+                    message = localize({type = "variable", key = "a_xmult", vars = {number_format(card.ability.extra.Xmult)}})
+                })
     
                 return {}
             end
@@ -1271,7 +1251,17 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
         end
     end,
     loc_vars = function(self, info_queue, center)
-        return {vars = {center.ability.extra.chips, center.ability.extra.chips_mod, center.ability.extra.mult, center.ability.extra.mult_mod, center.ability.extra.Xchips, center.ability.extra.Xchips_mod, center.ability.extra.Xmult, center.ability.extra.Xmult_mod, center.ability.extra.money, center.ability.extra.money_mod, center.ability.extra.Echips, center.ability.extra.Echips_mod, center.ability.extra.Emult, center.ability.extra.Emult_mod, center.ability.extra.Tmult, center.ability.extra.Tmult_mod, }}
+        return {
+            vars = {
+             center.ability.extra.chips, center.ability.extra.chips_mod,
+              center.ability.extra.mult, center.ability.extra.mult_mod,
+               center.ability.extra.Xchips, center.ability.extra.Xchips_mod,
+                center.ability.extra.Xmult, center.ability.extra.Xmult_mod,
+                 center.ability.extra.money, center.ability.extra.money_mod,
+                  center.ability.extra.Echips, center.ability.extra.Echips_mod,
+                   center.ability.extra.Emult, center.ability.extra.Emult_mod, 
+                    center.ability.extra.Tmult, center.ability.extra.Tmult_mod,
+            }}
     end,
 })
     

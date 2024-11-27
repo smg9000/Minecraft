@@ -152,10 +152,6 @@ function SMODS.SAVE_UNLOCKS()
     end
 end
 
-
-
-
-
 local function get_crafts()
     local shown_crafts = {}
     for i, j in pairs(G.P_CENTER_POOLS['Craft']) do
@@ -198,6 +194,35 @@ function G.UIDEF.learned_craft()
         }}
         )
     end
+
+    local craft_options = {}
+    for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/15))) do
+        table.insert(craft_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(math.max(1, math.ceil(#shown_crafts/15)))))
+    end
+
+    for j = 1, #G.areas do
+        for i = 1, 5 do
+            if (i+(j-1)*(5)+adding) <= #shown_crafts then
+                local center = shown_crafts[i+(j-1)*(5)+adding][1]
+                local card = Card(G.areas[j].T.x + G.areas[j].T.w, G.areas[j].T.y, G.CARD_W, G.CARD_H, nil, center)
+                card:start_materialize(nil, i>1 or j>1)
+                G.areas[j]:emplace(card)
+            end
+        end
+    end
+
+    local texti = "Crafts"
+  
+    local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+        }},
+        {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
+            {n=G.UIT.R, config={align = "cm"}, nodes={
+                create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
+        }}
+      }}
+    return t
 end
 
 function craft_joker(card)
@@ -260,35 +285,6 @@ G.FUNCS.your_game_craft_page = function(args)
             G.areas[j]:emplace(card)
         end
     end
-
-    local craft_options = {}
-    for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/15))) do
-        table.insert(craft_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(math.max(1, math.ceil(#shown_crafts/15)))))
-    end
-
-    for j = 1, #G.areas do
-        for i = 1, 5 do
-            if (i+(j-1)*(5)+adding) <= #shown_crafts then
-                local center = shown_crafts[i+(j-1)*(5)+adding][1]
-                local card = Card(G.areas[j].T.x + G.areas[j].T.w, G.areas[j].T.y, G.CARD_W, G.CARD_H, nil, center)
-                card:start_materialize(nil, i>1 or j>1)
-                G.areas[j]:emplace(card)
-            end
-        end
-    end
-
-    local texti = "Crafts"
-  
-    local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
-        }},
-        {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
-            {n=G.UIT.R, config={align = "cm"}, nodes={
-                create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
-        }}
-      }}
-    return t
 end
 
 G.FUNCS.can_plank = function(e)
@@ -903,6 +899,7 @@ SMODS.Blind{
 }
 
 --Atlas--
+
 SMODS.Atlas({
     key = "resource",
     path = "resource.png",
@@ -1082,7 +1079,7 @@ SMODS.Booster {
 
 
 --Jokers--
-    -- Joker Bundle
+-- Joker Bundle
 
 SMODS.Joker({ 
 	name = "mc_bundle",

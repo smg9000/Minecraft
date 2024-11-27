@@ -168,6 +168,7 @@ local function get_crafts()
     end
     return shown_crafts
 end
+
 function G.UIDEF.learned_craft()
     local shown_crafts = get_crafts()
     if not use_page then
@@ -197,8 +198,7 @@ function G.UIDEF.learned_craft()
         }}
         )
     end
-
-
+end
 
 function craft_joker(card)
     local obj = card.config.center
@@ -260,7 +260,6 @@ G.FUNCS.your_game_craft_page = function(args)
             G.areas[j]:emplace(card)
         end
     end
-end
 
     local craft_options = {}
     for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/15))) do
@@ -278,10 +277,8 @@ end
         end
     end
 
- 
-  local texti = "Crafts"
+    local texti = "Crafts"
   
-
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
 		{n=G.UIT.R, config={align = "cm"},nodes={
 			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
@@ -293,7 +290,7 @@ end
       }}
     return t
 end
-function G.UIDEF.resource_list()
+
 G.FUNCS.can_plank = function(e)
 	local craft_req = true
 	
@@ -307,6 +304,7 @@ G.FUNCS.can_plank = function(e)
         e.config.button = 'craft_planks'
     end
 end
+
 G.FUNCS.can_stick = function(e)
 		local craft_req = true
 	
@@ -320,6 +318,7 @@ G.FUNCS.can_stick = function(e)
         e.config.button = 'craft_sticks'
     end
 end
+
 G.FUNCS.craft_planks = function(e)
 	G.GAME.craftr["logs"]= G.GAME.craftr["logs"] - 1
 	G.GAME.craftr["planks"] = G.GAME.craftr["planks"] + 4
@@ -330,6 +329,7 @@ G.FUNCS.craft_planks = function(e)
         use_page = nil
     end
 end
+
 G.FUNCS.craft_sticks = function(e)
 	G.GAME.craftr["planks"]= G.GAME.craftr["planks"] - 2
 	G.GAME.craftr["sticks"] = G.GAME.craftr["sticks"] + 4
@@ -340,85 +340,88 @@ G.FUNCS.craft_sticks = function(e)
         use_page = nil
     end
 end
-  local text = "Resources"
-  local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
-  local textb = "Coal: " .. tostring(G.GAME.craftr["coal"])
-  local textc = "Copper: " .. tostring(G.GAME.craftr["copper"])
-  local textd = "Iron: " .. tostring(G.GAME.craftr["iron"])
-  local texte = "Gold: " .. tostring(G.GAME.craftr["gold"])
-  local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
-  local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
-  local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
-  local textj = "Logs: " .. tostring(G.GAME.craftr["logs"])
-  local textk = "Planks: " .. tostring(G.GAME.craftr["planks"])
-  local textl = "Sticks: " .. tostring(G.GAME.craftr["sticks"])
-  local lapis = "Lapis: " .. tostring(G.GAME.craftr["lapis"])
-  local redstone = "Redstone: " .. tostring(G.GAME.craftr["redstone"])
-  local quartz = "Quartz: " .. tostring(G.GAME.craftr["quartz"])
-  
-  local texti = "  " 
+
+function G.UIDEF.resource_list()
+    local text = "Resources"
+    local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
+    local textb = "Coal: " .. tostring(G.GAME.craftr["coal"])
+    local textc = "Copper: " .. tostring(G.GAME.craftr["copper"])
+    local textd = "Iron: " .. tostring(G.GAME.craftr["iron"])
+    local texte = "Gold: " .. tostring(G.GAME.craftr["gold"])
+    local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
+    local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
+    local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
+    local textj = "Logs: " .. tostring(G.GAME.craftr["logs"])
+    local textk = "Planks: " .. tostring(G.GAME.craftr["planks"])
+    local textl = "Sticks: " .. tostring(G.GAME.craftr["sticks"])
+    local lapis = "Lapis: " .. tostring(G.GAME.craftr["lapis"])
+    local redstone = "Redstone: " .. tostring(G.GAME.craftr["redstone"])
+    local quartz = "Quartz: " .. tostring(G.GAME.craftr["quartz"])
+    
+    local texti = "  " 
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
         {n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+            {n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textb, scale = 0.35, colour = HEX("252525"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textb, scale = 0.35, colour = HEX("252525"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textc, scale = 0.35, colour = HEX("E27753"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textc, scale = 0.35, colour = HEX("E27753"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textd, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textd, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texte, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = texte, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textf, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textf, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textg, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textg, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = lapis, scale = 0.35, colour = HEX("26619c"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = lapis, scale = 0.35, colour = HEX("26619c"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = redstone, scale = 0.35, colour = HEX("d40000"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = redstone, scale = 0.35, colour = HEX("d40000"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = quartz, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = quartz, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textj, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textj, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textk, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textk, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textl, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textl, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
-		{n=G.UIT.B, config={h=0.5,w=0,align = "cm"},nodes={}},
-		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5 - 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_planks',func = "can_plank"}, nodes={
-			{n=G.UIT.T, config={text = localize('b_craft_planks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}},
-		}},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        {n=G.UIT.B, config={h=0.5,w=0,align = "cm"},nodes={}},
+        {n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5 - 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_planks',func = "can_plank"}, nodes={
+            {n=G.UIT.T, config={text = localize('b_craft_planks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}},
         }},
-		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5- 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_sticks',func = "can_stick"}, nodes={
-			{n=G.UIT.T, config={text = localize('b_craft_sticks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}}
-		}}
-      }}
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        }},
+        {n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5- 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_sticks',func = "can_stick"}, nodes={
+            {n=G.UIT.T, config={text = localize('b_craft_sticks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}}
+        }}
+    }}
     return t
 end
+
 function add_craft_resource(section, amount, card, message_)
     local message = true
     if message_ ~= nil then
@@ -432,26 +435,26 @@ function add_craft_resource(section, amount, card, message_)
 end
 
 function SMODS.current_mod.process_loc_text()
- G.localization.misc.quips['aww_man'] ={ "Aww Man"}
- G.localization.misc.v_dictionary["gain_craftr"] = "+#1# #2#"
- G.localization.misc.dictionary['b_crafting'] = "Crafting"
- G.localization.misc.dictionary['b_resources'] = "Resources"
- G.localization.misc.dictionary["b_craft"] = "CRAFT"
- G.localization.misc.dictionary["b_craft_planks"] = "Craft Planks"
- G.localization.misc.dictionary["b_craft_sticks"] = "Craft Sticks"
- G.localization.misc.dictionary["k_craft"] = "Craft"
- G.localization.misc.dictionary['dirt'] = "Dirt"
- G.localization.misc.dictionary['coal'] = "Coal"
- G.localization.misc.dictionary['copper'] = "Copper"
- G.localization.misc.dictionary['iron'] = "Iron"
- G.localization.misc.dictionary['gold'] = "Gold"
- G.localization.misc.dictionary['diamond'] = "Diamond"
- G.localization.misc.dictionary['emerald'] = "Emerald"
- G.localization.misc.dictionary['netherite'] = "Netherite"
- G.localization.misc.dictionary['lapis'] = "Lapis"
- G.localization.misc.dictionary['redstone'] = "Redstone"
- G.localization.misc.dictionary['quartz'] = "Quartz"
- G.localization.misc.dictionary['logs'] = "Logs"
+    G.localization.misc.quips['aww_man'] ={ "Aww Man"}
+    G.localization.misc.v_dictionary["gain_craftr"] = "+#1# #2#"
+    G.localization.misc.dictionary['b_crafting'] = "Crafting"
+    G.localization.misc.dictionary['b_resources'] = "Resources"
+    G.localization.misc.dictionary["b_craft"] = "CRAFT"
+    G.localization.misc.dictionary["b_craft_planks"] = "Craft Planks"
+    G.localization.misc.dictionary["b_craft_sticks"] = "Craft Sticks"
+    G.localization.misc.dictionary["k_craft"] = "Craft"
+    G.localization.misc.dictionary['dirt'] = "Dirt"
+    G.localization.misc.dictionary['coal'] = "Coal"
+    G.localization.misc.dictionary['copper'] = "Copper"
+    G.localization.misc.dictionary['iron'] = "Iron"
+    G.localization.misc.dictionary['gold'] = "Gold"
+    G.localization.misc.dictionary['diamond'] = "Diamond"
+    G.localization.misc.dictionary['emerald'] = "Emerald"
+    G.localization.misc.dictionary['netherite'] = "Netherite"
+    G.localization.misc.dictionary['lapis'] = "Lapis"
+    G.localization.misc.dictionary['redstone'] = "Redstone"
+    G.localization.misc.dictionary['quartz'] = "Quartz"
+    G.localization.misc.dictionary['logs'] = "Logs"
  
 	G.localization.descriptions.Craft = {
         mc_bucket = {
@@ -462,12 +465,10 @@ function SMODS.current_mod.process_loc_text()
                 "{C:inactive}Ex: blind is 300 chips and you score 400{}",
                 "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
                 "{C:inactive}so you start the next blind with 5 chips{}",
-            }}}
+            }
+        }
+    }
 end
-
-
-
-
 
 --Consumables--
 
@@ -517,6 +518,7 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
     end
     --This makes it so much nicer to add shit to the resource cards Oh my god
 }
+
 SMODS.UndiscoveredSprite {
     key = 'Resource',
     atlas = 'resource',
@@ -623,6 +625,7 @@ SMODS.MC_Resource({
         return true
     end,
 })
+
 SMODS.MC_Resource({
     key = "mc_gold",
     steveEat = true,
@@ -647,6 +650,7 @@ SMODS.MC_Resource({
         return true
     end,
 })
+
 SMODS.MC_Resource({
     key = "mc_diamond",
     steveEat = true,
@@ -671,6 +675,7 @@ SMODS.MC_Resource({
         return true
     end,
 })
+
 SMODS.MC_Resource({
     key = "mc_emerald",
     steveEat = true,
@@ -813,8 +818,8 @@ SMODS.Spectral {
     end,
 }
 
-
 --Consumable--
+
 local deepslate_card = SMODS.Enhancement {
     key = 'deepslate',
     loc_txt = {
@@ -837,9 +842,10 @@ local deepslate_card = SMODS.Enhancement {
 }
 
 deepslate_card.loc_subtract_extra_chips = deepslate_card.config.bonus
- -- @smg9000 please add comment
+-- @smg9000 please add comment
 
 --Blinds--
+
 SMODS.Blind{
 	key = "creeper",
 	loc_txt = {
@@ -955,6 +961,7 @@ SMODS.Atlas({
     px = 71,
     py = 95,
 })
+
 --Packs-
 
 SMODS.Booster {
@@ -1076,6 +1083,7 @@ SMODS.Booster {
 
 --Jokers--
     -- Joker Bundle
+
 SMODS.Joker({ 
 	name = "mc_bundle",
 	key = "bundle",
@@ -1101,6 +1109,7 @@ SMODS.Joker({
 })
 
 -- Joker Steve
+
 if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
     local cry_config = SMODS.load_mod_config({id = "Cryptid", path = SMODS.Mods.Cryptid.path}) -- loads Cryptid configs
 
@@ -1255,6 +1264,7 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
 end
 
 -- Joker Bucket
+
 SMODS.Joker({
     key = "bucket",
     loc_txt = {
@@ -1300,6 +1310,7 @@ SMODS.Joker({
 })
 
 -- Joker Oak Tree
+
 SMODS.Joker({
 	
 	name = "mc_oak_tree",
@@ -1361,6 +1372,7 @@ SMODS.Joker({
 })
 
 -- Creeper Timer Func
+
 local upd = Game.update
 function Game:update(dt)
     upd(self,dt)
@@ -1391,6 +1403,7 @@ function Game:update(dt)
 		end
     end
 end
+
 local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons
 function G.UIDEF.use_and_sell_buttons(card)
 	if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable and card.ability.set == "Resource" 
@@ -1466,7 +1479,9 @@ function G.UIDEF.use_and_sell_buttons(card)
 	end
 	return G_UIDEF_use_and_sell_buttons_ref(card)
 end
+
 --Code from Betmma's Vouchers
+
 G.FUNCS.can_reserve_card = function(e)
 	if #G.consumeables.cards < G.consumeables.config.card_limit then
 		e.config.colour = G.C.GREEN
@@ -1476,6 +1491,7 @@ G.FUNCS.can_reserve_card = function(e)
 		e.config.button = nil
 	end
 end
+
 G.FUNCS.reserve_card = function(e)
 	local c1 = e.config.ref_table
 	G.E_MANAGER:add_event(Event({
@@ -1502,6 +1518,7 @@ G.FUNCS.reserve_card = function(e)
 		end,
 	}))
 end
+
 function Game:update(dt)
 	upd(self, dt)
 	if Incantation and not McIncanCompat then

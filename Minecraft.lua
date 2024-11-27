@@ -11,6 +11,10 @@
 ------------MOD CODE -------------------------
 
 
+
+
+
+
 function SMODS.SAVE_UNLOCKS()
     boot_print_stage("Saving Unlocks")
 	G:save_progress()
@@ -210,6 +214,11 @@ function craft_joker(card)
         local bucket = SMODS.create_card{key = "j_mc_bucket" }
 		G.jokers:emplace(bucket)
 		bucket:add_to_deck()
+    end
+	if key == "mc_dia_pickaxe"  then
+        local dia_pickaxe = SMODS.create_card{key = "j_mc_dia_pickaxe" }
+		G.jokers:emplace(dia_pickaxe)
+		dia_pickaxe:add_to_deck()
     end
 end
 
@@ -471,6 +480,10 @@ end
 
 --Consumables--
 
+
+
+
+
 local resourceType = SMODS.ConsumableType {
     key = "Resource",
     primary_colour = HEX("6A5700"),
@@ -485,6 +498,7 @@ local resourceType = SMODS.ConsumableType {
             text = { 'no' },
         },
     },
+	
     shop_rate = 1,
     default = 'c_mc_dirt',
     can_stack = true,
@@ -973,7 +987,7 @@ SMODS.Booster {
     cost = 4,
     name = "Resource Pack",
     pos = {x = 0, y = 0},
-    config = {extra = 3, choose = 1},
+    config = {extra = 2, choose = 2},
     create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -1001,7 +1015,7 @@ SMODS.Booster {
     cost = 4,
     name = "Resource Pack",
     pos = {x = 1, y = 0},
-    config = {extra = 3, choose = 1},
+    config = {extra = 2, choose = 2},
 	create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -1029,7 +1043,7 @@ SMODS.Booster {
     cost = 4,
     name = "Jumbo Resource Pack",
     pos = {x = 2, y = 0},
-    config = {extra = 5, choose = 1},
+    config = {extra = 3, choose = 3},
     create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -1057,7 +1071,7 @@ SMODS.Booster {
     cost = 4,
     name = "Mega Resource Pack",
     pos = {x = 3, y = 0},
-    config = {extra = 5, choose = 2},
+    config = {extra = 4, choose = 4},
     create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -1094,7 +1108,7 @@ SMODS.Joker({
         text = {"gains 2 consumable slots",
             },
     },
-	pos = { x = 1, y = 0 },
+	pos = { x = 0, y = 1 },
 	config = { extra = { bundle = 2 } },
 	rarity = 2,
 	cost = 6,
@@ -1133,7 +1147,7 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                 "gain {X:dark_edition,C:white} ^^#16# {} Mult per netherite card",
                 "{C:inactive}(Currently {C:chips} +#1# {C:inactive} Chips)",
                 "{C:inactive}(Currently {C:mult} +#3# {C:inactive} Mult)",
-                "{C:inactive}(Currently {C:money} $#9#)",
+                "{C:inactive}(Currently {C:money} $#9#{})",
                 "{C:inactive}(Currently {X:chips,C:white} X#5# {C:inactive} Chips)",
                 "{C:inactive}(Currently {X:mult,C:white} X#7# {C:inactive} Mult)",
                 "{C:inactive}(Currently {X:dark_edition,C:white} ^#11# {C:inactive} Chips)",
@@ -1144,7 +1158,8 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
     config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, Xchips = 1, Xchips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  Tmult = 1, Tmult_mod = 0.5,  }},
     rarity = "cry_exotic",
     pos = { x = 0, y = 0 },
-    atlas = 'placeholder',
+    atlas = 'jokeratlas',
+	soul_pos = { x = 1, y = 0, extra = { x = 2, y = 0 } },
     cost = 3,
     blueprint_compat = true,
     calculate = function(self, card, context)
@@ -1261,27 +1276,27 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
 				SMODS.eval_this(
                     card,
                     {
-                        echips_mod = card.ability.extra.Echips,
+                        e_chips = card.ability.extra.Echips,
                         message = localize(
-                            {type = "variable", key = "a_echips", vars = {number_format(card.ability.extra.Echips)}}
+                            {type = "variable", key = "a_e_chips", vars = {number_format(card.ability.extra.Echips)}}
                         )
                     }
                 )
 				SMODS.eval_this(
                     card,
                     {
-                        eemult_mod = card.ability.extra.Emult,
+                        e_mult = card.ability.extra.Emult,
                         message = localize(
-                            {type = "variable", key = "a_emult", vars = {number_format(card.ability.extra.Emult)}}
+                            {type = "variable", key = "a_e_mult", vars = {number_format(card.ability.extra.Emult)}}
                         )
                     }
                 )
 				SMODS.eval_this(
                     card,
                     {
-                        eemult_mod = card.ability.extra.Tmult,
+                        ee_mult = card.ability.extra.Tmult,
                         message = localize(
-                            {type = "variable", key = "a_eemult", vars = {number_format(card.ability.extra.Tmult)}}
+                            {type = "variable", key = "a_ee_mult", vars = {number_format(card.ability.extra.Tmult)}}
                         )
                     }
                 )
@@ -1309,7 +1324,7 @@ end
 SMODS.Joker({
     key = "bucket",
     loc_txt = {
-        name = "bucket",
+        name = "Bucket",
         text = {"Carry over {C:attention}5%{} of total ",
                 "overscored {C:blue}chips{} to next {C:attention}blind{}",
                 "{C:inactive}Ex: blind is 300 chips and you score 400{}",
@@ -1350,16 +1365,34 @@ SMODS.Joker({
 })
 
 SMODS.Joker({
+    key = "dia_pickaxe",
+    loc_txt = {
+        name = "Diamond Pickaxe",
+        text = {"Soon",
+				}
+			},
+    config = {extra ={chips_gain = 0  }},
+    rarity = 3,
+    pos = { x = 0, y = 0 },
+    atlas = 'crafted_jokers',
+    cost = 5,
+    blueprint_compat = true,
+	in_pool = function(self)
+		return false
+	end,
+})
+
+SMODS.Joker({
 	
 	name = "mc_oak_tree",
 	key = "oak_tree",
 	loc_txt = {
         name = "Oak Tree",
-        text = {"at end of Round give #1# logs",
-				"Destroy after #2# Rounds",
+        text = {"at end of {C:attention}Round{} give {C:attention}#1# logs{}",
+				"{C:red}Destroy{} after {C:attention}#2# Rounds{}",
             },
     },
-	pos = { x = 2, y = 0 },
+	pos = { x = 1, y = 1 },
 	config = { extra = { logs = 1, life = 5, } },
 	rarity = 2,
 	cost = 6,
@@ -1410,32 +1443,7 @@ SMODS.Joker({
 	end
 })
 
-local upd = Game.update
-function Game:update(dt)
-    upd(self,dt)
-    if G.GAME and G.GAME.round_resets and G.GAME.blind and G.GAME.blind.name == "The Creeper" and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil) and not G.GAME.blind.disabled then
-        if Talisman then
-            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
-                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
-            end
-        else
-            if (G.GAME.chips) < (G.GAME.blind.chips) then
-                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
-            end
-        end
-		if Talisman then
-			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
-				end_round{}
-			end
-		else
-			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not G.GAME.chips < G.GAME.blind.chips then
-				end_round{}
-			end
-		end
-    end
-end
+
 local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons
 function G.UIDEF.use_and_sell_buttons(card)
 	if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable then --Add a use button
@@ -1549,10 +1557,36 @@ G.FUNCS.reserve_card = function(e)
 		end,
 	}))
 end
+
+local upd = Game.update
 function Game:update(dt)
 	upd(self, dt)
 	if Incantation and not McIncanCompat then
 		AllowBulkUse("Resource")
 		McIncanCompat = true
 	end
+    if G.GAME and G.GAME.round_resets and G.GAME.blind and G.GAME.blind.name == "The Creeper" and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil) and not G.GAME.blind.disabled then
+        if Talisman then
+            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        else
+            if (G.GAME.chips) < (G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        end
+		if Talisman then
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+				end_round{}
+			end
+		else
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not G.GAME.chips < G.GAME.blind.chips then
+				end_round{}
+			end
+		end
+    end
+
+    
 end

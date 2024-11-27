@@ -1081,7 +1081,7 @@ SMODS.Booster {
 --Jokers--
 -- Joker Bundle
 
-SMODS.Joker({ 
+SMODS.Joker { 
 	name = "mc_bundle",
 	key = "bundle",
 	loc_txt = {
@@ -1103,7 +1103,7 @@ SMODS.Joker({
 	remove_from_deck = function(self, card, from_debuff)
 		G.consumeables.config.card_limit = G.consumeables.config.card_limit - card.ability.extra.bundle
 	end,
-})
+}
 
 -- Joker Steve
 
@@ -1111,28 +1111,28 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
     local cry_config = SMODS.load_mod_config({id = "Cryptid", path = SMODS.Mods.Cryptid.path}) -- loads Cryptid configs
 
     if cry_config["Exotic Jokers"] then -- check if exotic jokers are enabled
-        SMODS.Joker({
+        SMODS.Joker {
             key = "steve",
             loc_txt = {
                 name = "Steve",
                 text = {"Destroy a random Minecraft card at end of shop",
-                        "gain {C:chips}+#2#{} Chips per dirt card",
-                        "gain {C:mult}+#4#{} Mult per coal card",
-                        "gain {C:money}$#10#{} per gold card",
-                        "gain {X:chips,C:white} X#6# {} Chips per copper card",
-                        "gain {X:mult,C:white} X#8# {} Mult per iron card",
-                        "gain {X:dark_edition,C:white} ^#12# {} Chips per emerald card",
-                        "gain {X:dark_edition,C:white} ^#14# {} Mult per diamond card",
-                        "gain {X:dark_edition,C:white} ^^#16# {} Mult per netherite card",
-                        "{C:inactive}(Currently {C:chips} +#1# {C:inactive} Chips)",
-                        "{C:inactive}(Currently {C:mult} +#3# {C:inactive} Mult)",
-                        "{C:inactive}(Currently {C:money} $#9#)",
-                        "{C:inactive}(Currently {X:chips,C:white} X#5# {C:inactive} Chips)",
-                        "{C:inactive}(Currently {X:mult,C:white} X#7# {C:inactive} Mult)",
-                        "{C:inactive}(Currently {X:dark_edition,C:white} ^#11# {C:inactive} Chips)",
-                        "{C:inactive}(Currently {X:dark_edition,C:white} ^#13# {C:inactive} Mult)",
-                        "{C:inactive}(Currently {X:dark_edition,C:white} ^^#15# {C:inactive} Mult)", 
-                    },
+                    "gain {C:chips}+#2#{} Chips per dirt card",
+                    "gain {C:mult}+#4#{} Mult per coal card",
+                    "gain {C:money}$#10#{} per gold card",
+                    "gain {X:chips,C:white} X#6# {} Chips per copper card",
+                    "gain {X:mult,C:white} X#8# {} Mult per iron card",
+                    "gain {X:dark_edition,C:white} ^#12# {} Chips per emerald card",
+                    "gain {X:dark_edition,C:white} ^#14# {} Mult per diamond card",
+                    "gain {X:dark_edition,C:white} ^^#16# {} Mult per netherite card",
+                    "{C:inactive}(Currently {C:chips} +#1# {C:inactive} Chips)",
+                    "{C:inactive}(Currently {C:mult} +#3# {C:inactive} Mult)",
+                    "{C:inactive}(Currently {C:money} $#9#)",
+                    "{C:inactive}(Currently {X:chips,C:white} X#5# {C:inactive} Chips)",
+                    "{C:inactive}(Currently {X:mult,C:white} X#7# {C:inactive} Mult)",
+                    "{C:inactive}(Currently {X:dark_edition,C:white} ^#11# {C:inactive} Chips)",
+                    "{C:inactive}(Currently {X:dark_edition,C:white} ^#13# {C:inactive} Mult)",
+                    "{C:inactive}(Currently {X:dark_edition,C:white} ^^#15# {C:inactive} Mult)", 
+                },
             },
             config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, Xchips = 1, Xchips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  Tmult = 1, Tmult_mod = 0.5,  }},
             rarity = "cry_exotic",
@@ -1149,7 +1149,7 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                         if
                             currentConsuable.ability.set == "Resource" and not currentConsuable.getting_sliced and
                                 not currentConsuable.ability.eternal
-                        then
+                         then
                             destructable_resource[#destructable_resource + 1] = i
                         end
                     end
@@ -1165,36 +1165,36 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                         if card_key == "mc_dirt" then
                             card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+"..number_format(to_big(card.ability.extra.chips_mod)).." Chips"})
+                             {message = "+"..number_format(to_big(card.ability.extra.chips_mod)).." Chips"})
             
                         elseif card_key == "mc_coal" then
                             card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+"..number_format(to_big(card.ability.extra.mult_mod)).." Mult"})
+                             {message = "+"..number_format(to_big(card.ability.extra.mult_mod)).." Mult"})
                         elseif card_key == "mc_copper" then
                             card.ability.extra.Xchips = card.ability.extra.Xchips + card.ability.extra.Xchips_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+"..number_format(card.ability.extra.Xchips).." Chips"})
+                             {message = "+"..number_format(card.ability.extra.Xchips).." Chips"})
                         elseif card_key == "mc_iron" then 
                             card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+ X"..number_format(card.ability.extra.Xmult).." Mult"})
+                             {message = "+ X"..number_format(card.ability.extra.Xmult).." Mult"})
                         elseif card_key == "mc_gold" then
                             card.ability.extra.money = card.ability.extra.money + card.ability.extra.money_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+"..number_format(card.ability.extra.money).." Dollars"})
+                             {message = "+"..number_format(card.ability.extra.money).." Dollars"})
                         elseif card_key == "mc_diamond" then
                             card.ability.extra.Emult = card.ability.extra.Emult +  card.ability.extra.Emult_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+^"..number_format(card.ability.extra.Emult).."Mult"})
+                             {message = "+^"..number_format(card.ability.extra.Emult).."Mult"})
                         elseif card_key == "mc_emerald" then
                             card.ability.extra.Echips = card.ability.extra.Echips + card.ability.extra.Echips_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+^"..number_format(card.ability.extra.Echips).." Chips"})
+                             {message = "+^"..number_format(card.ability.extra.Echips).." Chips"})
                         elseif card_key == "mc_netherite" then
                             card.ability.extra.Tmult = card.ability.extra.Tmult +  card.ability.extra.Tmult_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                            {message = "+^^"..number_format(card.ability.extra.Tmult).."Mult"})
+                             {message = "+^^"..number_format(card.ability.extra.Tmult).."Mult"})
             
                         -- else if card_key == "mc_lapis" then
                         -- else if card_key == "mc_redstone" then
@@ -1202,10 +1202,10 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                         else  -- Not recongized
                             G.consumeables.cards[card_to_destroy].getting_sliced = false
                             return {}
-                        end
+                         end
                         -- Destroy the consumable
                         G.E_MANAGER:add_event(
-                        Event({
+                         Event({
                             func = function()
                                 (context.blueprint_card or card):juice_up(0.8, 0.8)
                                 G.consumeables.cards[card_to_destroy]:start_dissolve({G.C.RED}, nil, 1.6)
@@ -1215,22 +1215,69 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                     end
                 else
                     if context.cardarea == G.jokers and context.joker_main and not context.before and not context.after then
-                        SMODS.eval_this(card, {
-                            chip_mod = card.ability.extra.chips,
-                            message = localize({type = "variable", key = "a_chips", vars = {number_format(card.ability.extra.chips)}})
-                        })
-                        SMODS.eval_this(card, {
-                            mult_mod = card.ability.extra.mult,
-                            message = localize({type = "variable", key = "a_mult", vars = {number_format(card.ability.extra.mult)}})
-                        })
-                        SMODS.eval_this(card, {
-                            Xchip_mod = card.ability.extra.Xchips,
-                            message = localize({type = "variable", key = "a_xchips", vars = {number_format(card.ability.extra.Xchips)}})
-                        })
-                        SMODS.eval_this(card, {
-                            Xmult_mod = card.ability.extra.Xmult,
-                            message = localize({type = "variable", key = "a_xmult", vars = {number_format(card.ability.extra.Xmult)}})
-                        })
+                        SMODS.eval_this(
+                            card,
+                            {
+                                chip_mod = card.ability.extra.chips,
+                                message = localize(
+                                    {type = "variable", key = "a_chips", vars = {number_format(card.ability.extra.chips)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                mult_mod = card.ability.extra.mult,
+                                message = localize(
+                                    {type = "variable", key = "a_mult", vars = {number_format(card.ability.extra.mult)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                Xchip_mod = card.ability.extra.Xchips,
+                                message = localize(
+                                    {type = "variable", key = "a_xchips", vars = {number_format(card.ability.extra.Xchips)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                Xmult_mod = card.ability.extra.Xmult,
+                                message = localize(
+                                    {type = "variable", key = "a_xmult", vars = {number_format(card.ability.extra.Xmult)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                e_chips = card.ability.extra.Echips,
+                                message = localize(
+                                    {type = "variable", key = "a_e_chips", vars = {number_format(card.ability.extra.Echips)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                e_mult = card.ability.extra.Emult,
+                                message = localize(
+                                    {type = "variable", key = "a_e_mult", vars = {number_format(card.ability.extra.Emult)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                ee_mult = card.ability.extra.Tmult,
+                                message = localize(
+                                    {type = "variable", key = "a_ee_mult", vars = {number_format(card.ability.extra.Tmult)}}
+                                )
+                            }
+                        )
             
                         return {}
                     end
@@ -1242,27 +1289,27 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                         }
                     end
                 end
-                end,
+            end,
             loc_vars = function(self, info_queue, center)
-        return {
-            vars = {
-             center.ability.extra.chips, center.ability.extra.chips_mod,
-              center.ability.extra.mult, center.ability.extra.mult_mod,
-               center.ability.extra.Xchips, center.ability.extra.Xchips_mod,
-                center.ability.extra.Xmult, center.ability.extra.Xmult_mod,
-                 center.ability.extra.money, center.ability.extra.money_mod,
-                  center.ability.extra.Echips, center.ability.extra.Echips_mod,
-                   center.ability.extra.Emult, center.ability.extra.Emult_mod, 
-                    center.ability.extra.Tmult, center.ability.extra.Tmult_mod,
-            }}
-        end,
-        })
+                return {
+                    vars = {
+                    center.ability.extra.chips, center.ability.extra.chips_mod,
+                    center.ability.extra.mult, center.ability.extra.mult_mod,
+                    center.ability.extra.Xchips, center.ability.extra.Xchips_mod,
+                        center.ability.extra.Xmult, center.ability.extra.Xmult_mod,
+                        center.ability.extra.money, center.ability.extra.money_mod,
+                        center.ability.extra.Echips, center.ability.extra.Echips_mod,
+                        center.ability.extra.Emult, center.ability.extra.Emult_mod, 
+                            center.ability.extra.Tmult, center.ability.extra.Tmult_mod,
+                    }}
+                end,
+            }
     end
 end
 
 -- Joker Bucket
 
-SMODS.Joker({
+SMODS.Joker {
     key = "bucket",
     loc_txt = {
         name = "Bucket",
@@ -1304,11 +1351,11 @@ SMODS.Joker({
             return
         end
 	end
-})
+}
 
 -- Joker Oak Tree
 
-SMODS.Joker({
+SMODS.Joker {
 	
 	name = "mc_oak_tree",
 	key = "oak_tree",
@@ -1366,113 +1413,106 @@ SMODS.Joker({
 			end
 		end
 	end
-})
+}
+
+-- Diamond Pickaxe
+
+SMODS.Joker {
+    key = "dia_pickaxe",
+    loc_txt = {
+        name = "Diamond Pickaxe",
+        text = {
+            "Soon",
+        }
+    },
+    config = {extra = {chips_gain = 0}},
+    rarity = 3,
+    pos = { x = 0, y = 0 },
+    atlas = 'crafted_jokers',
+    cost = 5,
+    blueprint_compat = true,
+	in_pool = function(self)
+		return false
+	end,
+}
 
 -- Creeper Timer Func
 
-local upd = Game.update
-function Game:update(dt)
-    upd(self,dt)
-    if G.GAME and G.GAME.round_resets
-        and G.GAME.blind and G.GAME.blind.name == "The Creeper" 
-        and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil)
-        and not G.GAME.blind.disabled 
-    then
-        if Talisman then
-            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
-                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
-            end
-        else
-            if (G.GAME.chips) < (G.GAME.blind.chips) then
-                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
-            end
-        end
-		if Talisman then
-			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
-				end_round{}
-			end
-		else
-			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not G.GAME.chips < G.GAME.blind.chips then
-				end_round{}
-			end
-		end
-    end
-end
 
 local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons
 function G.UIDEF.use_and_sell_buttons(card)
-	if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable and card.ability.set == "Resource" 
-        then return {
-            n = G.UIT.ROOT,
-            config = { padding = -0.1, colour = G.C.CLEAR },
-            nodes = {
-                {
-                    n = G.UIT.R,
-                    config = {
-                        ref_table = card,
-                        r = 0.08,
-                        padding = 0.1,
-                        align = "bm",
-                        minw = 0.5 * card.T.w - 0.15,
-                        minh = 0.7 * card.T.h,
-                        maxw = 0.7 * card.T.w - 0.15,
-                        hover = true,
-                        shadow = true,
-                        colour = G.C.UI.BACKGROUND_INACTIVE,
-                        one_press = true,
-                        button = "use_card",
-                        func = "can_reserve_card",
-                    },
-                    nodes = {
-                        {
-                            n = G.UIT.T,
-                            config = {
-                                text = "PULL",
-                                colour = G.C.UI.TEXT_LIGHT,
-                                scale = 0.55,
-                                shadow = true,
-                            },
-                        },
-                    },
-                },
-                {
-                    n = G.UIT.R,
-                    config = {
-                        ref_table = card,
-                        r = 0.08,
-                        padding = 0.1,
-                        align = "bm",
-                        minw = 0.5 * card.T.w - 0.15,
-                        maxw = 0.9 * card.T.w - 0.15,
-                        minh = 0.1 * card.T.h,
-                        hover = true,
-                        shadow = true,
-                        colour = G.C.UI.BACKGROUND_INACTIVE,
-                        one_press = true,
-                        button = "Do you know that this parameter does nothing?",
-                        func = "can_use_consumeable",
-                    },
-                    nodes = {
-                        {
-                            n = G.UIT.T,
-                            config = {
-                                text = " USE ",
-                                colour = G.C.UI.TEXT_LIGHT,
-                                scale = 0.45,
-                                shadow = true,
-                            },
-                        },
-                    },
-                },
-                { n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-                { n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-                { n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-                { n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
-                -- Betmma can't explain it, neither can I
-            },
-            }
+	if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable then --Add a use button
+		if card.ability.set == "Resource" then
+			return {
+				n = G.UIT.ROOT,
+				config = { padding = -0.1, colour = G.C.CLEAR },
+				nodes = {
+					{
+						n = G.UIT.R,
+						config = {
+							ref_table = card,
+							r = 0.08,
+							padding = 0.1,
+							align = "bm",
+							minw = 0.5 * card.T.w - 0.15,
+							minh = 0.7 * card.T.h,
+							maxw = 0.7 * card.T.w - 0.15,
+							hover = true,
+							shadow = true,
+							colour = G.C.UI.BACKGROUND_INACTIVE,
+							one_press = true,
+							button = "use_card",
+							func = "can_reserve_card",
+						},
+						nodes = {
+							{
+								n = G.UIT.T,
+								config = {
+									text = "PULL",
+									colour = G.C.UI.TEXT_LIGHT,
+									scale = 0.55,
+									shadow = true,
+								},
+							},
+						},
+					},
+					{
+						n = G.UIT.R,
+						config = {
+							ref_table = card,
+							r = 0.08,
+							padding = 0.1,
+							align = "bm",
+							minw = 0.5 * card.T.w - 0.15,
+							maxw = 0.9 * card.T.w - 0.15,
+							minh = 0.1 * card.T.h,
+							hover = true,
+							shadow = true,
+							colour = G.C.UI.BACKGROUND_INACTIVE,
+							one_press = true,
+							button = "Do you know that this parameter does nothing?",
+							func = "can_use_consumeable",
+						},
+						nodes = {
+							{
+								n = G.UIT.T,
+								config = {
+									text = " USE ",
+									colour = G.C.UI.TEXT_LIGHT,
+									scale = 0.45,
+									shadow = true,
+								},
+							},
+						},
+					},
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					{ n = G.UIT.R, config = { align = "bm", w = 7.7 * card.T.w } },
+					-- Betmma can't explain it, neither can I
+				},
+	}
+		end
 	end
 	return G_UIDEF_use_and_sell_buttons_ref(card)
 end
@@ -1516,10 +1556,33 @@ G.FUNCS.reserve_card = function(e)
 	}))
 end
 
+local upd = Game.update
 function Game:update(dt)
 	upd(self, dt)
 	if Incantation and not McIncanCompat then
 		AllowBulkUse("Resource")
 		McIncanCompat = true
 	end
+    if G.GAME and G.GAME.round_resets and G.GAME.blind and G.GAME.blind.name == "The Creeper" and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil) and not G.GAME.blind.disabled then
+        if Talisman then
+            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        else
+            if (G.GAME.chips) < (G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        end
+		if Talisman then
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+				end_round{}
+			end
+		else
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not G.GAME.chips < G.GAME.blind.chips then
+				end_round{}
+			end
+		end
+    end
 end

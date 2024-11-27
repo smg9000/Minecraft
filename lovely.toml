@@ -25,6 +25,7 @@ craftr = {
 	planks = 0,
 	sticks = 0,
 	},
+
 '''
 match_indent = true
 
@@ -97,8 +98,9 @@ target = 'game.lua'
 pattern = '''self.P_LOCKED = {}'''
 position = 'after'
 payload = '''self.P_CRAFTS = {
-   mc_bucket = {order = 1, key = 'mc_bucket', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Bucket", req = {iron = 3}, pos = {x=0,y=0}, set = "Craft", config = {},},
-}'''
+		mc_bucket = {order = 1, key = 'mc_bucket', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Bucket", req = {iron = 3}, pos = {x=0,y=0}, set = "Craft", config = {},},			
+		mc_dia_pickaxe = {order = 1, key = 'mc_dia_pickaxe', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Diamond_Pickaxe", req = {diamond = 3, sticks = 2}, pos = {x=0,y=0}, set = "Craft", config = {},},
+}'''	
 match_indent = true
 
 [[patches]]

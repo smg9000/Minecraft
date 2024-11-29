@@ -10,7 +10,6 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
-
 function SMODS.SAVE_UNLOCKS()
     boot_print_stage("Saving Unlocks")
 	G:save_progress()
@@ -152,10 +151,6 @@ function SMODS.SAVE_UNLOCKS()
     end
 end
 
-
-
-
-
 local function get_crafts()
     local shown_crafts = {}
     for i, j in pairs(G.P_CENTER_POOLS['Craft']) do
@@ -168,6 +163,10 @@ local function get_crafts()
     end
     return shown_crafts
 end
+
+
+
+
 function G.UIDEF.learned_craft()
     local shown_crafts = get_crafts()
     if not use_page then
@@ -198,7 +197,35 @@ function G.UIDEF.learned_craft()
         )
     end
 
+    local craft_options = {}
+    for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/15))) do
+        table.insert(craft_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(math.max(1, math.ceil(#shown_crafts/15)))))
+    end
 
+    for j = 1, #G.areas do
+        for i = 1, 5 do
+            if (i+(j-1)*(5)+adding) <= #shown_crafts then
+                local center = shown_crafts[i+(j-1)*(5)+adding][1]
+                local card = Card(G.areas[j].T.x + G.areas[j].T.w, G.areas[j].T.y, G.CARD_W, G.CARD_H, nil, center)
+                card:start_materialize(nil, i>1 or j>1)
+                G.areas[j]:emplace(card)
+            end
+        end
+    end
+
+    local texti = "Crafts"
+  
+    local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
+		{n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+        }},
+        {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
+            {n=G.UIT.R, config={align = "cm"}, nodes={
+                create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
+        }}
+      }}
+    return t
+end
 
 function craft_joker(card)
     local obj = card.config.center
@@ -262,38 +289,6 @@ G.FUNCS.your_game_craft_page = function(args)
     end
 end
 
-    local craft_options = {}
-    for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/15))) do
-        table.insert(craft_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(math.max(1, math.ceil(#shown_crafts/15)))))
-    end
-
-    for j = 1, #G.areas do
-        for i = 1, 5 do
-            if (i+(j-1)*(5)+adding) <= #shown_crafts then
-                local center = shown_crafts[i+(j-1)*(5)+adding][1]
-                local card = Card(G.areas[j].T.x + G.areas[j].T.w, G.areas[j].T.y, G.CARD_W, G.CARD_H, nil, center)
-                card:start_materialize(nil, i>1 or j>1)
-                G.areas[j]:emplace(card)
-            end
-        end
-    end
-
- 
-  local texti = "Crafts"
-  
-
-    local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texti, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
-        }},
-        {n=G.UIT.R, config={align = "cm", minw = 2.5, padding = 0.2, r = 0.1, colour = G.C.BLACK, emboss = 0.05}, nodes=area_table},
-            {n=G.UIT.R, config={align = "cm"}, nodes={
-                create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
-        }}
-      }}
-    return t
-end
-function G.UIDEF.resource_list()
 G.FUNCS.can_plank = function(e)
 	local craft_req = true
 	
@@ -307,6 +302,7 @@ G.FUNCS.can_plank = function(e)
         e.config.button = 'craft_planks'
     end
 end
+
 G.FUNCS.can_stick = function(e)
 		local craft_req = true
 	
@@ -320,6 +316,7 @@ G.FUNCS.can_stick = function(e)
         e.config.button = 'craft_sticks'
     end
 end
+
 G.FUNCS.craft_planks = function(e)
 	G.GAME.craftr["logs"]= G.GAME.craftr["logs"] - 1
 	G.GAME.craftr["planks"] = G.GAME.craftr["planks"] + 4
@@ -330,6 +327,7 @@ G.FUNCS.craft_planks = function(e)
         use_page = nil
     end
 end
+
 G.FUNCS.craft_sticks = function(e)
 	G.GAME.craftr["planks"]= G.GAME.craftr["planks"] - 2
 	G.GAME.craftr["sticks"] = G.GAME.craftr["sticks"] + 4
@@ -340,85 +338,127 @@ G.FUNCS.craft_sticks = function(e)
         use_page = nil
     end
 end
-  local text = "Resources"
-  local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
-  local textb = "Coal: " .. tostring(G.GAME.craftr["coal"])
-  local textc = "Copper: " .. tostring(G.GAME.craftr["copper"])
-  local textd = "Iron: " .. tostring(G.GAME.craftr["iron"])
-  local texte = "Gold: " .. tostring(G.GAME.craftr["gold"])
-  local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
-  local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
-  local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
-  local textj = "Logs: " .. tostring(G.GAME.craftr["logs"])
-  local textk = "Planks: " .. tostring(G.GAME.craftr["planks"])
-  local textl = "Sticks: " .. tostring(G.GAME.craftr["sticks"])
-  local lapis = "Lapis: " .. tostring(G.GAME.craftr["lapis"])
-  local redstone = "Redstone: " .. tostring(G.GAME.craftr["redstone"])
-  local quartz = "Quartz: " .. tostring(G.GAME.craftr["quartz"])
-  
-  local texti = "  " 
+
+local function create_resource_sprite(x, y, w, h, pos1, pos2)
+	return Sprite(x, y, w, h, G.ASSET_ATLAS['mc_resource_sprites'], {x=pos1,y=pos2})
+end
+
+function G.UIDEF.resource_list()
+	_scale = 1
+		local dirt_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 0, 0)
+		dirt_sprite.states.drag.can = false
+		local coal_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 1, 0)
+		coal_sprite.states.drag.can = false
+		local copper_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 2, 0)
+		copper_sprite.states.drag.can = false
+		local iron_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 3, 0)
+		iron_sprite.states.drag.can = false
+		local gold_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 4, 0)
+		gold_sprite.states.drag.can = false
+		local diamond_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 5, 0)
+		diamond_sprite.states.drag.can = false
+		local emerald_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 6, 0)
+		emerald_sprite.states.drag.can = false
+		local netherite_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 7, 0)
+		netherite_sprite.states.drag.can = false	
+		local lapis_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 8, 0)
+		lapis_sprite.states.drag.can = false
+		local redstone_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 9, 0)
+		redstone_sprite.states.drag.can = false
+		local quartz_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 10, 0)
+		quartz_sprite.states.drag.can = false
+
+    local text = "Resources"
+    local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
+    local textb = "Coal: " .. tostring(G.GAME.craftr["coal"])
+    local textc = "Copper: " .. tostring(G.GAME.craftr["copper"])
+    local textd = "Iron: " .. tostring(G.GAME.craftr["iron"])
+    local texte = "Gold: " .. tostring(G.GAME.craftr["gold"])
+    local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
+    local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
+    local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
+    local textj = "Logs: " .. tostring(G.GAME.craftr["logs"])
+    local textk = "Planks: " .. tostring(G.GAME.craftr["planks"])
+    local textl = "Sticks: " .. tostring(G.GAME.craftr["sticks"])
+    local lapis = "Lapis: " .. tostring(G.GAME.craftr["lapis"])
+    local redstone = "Redstone: " .. tostring(G.GAME.craftr["redstone"])
+    local quartz = "Quartz: " .. tostring(G.GAME.craftr["quartz"])
+    
+    local texti = "  " 
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
         {n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+            {n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = dirt_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textb, scale = 0.35, colour = HEX("252525"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = coal_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = textb, scale = 0.35, colour = HEX("252525"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textc, scale = 0.35, colour = HEX("E27753"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = copper_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = textc, scale = 0.35, colour = HEX("E27753"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textd, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = iron_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = textd, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texte, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = gold_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = texte, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textf, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = diamond_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = textf, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textg, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = emerald_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = textg, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = netherite_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = lapis, scale = 0.35, colour = HEX("26619c"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = lapis_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = lapis, scale = 0.35, colour = HEX("26619c"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = redstone, scale = 0.35, colour = HEX("d40000"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = redstone_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = redstone, scale = 0.35, colour = HEX("d40000"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = quartz, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+			{n=G.UIT.O, config = {object = quartz_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = quartz, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textj, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textj, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textk, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textk, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = textl, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = textl, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
-		{n=G.UIT.B, config={h=0.5,w=0,align = "cm"},nodes={}},
-		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5 - 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_planks',func = "can_plank"}, nodes={
-			{n=G.UIT.T, config={text = localize('b_craft_planks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}},
-		}},
-		{n=G.UIT.R, config={align = "cm"},nodes={
-			{n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        {n=G.UIT.B, config={h=0.5,w=0,align = "cm"},nodes={}},
+        {n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5 - 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_planks',func = "can_plank"}, nodes={
+            {n=G.UIT.T, config={text = localize('b_craft_planks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}},
         }},
-		{n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5- 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_sticks',func = "can_stick"}, nodes={
-			{n=G.UIT.T, config={text = localize('b_craft_sticks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}}
-		}}
-      }}
+        {n=G.UIT.R, config={align = "cm"},nodes={
+            {n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
+        }},
+        {n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "bm", minw = 0.5 - 0.15, maxw = 1.5- 0.15, minh = 0.5, hover = true, shadow = true, colour = HEX('966a2c'), button = 'craft_sticks',func = "can_stick"}, nodes={
+            {n=G.UIT.T, config={text = localize('b_craft_sticks'),colour = G.C.UI.TEXT_LIGHT, scale = 0.6, shadow = true}}
+        }}
+    }}
     return t
 end
+
 function add_craft_resource(section, amount, card, message_)
     local message = true
     if message_ ~= nil then
@@ -432,26 +472,26 @@ function add_craft_resource(section, amount, card, message_)
 end
 
 function SMODS.current_mod.process_loc_text()
- G.localization.misc.quips['aww_man'] ={ "Aww Man"}
- G.localization.misc.v_dictionary["gain_craftr"] = "+#1# #2#"
- G.localization.misc.dictionary['b_crafting'] = "Crafting"
- G.localization.misc.dictionary['b_resources'] = "Resources"
- G.localization.misc.dictionary["b_craft"] = "CRAFT"
- G.localization.misc.dictionary["b_craft_planks"] = "Craft Planks"
- G.localization.misc.dictionary["b_craft_sticks"] = "Craft Sticks"
- G.localization.misc.dictionary["k_craft"] = "Craft"
- G.localization.misc.dictionary['dirt'] = "Dirt"
- G.localization.misc.dictionary['coal'] = "Coal"
- G.localization.misc.dictionary['copper'] = "Copper"
- G.localization.misc.dictionary['iron'] = "Iron"
- G.localization.misc.dictionary['gold'] = "Gold"
- G.localization.misc.dictionary['diamond'] = "Diamond"
- G.localization.misc.dictionary['emerald'] = "Emerald"
- G.localization.misc.dictionary['netherite'] = "Netherite"
- G.localization.misc.dictionary['lapis'] = "Lapis"
- G.localization.misc.dictionary['redstone'] = "Redstone"
- G.localization.misc.dictionary['quartz'] = "Quartz"
- G.localization.misc.dictionary['logs'] = "Logs"
+    G.localization.misc.quips['aww_man'] ={ "Aww Man"}
+    G.localization.misc.v_dictionary["gain_craftr"] = "+#1# #2#"
+    G.localization.misc.dictionary['b_crafting'] = "Crafting"
+    G.localization.misc.dictionary['b_resources'] = "Resources"
+    G.localization.misc.dictionary["b_craft"] = "CRAFT"
+    G.localization.misc.dictionary["b_craft_planks"] = "Craft Planks"
+    G.localization.misc.dictionary["b_craft_sticks"] = "Craft Sticks"
+    G.localization.misc.dictionary["k_craft"] = "Craft"
+    G.localization.misc.dictionary['dirt'] = "Dirt"
+    G.localization.misc.dictionary['coal'] = "Coal"
+    G.localization.misc.dictionary['copper'] = "Copper"
+    G.localization.misc.dictionary['iron'] = "Iron"
+    G.localization.misc.dictionary['gold'] = "Gold"
+    G.localization.misc.dictionary['diamond'] = "Diamond"
+    G.localization.misc.dictionary['emerald'] = "Emerald"
+    G.localization.misc.dictionary['netherite'] = "Netherite"
+    G.localization.misc.dictionary['lapis'] = "Lapis"
+    G.localization.misc.dictionary['redstone'] = "Redstone"
+    G.localization.misc.dictionary['quartz'] = "Quartz"
+    G.localization.misc.dictionary['logs'] = "Logs"
  
 	G.localization.descriptions.Craft = {
         mc_bucket = {
@@ -462,12 +502,138 @@ function SMODS.current_mod.process_loc_text()
                 "{C:inactive}Ex: blind is 300 chips and you score 400{}",
                 "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
                 "{C:inactive}so you start the next blind with 5 chips{}",
-            }}}
+            }
+        }
+    }
+    G.localization.descriptions.Other["enchant_sharpness"] = {
+        text = {
+            "{C:purple}Sharpness #1#{}"
+        }
+    }
+    G.localization.descriptions.Other["tooltip_sharpness"] = {
+        name = "Sharpness",
+        text = {
+            "{C:red}+#1#{} Mult"
+        }
+    }
+    
 end
 
+enchants = {
+    sharpness = {
+        Joker = true,
+        Card = true,
+        Consumable = true,
+        max = 5,
+        loc_txt = 'Sharpness',
+        loc_vars = function(value)
+            return {2 * value}
+        end
+    }
+}
 
+function random_enchant(card, level)
+    if not level then
+        level = 0
+    end
+    local enchanted = false
+    local result = {}
+    local type_ = "Other"
+    if card.ability.set == "Joker" then
+        type_ = "Joker"
+    elseif card.ability.consumeable then
+        type_ = "Consumable"
+    elseif card.config.card.suit then
+        type_ = "Card"
+    end
+    for i, j in pairs(enchants) do
+        if j[type_] then
+            local base = 0
+            while pseudorandom('mc_enchant') < 0.10 + 0.05 * level do
+                base = base + 1
+                if base == j.max then
+                    break
+                end
+            end
+            if base > 0 then
+                result[i] = base
+                enchanted = true
+            end
+        end
+    end
+    if (level >= 1) and not enchanted then
+        local pool = {}
+        for i, j in pairs(enchants) do
+            if j[type_] then
+                table.insert(pool, i)
+            end
+        end
+        if #pool > 0 then
+            local enchant = pseudorandom_element(pool, pseudoseed("mc_enchant"))
+            enchanted = true
+            result[enchant] = 1
+        end
+    end
+    if enchanted then
+        return result
+    end
+end
 
+function Card:add_enchant(enchant)
+    self.ability.enchant = enchant
+    if self.ability.enchant then
+        self.ability.enchanted = true
+    end
+end
 
+function Card:get_enchant()
+    if self.debuff then return end
+    if self.ability.enchant then
+        local ret = {card = self}
+        if self.ability.enchant.sharpness then
+            ret.mult_mod = 1 + self.ability.enchant.sharpness
+        end
+        return ret
+    end
+end
+
+SMODS.Sticker {
+    key = 'enchant',
+    rate = 0,
+    pos = { x = 0, y = 0 },
+    colour = HEX '97F1EF',
+    badge_colour = HEX '97F1EF',
+    should_apply = function(self, card, center, area)
+        return true
+    end,
+    loc_txt = {
+        name = "",
+        text = {
+            "",
+        },
+        label = ""
+    },
+    loc_vars = function(self, info_queue, card)
+        return {vars = {}}
+    end,
+    apply = function(self, card, val)
+        card:add_enchant(random_enchant(card, 0))
+    end,
+    sets = { 
+        Joker = true,
+        Tarot = true,
+        Planet = true,
+        Spectral = true,
+        Tarot_Planet = true,
+    },
+}
+
+--Shader--
+
+SMODS.Shader {
+    key = 'enchant',
+    path = 'enchant.fs'
+}
 
 --Consumables--
 
@@ -517,6 +683,7 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
     end
     --This makes it so much nicer to add shit to the resource cards Oh my god
 }
+
 SMODS.UndiscoveredSprite {
     key = 'Resource',
     atlas = 'resource',
@@ -547,8 +714,6 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
-	
 })
 
 SMODS.MC_Resource({
@@ -574,7 +739,6 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
 
 SMODS.MC_Resource({
@@ -600,7 +764,6 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
 
 SMODS.MC_Resource({
@@ -626,8 +789,8 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
+
 SMODS.MC_Resource({
     key = "mc_gold",
     steveEat = true,
@@ -651,8 +814,8 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
+
 SMODS.MC_Resource({
     key = "mc_diamond",
     steveEat = true,
@@ -676,8 +839,8 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
+
 SMODS.MC_Resource({
     key = "mc_emerald",
     steveEat = true,
@@ -701,8 +864,8 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
+
 SMODS.MC_Resource({
     key = "mc_netherite",
     steveEat = true,
@@ -726,8 +889,8 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
+
 SMODS.MC_Resource({
     key = "mc_lapis",
     pos = {x=1,y=2},
@@ -750,8 +913,8 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
+
 SMODS.MC_Resource({
     key = "mc_redstone",
     pos = {x=2,y=2},
@@ -774,8 +937,8 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
+
 SMODS.MC_Resource({
     key = "mc_quartz",
     set = "Resource",
@@ -799,7 +962,6 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
-	
 })
 
 SMODS.Spectral {
@@ -821,8 +983,8 @@ SMODS.Spectral {
     end,
 }
 
-
 --Consumable--
+
 local deepslate_card = SMODS.Enhancement {
     key = 'deepslate',
     loc_txt = {
@@ -842,12 +1004,13 @@ local deepslate_card = SMODS.Enhancement {
 	loc_vars = function(self, info_queue, card)
         return {vars = {card and card.ability.bonus or 150}}
     end,
-	
-    }
-deepslate_card.loc_subtract_extra_chips = deepslate_card.config.bonus
+}
 
+deepslate_card.loc_subtract_extra_chips = deepslate_card.config.bonus
+-- @smg9000 please add comment
 
 --Blinds--
+
 SMODS.Blind{
 	key = "creeper",
 	loc_txt = {
@@ -886,6 +1049,7 @@ SMODS.Blind{
         return {vars = {m .. ":" .. s .. "." .. d}}
     end,
 }
+
 SMODS.Blind{
 	key = "wither",
 	loc_txt = {
@@ -904,12 +1068,14 @@ SMODS.Blind{
 }
 
 --Atlas--
+
 SMODS.Atlas({
     key = "resource",
     path = "resource.png",
     px = 71,
     py = 95,
 })
+
 SMODS.Atlas({
     key = "jokeratlas",
     path = "jokeratlas.png",
@@ -917,11 +1083,19 @@ SMODS.Atlas({
     py = 95,
 })
 SMODS.Atlas({
+    key = "resource_sprites",
+    path = "resource_sprites.png",
+    px = 34,
+    py = 34	,
+})
+
+SMODS.Atlas({
     key = "placeholder",
     path = "j_placeholder.png",
     px = 71,
     py = 95,
 })
+
 SMODS.Atlas({
 	key = "crafted_jokers",
 	atlas_table = "ASSET_ATLAS",
@@ -929,18 +1103,21 @@ SMODS.Atlas({
 	px = 71,
 	py = 95
 })
+
 SMODS.Atlas({
     key = "enhancement",
     path = "enhancement.png",
     px = 71,
     py = 95,
 })
+
 SMODS.Atlas({
     key = "consumables",
     path = "consumables.png",
     px = 71,
     py = 95,
 })
+
 SMODS.Atlas({
     key = "mc_blinds",
 	atlas_table = "ANIMATION_ATLAS",
@@ -949,12 +1126,14 @@ SMODS.Atlas({
     py = 34,
 	frames = 21,
 })
+
 SMODS.Atlas({
     key = "mc_packs",
     path = "mc_packs.png",
     px = 71,
     py = 95,
 })
+
 --Packs-
 
 SMODS.Booster {
@@ -973,7 +1152,7 @@ SMODS.Booster {
     cost = 4,
     name = "Resource Pack",
     pos = {x = 0, y = 0},
-    config = {extra = 3, choose = 1},
+    config = {extra = 2, choose = 2},
     create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -985,6 +1164,7 @@ SMODS.Booster {
 	end,
     draw_hand = false
 }
+
 SMODS.Booster {
     key = 'resource_normal2',
     atlas = 'mc_packs',
@@ -1001,7 +1181,7 @@ SMODS.Booster {
     cost = 4,
     name = "Resource Pack",
     pos = {x = 1, y = 0},
-    config = {extra = 3, choose = 1},
+    config = {extra = 2, choose = 2},
 	create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -1013,6 +1193,7 @@ SMODS.Booster {
 	end,
     draw_hand = false
 }
+
 SMODS.Booster {
     key = 'resource_jumbo',
     atlas = 'mc_packs',
@@ -1029,7 +1210,7 @@ SMODS.Booster {
     cost = 4,
     name = "Jumbo Resource Pack",
     pos = {x = 2, y = 0},
-    config = {extra = 5, choose = 1},
+    config = {extra = 3, choose = 3},
     create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -1041,6 +1222,7 @@ SMODS.Booster {
 	end,
     draw_hand = false
 }
+
 SMODS.Booster {
     key = 'resource_mega',
     atlas = 'mc_packs',
@@ -1057,7 +1239,7 @@ SMODS.Booster {
     cost = 4,
     name = "Mega Resource Pack",
     pos = {x = 3, y = 0},
-    config = {extra = 5, choose = 2},
+    config = {extra = 4, choose = 4},
     create_card = function(self, card)
         return {set = "Resource", area = G.pack_cards, skip_materialize = true}
     end,
@@ -1071,22 +1253,10 @@ SMODS.Booster {
 }
 
 
-
-
-
-
-
-
-
-
-
-
 --Jokers--
+-- Joker Bundle
 
-
-
-SMODS.Joker({
-	
+SMODS.Joker { 
 	name = "mc_bundle",
 	key = "bundle",
 	loc_txt = {
@@ -1108,213 +1278,223 @@ SMODS.Joker({
 	remove_from_deck = function(self, card, from_debuff)
 		G.consumeables.config.card_limit = G.consumeables.config.card_limit - card.ability.extra.bundle
 	end,
-})
+}
 
-
-
-
+-- Joker Steve
 
 if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
     local cry_config = SMODS.load_mod_config({id = "Cryptid", path = SMODS.Mods.Cryptid.path}) -- loads Cryptid configs
 
     if cry_config["Exotic Jokers"] then -- check if exotic jokers are enabled
-        SMODS.Joker({
-    key = "steve",
-    loc_txt = {
-        name = "Steve",
-        text = {"Destroy a random Minecraft card at end of shop",
-                "gain {C:chips}+#2#{} Chips per dirt card",
-                "gain {C:mult}+#4#{} Mult per coal card",
-                "gain {C:money}$#10#{} per gold card",
-                "gain {X:chips,C:white} X#6# {} Chips per copper card",
-                "gain {X:mult,C:white} X#8# {} Mult per iron card",
-                "gain {X:dark_edition,C:white} ^#12# {} Chips per emerald card",
-                "gain {X:dark_edition,C:white} ^#14# {} Mult per diamond card",
-                "gain {X:dark_edition,C:white} ^^#16# {} Mult per netherite card",
-                "{C:inactive}(Currently {C:chips} +#1# {C:inactive} Chips)",
-                "{C:inactive}(Currently {C:mult} +#3# {C:inactive} Mult)",
-                "{C:inactive}(Currently {C:money} $#9#)",
-                "{C:inactive}(Currently {X:chips,C:white} X#5# {C:inactive} Chips)",
-                "{C:inactive}(Currently {X:mult,C:white} X#7# {C:inactive} Mult)",
-                "{C:inactive}(Currently {X:dark_edition,C:white} ^#11# {C:inactive} Chips)",
-                "{C:inactive}(Currently {X:dark_edition,C:white} ^#13# {C:inactive} Mult)",
-                "{C:inactive}(Currently {X:dark_edition,C:white} ^^#15# {C:inactive} Mult)", 
+        SMODS.Joker {
+            key = "steve",
+            loc_txt = {
+                name = "Steve",
+                text = {"Destroy a random Minecraft card at end of shop",
+                    "gain {C:chips}+#2#{} Chips per dirt card",
+                    "gain {C:mult}+#4#{} Mult per coal card",
+                    "gain {C:money}$#10#{} per gold card",
+                    "gain {X:chips,C:white} X#6# {} Chips per copper card",
+                    "gain {X:mult,C:white} X#8# {} Mult per iron card",
+                    "gain {X:dark_edition,C:white} ^#12# {} Chips per emerald card",
+                    "gain {X:dark_edition,C:white} ^#14# {} Mult per diamond card",
+                    "gain {X:dark_edition,C:white} ^^#16# {} Mult per netherite card",
+                    "{C:inactive}(Currently {C:chips} +#1# {C:inactive} Chips)",
+                    "{C:inactive}(Currently {C:mult} +#3# {C:inactive} Mult)",
+                    "{C:inactive}(Currently {C:money} $#9#)",
+                    "{C:inactive}(Currently {X:chips,C:white} X#5# {C:inactive} Chips)",
+                    "{C:inactive}(Currently {X:mult,C:white} X#7# {C:inactive} Mult)",
+                    "{C:inactive}(Currently {X:dark_edition,C:white} ^#11# {C:inactive} Chips)",
+                    "{C:inactive}(Currently {X:dark_edition,C:white} ^#13# {C:inactive} Mult)",
+                    "{C:inactive}(Currently {X:dark_edition,C:white} ^^#15# {C:inactive} Mult)", 
+                },
             },
-    },
-    config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, Xchips = 1, Xchips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  Tmult = 1, Tmult_mod = 0.5,  }},
-    rarity = "cry_exotic",
-    pos = { x = 0, y = 0 },
-    atlas = 'placeholder',
-    cost = 3,
-    blueprint_compat = true,
-    calculate = function(self, card, context)
-        --TODO: make it so it reselects if not one of the consumbales it can eat.
-        if context.ending_shop and (not context.blueprint ) then
-            local destructable_resource = {}
-            local quota = 1
-            for i, currentConsuable in ipairs(G.consumeables.cards) do
-                if
-                    currentConsuable.ability.set == "Resource" and not currentConsuable.getting_sliced and
-                        not currentConsuable.ability.eternal
-                 then
-                    destructable_resource[#destructable_resource + 1] = i
+            config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, Xchips = 1, Xchips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  Tmult = 1, Tmult_mod = 0.5,  }},
+            rarity = "cry_exotic",
+            pos = { x = 0, y = 0 },
+			soul_pos = { x = 1, y = 0, extra = { x = 2, y = 0 } },
+            atlas = 'jokeratlas',
+            cost = 50,
+            blueprint_compat = true,
+            calculate = function(self, card, context)
+                --TODO: make it so it reselects if not one of the consumbales it can eat.
+                if context.ending_shop and (not context.blueprint ) then
+                    local destructable_resource = {}
+                    local quota = 1
+                    for i, currentConsuable in ipairs(G.consumeables.cards) do
+                        if
+                            currentConsuable.ability.set == "Resource" and not currentConsuable.getting_sliced and
+                                not currentConsuable.ability.eternal
+                         then
+                            destructable_resource[#destructable_resource + 1] = i
+                        end
+                    end
+                    local card_to_destroy = pseudorandom_element(destructable_resource, pseudoseed("steve"))
+                    if card_to_destroy then
+                        local quota = 1
+                        if Incantation then
+                        -- Do incantion stuff
+                        end
+                        local card_key = G.consumeables.cards[card_to_destroy].config.center.key:sub(3,-1)
+                        --Scaling 
+                        G.consumeables.cards[card_to_destroy].getting_sliced = true
+                        if card_key == "mc_dirt" then
+                            card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+"..number_format(to_big(card.ability.extra.chips_mod)).." Chips"})
+            
+                        elseif card_key == "mc_coal" then
+                            card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+"..number_format(to_big(card.ability.extra.mult_mod)).." Mult"})
+                        elseif card_key == "mc_copper" then
+                            card.ability.extra.Xchips = card.ability.extra.Xchips + card.ability.extra.Xchips_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+"..number_format(card.ability.extra.Xchips).." Chips"})
+                        elseif card_key == "mc_iron" then 
+                            card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+ X"..number_format(card.ability.extra.Xmult).." Mult"})
+                        elseif card_key == "mc_gold" then
+                            card.ability.extra.money = card.ability.extra.money + card.ability.extra.money_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+"..number_format(card.ability.extra.money).." Dollars"})
+                        elseif card_key == "mc_diamond" then
+                            card.ability.extra.Emult = card.ability.extra.Emult +  card.ability.extra.Emult_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+^"..number_format(card.ability.extra.Emult).."Mult"})
+                        elseif card_key == "mc_emerald" then
+                            card.ability.extra.Echips = card.ability.extra.Echips + card.ability.extra.Echips_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+^"..number_format(card.ability.extra.Echips).." Chips"})
+                        elseif card_key == "mc_netherite" then
+                            card.ability.extra.Tmult = card.ability.extra.Tmult +  card.ability.extra.Tmult_mod * quota
+                            card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
+                             {message = "+^^"..number_format(card.ability.extra.Tmult).."Mult"})
+            
+                        -- else if card_key == "mc_lapis" then
+                        -- else if card_key == "mc_redstone" then
+                        -- else if card_key == "mc_quartz" then
+                        else  -- Not recongized
+                            G.consumeables.cards[card_to_destroy].getting_sliced = false
+                            return {}
+                         end
+                        -- Destroy the consumable
+                        G.E_MANAGER:add_event(
+                         Event({
+                            func = function()
+                                (context.blueprint_card or card):juice_up(0.8, 0.8)
+                                G.consumeables.cards[card_to_destroy]:start_dissolve({G.C.RED}, nil, 1.6)
+                                return true
+                            end})
+                        )
+                    end
+                else
+                    if context.cardarea == G.jokers and context.joker_main and not context.before and not context.after then
+                        SMODS.eval_this(
+                            card,
+                            {
+                                chip_mod = card.ability.extra.chips,
+                                message = localize(
+                                    {type = "variable", key = "a_chips", vars = {number_format(card.ability.extra.chips)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                mult_mod = card.ability.extra.mult,
+                                message = localize(
+                                    {type = "variable", key = "a_mult", vars = {number_format(card.ability.extra.mult)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                Xchip_mod = card.ability.extra.Xchips,
+                                message = localize(
+                                    {type = "variable", key = "a_xchips", vars = {number_format(card.ability.extra.Xchips)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                Xmult_mod = card.ability.extra.Xmult,
+                                message = localize(
+                                    {type = "variable", key = "a_xmult", vars = {number_format(card.ability.extra.Xmult)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                e_chips = card.ability.extra.Echips,
+                                message = localize(
+                                    {type = "variable", key = "a_e_chips", vars = {number_format(card.ability.extra.Echips)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                e_mult = card.ability.extra.Emult,
+                                message = localize(
+                                    {type = "variable", key = "a_e_mult", vars = {number_format(card.ability.extra.Emult)}}
+                                )
+                            }
+                        )
+                        SMODS.eval_this(
+                            card,
+                            {
+                                ee_mult = card.ability.extra.Tmult,
+                                message = localize(
+                                    {type = "variable", key = "a_ee_mult", vars = {number_format(card.ability.extra.Tmult)}}
+                                )
+                            }
+                        )
+            
+                        return {}
+                    end
+                    if context.cardarea == G.jokers and not context.before and not context.after then
+                        ease_dollars(card.ability.extra.money)
+                        return {
+                            message = "+" .. number_format(card.ability.extra.money) .. " Dollars",
+                            colour = G.C.MONEY
+                        }
+                    end
                 end
-            end
-            local card_to_destroy = pseudorandom_element(destructable_resource, pseudoseed("steve"))
-            if card_to_destroy then
-                local quota = 1
-                if Incantation then
-                -- Do incantion stuff
-                end
-                local card_key = G.consumeables.cards[card_to_destroy].config.center.key:sub(3,-1)
-                --Scaling 
-                G.consumeables.cards[card_to_destroy].getting_sliced = true
-                if card_key == "mc_dirt" then
-                    card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+"..number_format(to_big(card.ability.extra.chips_mod)).." Chips"})
-    
-                elseif card_key == "mc_coal" then
-                    card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+"..number_format(to_big(card.ability.extra.mult_mod)).." Mult"})
-                elseif card_key == "mc_copper" then
-                    card.ability.extra.Xchips = card.ability.extra.Xchips + card.ability.extra.Xchips_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+"..number_format(card.ability.extra.Xchips).." Chips"})
-                elseif card_key == "mc_iron" then 
-                    card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+ X"..number_format(card.ability.extra.Xmult).." Mult"})
-                elseif card_key == "mc_gold" then
-                    card.ability.extra.money = card.ability.extra.money + card.ability.extra.money_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+"..number_format(card.ability.extra.money).." Dollars"})
-                elseif card_key == "mc_diamond" then
-                    card.ability.extra.Emult = card.ability.extra.Emult +  card.ability.extra.Emult_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+^"..number_format(card.ability.extra.Emult).."Mult"})
-                elseif card_key == "mc_emerald" then
-                    card.ability.extra.Echips = card.ability.extra.Echips + card.ability.extra.Echips_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+^"..number_format(card.ability.extra.Echips).." Chips"})
-                elseif card_key == "mc_netherite" then
-                    card.ability.extra.Tmult = card.ability.extra.Tmult +  card.ability.extra.Tmult_mod * quota
-                    card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                     {message = "+^^"..number_format(card.ability.extra.Tmult).."Mult"})
-    
-                -- else if card_key == "mc_lapis" then
-                -- else if card_key == "mc_redstone" then
-                -- else if card_key == "mc_quartz" then
-                else  -- Not recongized
-                    G.consumeables.cards[card_to_destroy].getting_sliced = false
-                    return {}
-                 end
-                -- Destroy the consumable
-                G.E_MANAGER:add_event(
-                 Event({
-                    func = function()
-                        (context.blueprint_card or card):juice_up(0.8, 0.8)
-                        G.consumeables.cards[card_to_destroy]:start_dissolve({G.C.RED}, nil, 1.6)
-                        return true
-                    end})
-                )
-            end
-        else
-            if context.cardarea == G.jokers and context.joker_main and not context.before and not context.after then
-                SMODS.eval_this(
-                    card,
-                    {
-                        chip_mod = card.ability.extra.chips,
-                        message = localize(
-                            {type = "variable", key = "a_chips", vars = {number_format(card.ability.extra.chips)}}
-                        )
-                    }
-                )
-                SMODS.eval_this(
-                    card,
-                    {
-                        mult_mod = card.ability.extra.mult,
-                        message = localize(
-                            {type = "variable", key = "a_mult", vars = {number_format(card.ability.extra.mult)}}
-                        )
-                    }
-                )
-                SMODS.eval_this(
-                    card,
-                    {
-                        Xchip_mod = card.ability.extra.Xchips,
-                        message = localize(
-                            {type = "variable", key = "a_xchips", vars = {number_format(card.ability.extra.Xchips)}}
-                        )
-                    }
-                )
-                SMODS.eval_this(
-                    card,
-                    {
-                        Xmult_mod = card.ability.extra.Xmult,
-                        message = localize(
-                            {type = "variable", key = "a_xmult", vars = {number_format(card.ability.extra.Xmult)}}
-                        )
-                    }
-                )
-				SMODS.eval_this(
-                    card,
-                    {
-                        echips_mod = card.ability.extra.Echips,
-                        message = localize(
-                            {type = "variable", key = "a_echips", vars = {number_format(card.ability.extra.Echips)}}
-                        )
-                    }
-                )
-				SMODS.eval_this(
-                    card,
-                    {
-                        eemult_mod = card.ability.extra.Emult,
-                        message = localize(
-                            {type = "variable", key = "a_emult", vars = {number_format(card.ability.extra.Emult)}}
-                        )
-                    }
-                )
-				SMODS.eval_this(
-                    card,
-                    {
-                        eemult_mod = card.ability.extra.Tmult,
-                        message = localize(
-                            {type = "variable", key = "a_eemult", vars = {number_format(card.ability.extra.Tmult)}}
-                        )
-                    }
-                )
-    
-                return {}
-            end
-            if context.cardarea == G.jokers and not context.before and not context.after then
-                ease_dollars(card.ability.extra.money)
+            end,
+            loc_vars = function(self, info_queue, center)
                 return {
-                    message = "+" .. number_format(card.ability.extra.money) .. " Dollars",
-                    colour = G.C.MONEY
-                }
-            end
-        end
-    end,
-    loc_vars = function(self, info_queue, center)
-        return {vars = {center.ability.extra.chips, center.ability.extra.chips_mod, center.ability.extra.mult, center.ability.extra.mult_mod, center.ability.extra.Xchips, center.ability.extra.Xchips_mod, center.ability.extra.Xmult, center.ability.extra.Xmult_mod, center.ability.extra.money, center.ability.extra.money_mod, center.ability.extra.Echips, center.ability.extra.Echips_mod, center.ability.extra.Emult, center.ability.extra.Emult_mod, center.ability.extra.Tmult, center.ability.extra.Tmult_mod, }}
-    end,
-})
-    
-
+                    vars = {
+                    center.ability.extra.chips, center.ability.extra.chips_mod,
+                    center.ability.extra.mult, center.ability.extra.mult_mod,
+                    center.ability.extra.Xchips, center.ability.extra.Xchips_mod,
+                        center.ability.extra.Xmult, center.ability.extra.Xmult_mod,
+                        center.ability.extra.money, center.ability.extra.money_mod,
+                        center.ability.extra.Echips, center.ability.extra.Echips_mod,
+                        center.ability.extra.Emult, center.ability.extra.Emult_mod, 
+                            center.ability.extra.Tmult, center.ability.extra.Tmult_mod,
+                    }}
+                end,
+            }
     end
 end
 
-SMODS.Joker({
+-- Joker Bucket
+
+SMODS.Joker {
     key = "bucket",
     loc_txt = {
-        name = "bucket",
+        name = "Bucket",
         text = {"Carry over {C:attention}5%{} of total ",
                 "overscored {C:blue}chips{} to next {C:attention}blind{}",
                 "{C:inactive}Ex: blind is 300 chips and you score 400{}",
                 "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
                 "{C:inactive}so you start the next blind with 5 chips{}",
+                "{C:inactive}Can I haz bukket{}"
 				}
 			},
     config = {extra ={chips_gain = 0  }},
@@ -1347,9 +1527,11 @@ SMODS.Joker({
             return
         end
 	end
-})
+}
 
-SMODS.Joker({
+-- Joker Oak Tree
+
+SMODS.Joker {
 	
 	name = "mc_oak_tree",
 	key = "oak_tree",
@@ -1359,7 +1541,7 @@ SMODS.Joker({
 				"Destroy after #2# Rounds",
             },
     },
-	pos = { x = 2, y = 0 },
+	pos = { x = 1, y = 1 },
 	config = { extra = { logs = 1, life = 5, } },
 	rarity = 2,
 	cost = 6,
@@ -1382,8 +1564,7 @@ SMODS.Joker({
 					message = { "-1 Round" },
 					colour = G.C.FILTER,
 				}
-			end
-			if card.ability.extra.life < 1 then
+            elseif card.ability.extra.life < 1 then -- Could just be an else but eh
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						play_sound("tarot1")
@@ -1408,34 +1589,32 @@ SMODS.Joker({
 			end
 		end
 	end
-})
+}
 
-local upd = Game.update
-function Game:update(dt)
-    upd(self,dt)
-    if G.GAME and G.GAME.round_resets and G.GAME.blind and G.GAME.blind.name == "The Creeper" and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil) and not G.GAME.blind.disabled then
-        if Talisman then
-            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
-                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
-            end
-        else
-            if (G.GAME.chips) < (G.GAME.blind.chips) then
-                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
-            end
-        end
-		if Talisman then
-			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
-				end_round{}
-			end
-		else
-			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not G.GAME.chips < G.GAME.blind.chips then
-				end_round{}
-			end
-		end
-    end
-end
+-- Diamond Pickaxe
+
+SMODS.Joker {
+    key = "dia_pickaxe",
+    loc_txt = {
+        name = "Diamond Pickaxe",
+        text = {
+            "Soon",
+        }
+    },
+    config = {extra = {chips_gain = 0}},
+    rarity = 3,
+    pos = { x = 0, y = 0 },
+    atlas = 'crafted_jokers',
+    cost = 5,
+    blueprint_compat = true,
+	in_pool = function(self)
+		return false
+	end,
+}
+
+-- Creeper Timer Func
+
+
 local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons
 function G.UIDEF.use_and_sell_buttons(card)
 	if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable then --Add a use button
@@ -1513,7 +1692,9 @@ function G.UIDEF.use_and_sell_buttons(card)
 	end
 	return G_UIDEF_use_and_sell_buttons_ref(card)
 end
+
 --Code from Betmma's Vouchers
+
 G.FUNCS.can_reserve_card = function(e)
 	if #G.consumeables.cards < G.consumeables.config.card_limit then
 		e.config.colour = G.C.GREEN
@@ -1523,6 +1704,7 @@ G.FUNCS.can_reserve_card = function(e)
 		e.config.button = nil
 	end
 end
+
 G.FUNCS.reserve_card = function(e)
 	local c1 = e.config.ref_table
 	G.E_MANAGER:add_event(Event({
@@ -1549,10 +1731,34 @@ G.FUNCS.reserve_card = function(e)
 		end,
 	}))
 end
+
+local upd = Game.update
 function Game:update(dt)
 	upd(self, dt)
 	if Incantation and not McIncanCompat then
 		AllowBulkUse("Resource")
 		McIncanCompat = true
 	end
+    if G.GAME and G.GAME.round_resets and G.GAME.blind and G.GAME.blind.name == "The Creeper" and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil) and not G.GAME.blind.disabled then
+        if Talisman then
+            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        else
+            if (G.GAME.chips) < (G.GAME.blind.chips) then
+                G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
+                G.GAME.blind:set_text()
+            end
+        end
+		if Talisman then
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+				end_round{}
+			end
+		else
+			if G.GAME.blind.config.creepertiming <= 0 and G.STATE == G.STATES.SELECTING_HAND and not G.GAME.chips < G.GAME.blind.chips then
+				end_round{}
+			end
+		end
+    end
 end

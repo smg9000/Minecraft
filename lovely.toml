@@ -25,6 +25,7 @@ craftr = {
 	planks = 0,
 	sticks = 0,
 	},
+
 '''
 match_indent = true
 
@@ -97,8 +98,9 @@ target = 'game.lua'
 pattern = '''self.P_LOCKED = {}'''
 position = 'after'
 payload = '''self.P_CRAFTS = {
-   mc_bucket = {order = 1, key = 'mc_bucket', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Bucket", req = {iron = 3}, pos = {x=0,y=0}, set = "Craft", config = {},},
-}'''
+		mc_bucket = {order = 1, key = 'mc_bucket', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Bucket", req = {iron = 3}, pos = {x=0,y=0}, set = "Craft", config = {},},			
+		mc_dia_pickaxe = {order = 1, key = 'mc_dia_pickaxe', unlocked = true, discovered = true, atlas = 'mc_crafted_jokers', cost = 8, name = "Diamond_Pickaxe", req = {diamond = 3, sticks = 2}, pos = {x=0,y=0}, set = "Craft", config = {},},
+}'''	
 match_indent = true
 
 [[patches]]
@@ -231,3 +233,98 @@ payload = '''elseif card and card.area and card.area.config.craft_table then
         }},
     }}'''
 match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = '''if self.ability.name == 'Invisible Joker' and (self.config.center.discovered or self.bypass_discovery_center) then'''
+position = 'before'
+payload = '''if self.ability.enchanted then
+    if self:should_draw_base_shader() then
+        self.children.center:draw_shader('mc_enchant', nil, self.ARGS.send_to_shader)
+    end
+end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''if main_end then'''
+position = 'before'
+payload = '''if card and card.ability.enchant then
+    for i, j in pairs(card.ability.enchant) do
+        localize{type = 'other', key = "enchant_" .. i, nodes = desc_nodes, vars = {j}}
+        info_queue[#info_queue + 1] = {set = "Other", key = "tooltip_" .. i, vars = enchants[i].loc_vars(j)}
+    end
+end'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''local edition = card:get_edition(context)'''
+position = 'before'
+payload = '''local enchant = card:get_enchant(context)
+if enchant then 
+    ret.enchant = enchant
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/common_events.lua'
+pattern = '''jokers = card:get_edition(context)'''
+position = 'after'
+payload = '''local enchant = card:get_enchant(context)
+if enchant then 
+    ret.enchant = enchant
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''local edition_effects = eval_card(_card, {cardarea = G.jokers, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, edition = true})'''
+position = 'after'
+payload = '''if edition_effects.enchant then
+    if edition_effects.enchant.mult_mod then
+        mult = mod_mult(mult + edition_effects.enchant.mult_mod)
+        update_hand_text({delay = 0}, {mult = mult})
+        card_eval_status_text(_card, 'jokers', nil, percent, nil, {
+            message = localize{type='variable',key='a_mult',vars={edition_effects.enchant.mult_mod}},
+            mult_mod =  edition_effects.enchant.mult_mod,
+            colour = G.C.PURPLE,
+            edition =true})
+    end
+end
+'''
+match_indent = true
+
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''if effects[ii].edition then'''
+position = 'before'
+payload = '''if effects[ii].enchant then
+    hand_chips = mod_chips(hand_chips + (effects[ii].enchant.chip_mod or 0))
+    mult = mult + (effects[ii].enchant.mult_mod or 0)
+    mult = mod_mult(mult*(effects[ii].enchant.x_mult_mod or 1))
+    update_hand_text({delay = 0}, {
+        chips = effects[ii].enchant.chip_mod and hand_chips or nil,
+        mult = (effects[ii].enchant.mult_mod or effects[ii].enchant.x_mult_mod) and mult or nil,
+    })
+    card_eval_status_text(scoring_hand[i], 'extra', nil, percent, nil, {
+        message = (effects[ii].enchant.chip_mod and localize{type='variable',key='a_chips',vars={effects[ii].enchant.chip_mod}}) or
+                (effects[ii].enchant.mult_mod and localize{type='variable',key='a_mult',vars={effects[ii].enchant.mult_mod}}) or
+                (effects[ii].enchant.x_mult_mod and localize{type='variable',key='a_xmult',vars={effects[ii].enchant.x_mult_mod}}),
+        chip_mod =  effects[ii].enchant.chip_mod,
+        mult_mod =  effects[ii].enchant.mult_mod,
+        x_mult_mod =  effects[ii].enchant.x_mult_mod,
+        colour = G.C.PURPLE,
+        edition =true})
+end
+'''
+match_indent = true
+

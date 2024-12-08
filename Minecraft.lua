@@ -516,7 +516,7 @@ function SMODS.current_mod.process_loc_text()
 				"to gain {C:attention}1{} random {C:attention}resource{}",
                 "Destroy {C:attention}Deepslate cards{} in {C:attention}played hand{} ",
                 "to gain {C:attention}2{} random {C:attention}resources{}",
-				"{C:dark_edition,s:0.7}art by : lolXDdj{}",
+				"{C:dark_edition,s:0.7}Art by : lolxDdj{}",
             }
         }
     }
@@ -1323,7 +1323,7 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                     "{C:inactive}(Currently {X:dark_edition,C:white} ^#11# {C:inactive} Chips)",
                     "{C:inactive}(Currently {X:dark_edition,C:white} ^#13# {C:inactive} Mult)",
                     "{C:inactive}(Currently {X:dark_edition,C:white} ^^#15# {C:inactive} Mult)",
-					"{C:dark_edition,s:0.7}art by : GudUsername{}",					
+					"{C:dark_edition,s:0.7}Art by : GudUsername{}",					
                 },
             },
             config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, Xchips = 1, Xchips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  Tmult = 1, Tmult_mod = 0.5,  }},
@@ -1619,7 +1619,7 @@ SMODS.Joker {
 				"to gain {C:attention}1{} random {C:attention}resource{}",
                 "Destroy {C:attention}Deepslate cards{} in {C:attention}played hand{} ",
                 "to gain {C:attention}2{} random {C:attention}resources{}",
-				"{C:dark_edition,s:0.7}art by : lolXDdj{}",
+				"{C:dark_edition,s:0.7}art by : lolxDdj{}",
         }
     },
     config = {},

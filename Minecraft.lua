@@ -238,6 +238,11 @@ function craft_joker(card)
 		G.jokers:emplace(bucket)
 		bucket:add_to_deck()
     end
+	if key == "mc_dia_pickaxe"  then
+        local pickaxe = SMODS.create_card{key = "j_mc_dia_pickaxe" }
+		G.jokers:emplace(pickaxe)
+		pickaxe:add_to_deck()
+    end
 end
 
 G.FUNCS.can_craft = function(e)
@@ -507,10 +512,11 @@ function SMODS.current_mod.process_loc_text()
 		mc_dia_pickaxe = {
             name = "Diamond Pickaxe",
             text = {
-                "Destroy Stone cards in played hand to gain a random resource",
-				"to gain 1 random resource",
-                "Destroy Deepslate cards in played hand ",
-                "to gain 2 random resources",
+				"Destroy {C:attention}Stone cards{} in {C:attention}played hand{} ",
+				"to gain {C:attention}1{} random {C:attention}resource{}",
+                "Destroy {C:attention}Deepslate cards{} in {C:attention}played hand{} ",
+                "to gain {C:attention}2{} random {C:attention}resources{}",
+				"{C:dark_edition,s:0.7}art by : lolXDdj{}",
             }
         }
     }
@@ -558,7 +564,7 @@ function random_enchant(card, level)
     for i, j in pairs(enchants) do
         if j[type_] then
             local base = 0
-            while pseudorandom('mc_enchant') < 0.10 + 0.05	 * level do
+            while pseudorandom('mc_enchant') < 0.10 + 0.05* level do
                 base = base + 1
                 if base == j.max then
                     break
@@ -996,6 +1002,7 @@ SMODS.Spectral {
 
 local deepslate_card = SMODS.Enhancement {
     key = 'deepslate',
+	name = 'Deepslate Card',
     loc_txt = {
         name = 'Deepslate Card',
         text = {
@@ -1315,7 +1322,8 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                     "{C:inactive}(Currently {X:mult,C:white} X#7# {C:inactive} Mult)",
                     "{C:inactive}(Currently {X:dark_edition,C:white} ^#11# {C:inactive} Chips)",
                     "{C:inactive}(Currently {X:dark_edition,C:white} ^#13# {C:inactive} Mult)",
-                    "{C:inactive}(Currently {X:dark_edition,C:white} ^^#15# {C:inactive} Mult)", 
+                    "{C:inactive}(Currently {X:dark_edition,C:white} ^^#15# {C:inactive} Mult)",
+					"{C:dark_edition,s:0.7}art by : GudUsername{}",					
                 },
             },
             config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, Xchips = 1, Xchips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  Tmult = 1, Tmult_mod = 0.5,  }},
@@ -1546,8 +1554,8 @@ SMODS.Joker {
 	key = "oak_tree",
 	loc_txt = {
         name = "Oak Tree",
-        text = {"at end of Round give #1# logs",
-				"Destroy after #2# Rounds",
+        text = {"at end of Round give {C:attention}#1#{} logs",
+				"Destroy after {C:attention}#2#{} Rounds",
             },
     },
 	pos = { x = 1, y = 1 },
@@ -1607,15 +1615,16 @@ SMODS.Joker {
     loc_txt = {
         name = "Diamond Pickaxe",
         text = {
-				"Destroy Stone cards in played hand to gain a random resource",
-				"to gain 1 random resource",
-                "Destroy Deepslate cards in played hand ",
-                "to gain 2 random resources",
+				"Destroy {C:attention}Stone cards{} in {C:attention}played hand{} ",
+				"to gain {C:attention}1{} random {C:attention}resource{}",
+                "Destroy {C:attention}Deepslate cards{} in {C:attention}played hand{} ",
+                "to gain {C:attention}2{} random {C:attention}resources{}",
+				"{C:dark_edition,s:0.7}art by : lolXDdj{}",
         }
     },
     config = {},
     rarity = 3,
-    pos = { x = 0, y = 0 },
+    pos = { x = 1, y = 0 },
     atlas = 'crafted_jokers',
     cost = 5,
     blueprint_compat = true,
@@ -1623,8 +1632,32 @@ SMODS.Joker {
 		return false
 	end,
 	calculate = function(self, card, context)
-	
-	end
+		if context.destroying_card and context.destroying_card.ability.name == 'Stone Card'and not context.blueprint then 
+			local givable_resource ={
+			"coal",
+			"copper",
+			"iron",
+			"gold",
+			"lapis",
+			}
+			local give_resource = pseudorandom_element(givable_resource)
+			add_craft_resource(give_resource,1,card,true)
+			return true
+		elseif context.destroying_card and context.destroying_card.ability.name == 'Deepslate Card'and not context.blueprint then 
+			local givable_resource2 ={
+			"redstone",
+			"diamond",
+			"emerald",
+			"netherite",
+			"quartz",
+			}
+			local give_resource2= pseudorandom_element(givable_resource2)
+			local give_resource3= pseudorandom_element(givable_resource2)
+			add_craft_resource(give_resource2,1,card,true)
+			add_craft_resource(give_resource3,1,card,true)
+			return true
+		end			
+	end	
 }
 
 -- Creeper Timer Func

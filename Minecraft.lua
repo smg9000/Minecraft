@@ -503,6 +503,15 @@ function SMODS.current_mod.process_loc_text()
                 "{C:inactive}the overscored chips is 100 and 5% of that is 5{}",
                 "{C:inactive}so you start the next blind with 5 chips{}",
             }
+        },
+		mc_dia_pickaxe = {
+            name = "Diamond Pickaxe",
+            text = {
+                "Destroy Stone cards in played hand to gain a random resource",
+				"to gain 1 random resource",
+                "Destroy Deepslate cards in played hand ",
+                "to gain 2 random resources",
+            }
         }
     }
     G.localization.descriptions.Other["enchant_sharpness"] = {
@@ -549,7 +558,7 @@ function random_enchant(card, level)
     for i, j in pairs(enchants) do
         if j[type_] then
             local base = 0
-            while pseudorandom('mc_enchant') < 0.10 + 0.05 * level do
+            while pseudorandom('mc_enchant') < 0.10 + 0.05	 * level do
                 base = base + 1
                 if base == j.max then
                     break
@@ -1598,10 +1607,13 @@ SMODS.Joker {
     loc_txt = {
         name = "Diamond Pickaxe",
         text = {
-            "Soon",
+				"Destroy Stone cards in played hand to gain a random resource",
+				"to gain 1 random resource",
+                "Destroy Deepslate cards in played hand ",
+                "to gain 2 random resources",
         }
     },
-    config = {extra = {chips_gain = 0}},
+    config = {},
     rarity = 3,
     pos = { x = 0, y = 0 },
     atlas = 'crafted_jokers',
@@ -1610,6 +1622,9 @@ SMODS.Joker {
 	in_pool = function(self)
 		return false
 	end,
+	calculate = function(self, card, context)
+	
+	end
 }
 
 -- Creeper Timer Func

@@ -108,6 +108,8 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     vec2 adjusted_uv = uv - vec2(0.5, 0.5);
     adjusted_uv.x = adjusted_uv.x*texture_details.b/texture_details.a;
 
+		float t = enchant.y*7.221 + time;
+
     number low = min(tex.r, min(tex.g, tex.b));
     number high = max(tex.r, max(tex.g, tex.b));
 	number delta = min(high, max(0.5, 1. - low));
@@ -119,12 +121,14 @@ vec4 effect( vec4 colour, Image texture, vec2 texture_coords, vec2 screen_coords
     number fac3 = 0.3*max(min(2.*sin(enchant.r*5. + uv.x*3. + 3.*(1.+0.5*cos(enchant.r*7.))) - 1., 1.), -1.);
     number fac4 = 0.3*max(min(2.*sin(enchant.r*6.66 + uv.y*3.8 + 3.*(1.+0.5*cos(enchant.r*3.414))) - 1., 1.), -1.);
 
-    number maxfac = max(max(fac, max(fac2, max(fac3, max(fac4, 0.0)))) + 2.2*(fac+fac2+fac3+fac4), 0.);
+    number maxfac = -abs(cos(4.5*uv.x + 14*uv.y + 0.2*t) + 0.25*cos(18*uv.x + 60*uv.y + 0.5*t)) + 0.2*cos(0.2*t);
+    number maxfacx = 1-abs(cos(4.5*uv.x + 0.2*t) + 0.25*cos(18*uv.x - 0.5*t)) + 0.2*cos(0.2*t);
+    number subfac1 = abs(sin(0.1*uv.x + 0.1*uv.y + 0.4*t));
 
-    tex.r = tex.r - 0.1*delta + delta*maxfac*1.9;
-    tex.g = tex.g - delta + delta*maxfac*0.3;
-    tex.b = tex.b - 0.2*delta + delta*maxfac*1.9;
-    tex.a = min(tex.a, 0.3*tex.a + 0.9*min(0.5, maxfac*0.1));
+    	tex.r = tex.r - 0.1*delta + (maxfac +maxfacx)*1.9;
+    	tex.g = tex.g - delta + (maxfac +maxfacx)*0.3;
+    	tex.b = tex.b - 0.2*delta + (maxfac +maxfacx)*1.9;
+    	tex.a = min(tex.a, 0.3*tex.a + 0.9*min(0.8, (maxfac +maxfacx)*0.2));
 
     return dissolve_mask(tex, texture_coords, uv);
 }

@@ -10,146 +10,54 @@
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
-function SMODS.SAVE_UNLOCKS()
-    boot_print_stage("Saving Unlocks")
-	G:save_progress()
-    -------------------------------------
-    local TESTHELPER_unlocks = false and not _RELEASE_MODE
-    -------------------------------------
-    if not love.filesystem.getInfo(G.SETTINGS.profile .. '') then
-        love.filesystem.createDirectory(G.SETTINGS.profile ..
-            '')
-    end
-    if not love.filesystem.getInfo(G.SETTINGS.profile .. '/' .. 'meta.jkr') then
-        love.filesystem.append(
-            G.SETTINGS.profile .. '/' .. 'meta.jkr', 'return {}')
-    end
+SMODS.Crafts = {}
+    SMODS.Craft = SMODS.GameObject:extend {
+        obj_table = SMODS.Crafts,
+        obj_buffer = {},
+        set = 'Craft',
+        required_params = {
+            'key',
+			"req",
+        },
+        inject = function(self)
+            G.P_CRAFTS[self.key] = {}
+			table.insert(G.P_CENTER_POOLS.Craft, self)
+        end,
+		post_inject_class = function(self)
+			table.sort(G.P_CENTER_POOLS[self.set], function(a, b) return a.order < b.order end)
+		end,
+        process_loc_text = function(self)
+            SMODS.process_loc_text(G.localization.misc.labels, "k_"..self.key:lower(), self.loc_txt, 'name')
+            SMODS.process_loc_text(G.localization.misc.dictionary, "k_"..self.key:lower(), self.loc_txt, 'name')
+        end,
+    }
+SMODS.Craft {
+        order = 1,
+		key = 'mc_bucket',
+		unlocked = true,
+		discovered = true,
+		atlas = 'mc_crafted_jokers',
+		cost = 8,
+		name = "Bucket",
+		req = {iron = 3},
+		pos = {x=0,y=0},
+		set = "Craft",
+		config = {},			
+    }
+SMODS.Craft {
+        order = 1,
+		key = 'mc_dia_pickaxe',
+		unlocked = true,
+		discovered = true,
+		atlas = 'mc_crafted_jokers',
+		cost = 8, name = "Diamond_Pickaxe",
+		req = {diamond = 3, sticks = 2},
+		pos = {x=1,y=0},
+		set = "Craft",
+		config = {},
+    }
 
-    convert_save_to_meta()
 
-    local meta = STR_UNPACK(get_compressed(G.SETTINGS.profile .. '/' .. 'meta.jkr') or 'return {}')
-    meta.unlocked = meta.unlocked or {}
-    meta.discovered = meta.discovered or {}
-    meta.alerted = meta.alerted or {}
-
-    G.P_LOCKED = {}
-    for k, v in pairs(G.P_CENTERS) do
-        if not v.wip and not v.demo then
-            if TESTHELPER_unlocks then
-                v.unlocked = true; v.discovered = true; v.alerted = true
-            end --REMOVE THIS
-            if not v.unlocked and meta.unlocked[k] then
-                v.unlocked = true
-            end
-            if not v.unlocked then
-                G.P_LOCKED[#G.P_LOCKED + 1] = v
-            end
-            if not v.discovered and meta.discovered[k] then
-                v.discovered = true
-            end
-            if v.discovered and meta.alerted[k] or v.set == 'Back' or v.start_alerted then
-                v.alerted = true
-            elseif v.discovered then
-                v.alerted = false
-            end
-        end
-    end
-
-	table.sort(G.P_LOCKED, function (a, b) return a.order and b.order and a.order < b.order end)
-
-	for k, v in pairs(G.P_BLINDS) do
-        v.key = k
-        if not v.wip and not v.demo then 
-            if TESTHELPER_unlocks then v.discovered = true; v.alerted = true  end --REMOVE THIS
-            if not v.discovered and meta.discovered[k] then 
-                v.discovered = true
-            end
-            if v.discovered and meta.alerted[k] then 
-                v.alerted = true
-            elseif v.discovered then
-                v.alerted = false
-            end
-        end
-    end
-	for k, v in pairs(G.P_TAGS) do
-        v.key = k
-        if not v.wip and not v.demo then 
-            if TESTHELPER_unlocks then v.discovered = true; v.alerted = true  end --REMOVE THIS
-            if not v.discovered and meta.discovered[k] then 
-                v.discovered = true
-            end
-            if v.discovered and meta.alerted[k] then 
-                v.alerted = true
-            elseif v.discovered then
-                v.alerted = false
-            end
-        end
-    end
-    for k, v in pairs(G.P_SEALS) do
-        v.key = k
-        if not v.wip and not v.demo then
-            if TESTHELPER_unlocks then
-                v.discovered = true; v.alerted = true
-            end                                                                   --REMOVE THIS
-            if not v.discovered and meta.discovered[k] then
-                v.discovered = true
-            end
-            if v.discovered and meta.alerted[k] then
-                v.alerted = true
-            elseif v.discovered then
-                v.alerted = false
-            end
-        end
-    end
-
-	for k, v in pairs(G.P_SKILLS or {}) do
-        v.key = k
-        if not v.wip and not v.demo then 
-            if TESTHELPER_unlocks then
-                v.unlocked = true; v.discovered = true; v.alerted = true
-            end --REMOVE THIS
-            if not v.unlocked and meta.unlocked[k] then
-                v.unlocked = true
-            end
-            if not v.discovered and meta.discovered[k] then
-                v.discovered = true
-            end
-            if v.discovered then
-                v.alerted = false
-            end
-        end
-    end
-
-    for k, v in pairs(G.P_CRAFTS or {}) do
-        v.key = k
-        if not v.wip and not v.demo then 
-            if TESTHELPER_unlocks then
-                v.unlocked = true; v.discovered = true; v.alerted = true
-            end --REMOVE THIS
-            if not v.unlocked and meta.unlocked[k] then
-                v.unlocked = true
-            end
-            if not v.discovered and meta.discovered[k] then
-                v.discovered = true
-            end
-            if v.discovered then
-                v.alerted = false
-            end
-        end
-    end
-    for _, t in ipairs{
-        G.P_CENTERS,
-        G.P_BLINDS,
-        G.P_TAGS,
-        G.P_SEALS,
-        G.P_SKILLS or {},
-        G.P_CRAFTS or {},
-    } do
-        for k, v in pairs(t) do
-            v._discovered_unlocked_overwritten = true
-        end
-    end
-end
 
 local function get_crafts()
     local shown_crafts = {}
@@ -372,6 +280,8 @@ function G.UIDEF.resource_list()
 		redstone_sprite.states.drag.can = false
 		local quartz_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 10, 0)
 		quartz_sprite.states.drag.can = false
+		local M_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 10, 0)
+		M_sprite.states.drag.can = false
 
     local text = "Resources"
     local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
@@ -388,66 +298,71 @@ function G.UIDEF.resource_list()
     local lapis = "Lapis: " .. tostring(G.GAME.craftr["lapis"])
     local redstone = "Redstone: " .. tostring(G.GAME.craftr["redstone"])
     local quartz = "Quartz: " .. tostring(G.GAME.craftr["quartz"])
+	local M = "M: " .. tostring(G.GAME.craftr["m"])
     
     local texti = "  " 
-    local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
-        {n=G.UIT.R, config={align = "cm"},nodes={
+    local t = {n=G.UIT.ROOT, config={align = "tl", colour = G.C.CLEAR}, nodes = {
+        {n=G.UIT.R, config={align = "tl"},nodes={
             {n=G.UIT.T, config={text = text, scale = 0.42, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = dirt_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = coal_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = textb, scale = 0.35, colour = HEX("252525"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = copper_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = textc, scale = 0.35, colour = HEX("E27753"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = iron_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = textd, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = gold_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = texte, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = diamond_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = textf, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = emerald_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = textg, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = netherite_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = lapis_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = lapis, scale = 0.35, colour = HEX("26619c"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = redstone_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = redstone, scale = 0.35, colour = HEX("d40000"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = quartz_sprite, hover = true, can_collide = false}},
             {n=G.UIT.T, config={text = quartz, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+		{n=G.UIT.R, config={align = "tl"},nodes={
+			{n=G.UIT.O, config = {object = M_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = M, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
+        }},
+        {n=G.UIT.R, config={align = "tl"},nodes={
             {n=G.UIT.T, config={text = textj, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
             {n=G.UIT.T, config={text = textk, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
             {n=G.UIT.T, config={text = textl, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
-        {n=G.UIT.R, config={align = "cm"},nodes={
+        {n=G.UIT.R, config={align = "tl"},nodes={
             {n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
         {n=G.UIT.B, config={h=0.5,w=0,align = "cm"},nodes={}},
@@ -497,6 +412,7 @@ function SMODS.current_mod.process_loc_text()
     G.localization.misc.dictionary['redstone'] = "Redstone"
     G.localization.misc.dictionary['quartz'] = "Quartz"
     G.localization.misc.dictionary['logs'] = "Logs"
+	G.localization.misc.dictionary['m'] = "M"
  
 	G.localization.descriptions.Craft = {
         mc_bucket = {
@@ -516,7 +432,7 @@ function SMODS.current_mod.process_loc_text()
 				"to gain {C:attention}1{} random {C:attention}resource{}",
                 "Destroy {C:attention}Deepslate cards{} in {C:attention}played hand{} ",
                 "to gain {C:attention}2{} random {C:attention}resources{}",
-				"{C:dark_edition,s:0.7}Art by : lolxDdj{}",
+              	"{C:dark_edition,s:0.7}Art by : lolxDdj{}",
             }
         }
     }
@@ -678,7 +594,7 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
     can_use = function(self, card) 
         return true
     end,
-    config = {extra = {amount = 1 }},
+    
     set_badges = function(self, card, badges)
         local colours = {
             Common = HEX('FE5F55'),
@@ -693,9 +609,7 @@ SMODS.MC_Resource = SMODS.Consumable:extend {
         local size = 1.3 - (len > 5 and 0.02 * (len - 5) or 0)
         badges[#badges + 1] = create_badge(self.rarity, colours[self.rarity], nil, size)
     end,
-    loc_vars = function(self)
-        return {vars = {self.config.extra.amount} }
-    end
+	
     --This makes it so much nicer to add shit to the resource cards Oh my god
 }
 
@@ -712,7 +626,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Dirt',
         text = {
-            "Gives {C:HEX('B38159')}#1# Dirt{} Resource",
+            "Gives {C:attention}#1# Dirt{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}",
 			"I've Got a jar o' Dirrrt."
         },
@@ -729,6 +643,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -738,7 +656,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Coal',
         text = {
-			"Gives {C:HEX('252525')}#1# Coal{} Resource",
+			"Gives {C:attention}#1# Coal{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -754,6 +672,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -763,7 +685,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Copper',
         text = {
-			"Gives {C:HEX('E27753')}#1# Copper{} Resource",
+			"Gives {C:attention}#1# Copper{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -779,6 +701,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -788,7 +714,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Iron',
         text = {
-			"Gives {C:HEX('D1D1D1')}#1# Iron{} Resource",
+			"Gives {C:attention}#1# Iron{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -804,6 +730,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -813,7 +743,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Gold',
         text = {
-			"Gives {C:HEX('F4ED5C'}#1# Gold{} Resource",
+			"Gives {C:attention}#1# Gold{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -829,6 +759,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -838,7 +772,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Diamond',
         text = {
-			"Gives {C:HEX('6CEEE6')}#1# Diamond{} Resource",
+			"Gives {C:attention}#1# Diamond{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -854,6 +788,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -863,7 +801,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Emerald',
         text = {
-			"Gives {C:HEX('16D65F')}#1# Emerald{} Resource",
+			"Gives {C:attention}#1# Emerald{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -879,6 +817,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -888,7 +830,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Netherite',
         text = {
-			"Gives {C:HEX('101010')}#1# Netherite{} Resource",
+			"Gives {C:attention}#1# Netherite{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -904,6 +846,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -912,7 +858,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Lapis',
         text = {
-			"Gives {C:HEX('101010')}#1# Lapis{} Resource",
+			"Gives {C:attention}#1# Lapis{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -928,6 +874,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -936,7 +886,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Redstone',
         text = {
-			"Gives {C:HEX('101010')}#1# Redstone{} Resource",
+			"Gives {C:attention}#1# Redstone{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -952,6 +902,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.MC_Resource({
@@ -961,7 +915,7 @@ SMODS.MC_Resource({
     loc_txt = {
         name = 'Quartz',
         text = {
-			"Gives {C:HEX('101010')}#1# Quartz{} Resource",
+			"Gives {C:attention)}#1# Quartz{} Resource",
 			"{C:inactive}Go to Run Info and Crafting to see the crafts{}"
         },
     },
@@ -977,6 +931,10 @@ SMODS.MC_Resource({
 	can_use = function(self, card)
         return true
     end,
+	config = {extra = {amount = 1 }},
+    loc_vars = function(self)
+        return {vars = {self.config.extra.amount} }
+    end
 })
 
 SMODS.Spectral {
@@ -1280,7 +1238,7 @@ SMODS.Joker {
         text = {"gains 2 consumable slots",
             },
     },
-	pos = { x = 1, y = 0 },
+	pos = { x = 0, y = 1 },
 	config = { extra = { bundle = 2 } },
 	rarity = 2,
 	cost = 6,
@@ -1326,7 +1284,7 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
 					"{C:dark_edition,s:0.7}Art by : GudUsername{}",					
                 },
             },
-            config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, Xchips = 1, Xchips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  Tmult = 1, Tmult_mod = 0.5,  }},
+            config = {extra ={chips = 15, chips_mod = 15, mult = 15, mult_mod = 15, x_chips = 1, x_chips_mod = 1, Xmult = 1, Xmult_mod = 1, money = 5, money_mod = 5, Echips = 1, Echips_mod = 0.5, Emult = 1, Emult_mod = 0.5,  EEmult = 1, EEmult_mod = 0.5,  }},
             rarity = "cry_exotic",
             pos = { x = 0, y = 0 },
 			soul_pos = { x = 1, y = 0, extra = { x = 2, y = 0 } },
@@ -1365,9 +1323,9 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
                              {message = "+"..number_format(to_big(card.ability.extra.mult_mod)).." Mult"})
                         elseif card_key == "mc_copper" then
-                            card.ability.extra.Xchips = card.ability.extra.Xchips + card.ability.extra.Xchips_mod * quota
+                            card.ability.extra.x_chips = card.ability.extra.x_chips + card.ability.extra.x_chips_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                             {message = "+"..number_format(card.ability.extra.Xchips).." Chips"})
+                             {message = "+"..number_format(card.ability.extra.x_chips).." Chips"})
                         elseif card_key == "mc_iron" then 
                             card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
@@ -1385,9 +1343,9 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
                              {message = "+^"..number_format(card.ability.extra.Echips).." Chips"})
                         elseif card_key == "mc_netherite" then
-                            card.ability.extra.Tmult = card.ability.extra.Tmult +  card.ability.extra.Tmult_mod * quota
+                            card.ability.extra.EEmult = card.ability.extra.EEmult +  card.ability.extra.EEmult_mod * quota
                             card_eval_status_text((context.blueprint_card or card), 'extra', nil, nil, nil,
-                             {message = "+^^"..number_format(card.ability.extra.Tmult).."Mult"})
+                             {message = "+^^"..number_format(card.ability.extra.EEmult).."Mult"})
             
                         -- else if card_key == "mc_lapis" then
                         -- else if card_key == "mc_redstone" then
@@ -1426,15 +1384,9 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                                 )
                             }
                         )
-                        SMODS.eval_this(
-                            card,
-                            {
-                                Xchip_mod = card.ability.extra.Xchips,
-                                message = localize(
-                                    {type = "variable", key = "a_xchips", vars = {number_format(card.ability.extra.Xchips)}}
-                                )
-                            }
-                        )
+                        hand_chips = mod_chips(to_big(hand_chips) * card.ability.extra.x_chips)
+						update_hand_text({delay = 0}, {chips = hand_chips})
+						card_eval_status_text(card, 'jokers', nil, percent, nil, {message = localize{type='variable',key='a_xchips',vars={card.ability.extra.x_chips}}, Xchips_mod = card.ability.extra.x_chips})
                         SMODS.eval_this(
                             card,
                             {
@@ -1443,42 +1395,24 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                                     {type = "variable", key = "a_xmult", vars = {number_format(card.ability.extra.Xmult)}}
                                 )
                             }
-                        )
-                        SMODS.eval_this(
-                            card,
-                            {
-                                e_chips = card.ability.extra.Echips,
-                                message = localize(
-                                    {type = "variable", key = "a_e_chips", vars = {number_format(card.ability.extra.Echips)}}
-                                )
-                            }
-                        )
-                        SMODS.eval_this(
-                            card,
-                            {
-                                e_mult = card.ability.extra.Emult,
-                                message = localize(
-                                    {type = "variable", key = "a_e_mult", vars = {number_format(card.ability.extra.Emult)}}
-                                )
-                            }
-                        )
-                        SMODS.eval_this(
-                            card,
-                            {
-                                ee_mult = card.ability.extra.Tmult,
-                                message = localize(
-                                    {type = "variable", key = "a_ee_mult", vars = {number_format(card.ability.extra.Tmult)}}
-                                )
-                            }
-                        )
-            
+                        )	
+
+                        mult = mod_mult(to_big(mult) ^ card.ability.extra.Emult)
+						update_hand_text({delay = 0}, {mult = mult})
+						card_eval_status_text(card, 'jokers', nil, percent, nil, {message = localize{type='variable',key='a_powmult',vars={card.ability.extra.Emult}}, powmult_mod = card.ability.extra.Emult})
+                        hand_chips = mod_chips(to_big(hand_chips) ^ card.ability.extra.Echips)
+						update_hand_text({delay = 0}, {chips = hand_chips})
+						card_eval_status_text(card, 'jokers', nil, percent, nil, {message = localize{type='variable',key='a_powchips',vars={card.ability.extra.Echips}}, Echips_mod = card.ability.extra.Echips})
+						mult = mod_mult(to_big(mult):arrow(2,card.ability.extra.EEmult))
+						update_hand_text({delay = 0}, {mult = mult})
+						card_eval_status_text(card, 'jokers', nil, percent, nil, {message = '^^' .. card.ability.extra.EEmult .. ' Mult',})
                         return {}
                     end
                     if context.cardarea == G.jokers and not context.before and not context.after then
                         ease_dollars(card.ability.extra.money)
                         return {
                             message = "+" .. number_format(card.ability.extra.money) .. " Dollars",
-                            colour = G.C.MONEY
+                            colour = G.C.MONEYD
                         }
                     end
                 end
@@ -1488,12 +1422,12 @@ if (SMODS.Mods.Cryptid or {}).can_load then -- checks if Cryptid is enabled
                     vars = {
                     center.ability.extra.chips, center.ability.extra.chips_mod,
                     center.ability.extra.mult, center.ability.extra.mult_mod,
-                    center.ability.extra.Xchips, center.ability.extra.Xchips_mod,
+                    center.ability.extra.x_chips, center.ability.extra.x_chips_mod,
                         center.ability.extra.Xmult, center.ability.extra.Xmult_mod,
                         center.ability.extra.money, center.ability.extra.money_mod,
                         center.ability.extra.Echips, center.ability.extra.Echips_mod,
                         center.ability.extra.Emult, center.ability.extra.Emult_mod, 
-                            center.ability.extra.Tmult, center.ability.extra.Tmult_mod,
+                            center.ability.extra.EEmult, center.ability.extra.EEmult_mod,
                     }}
                 end,
             }
@@ -1622,7 +1556,7 @@ SMODS.Joker {
 				"{C:dark_edition,s:0.7}art by : lolxDdj{}",
         }
     },
-    config = {},
+    config = {extra = {amount1 = 1, amount2 = 2}},
     rarity = 3,
     pos = { x = 1, y = 0 },
     atlas = 'crafted_jokers',
@@ -1641,7 +1575,7 @@ SMODS.Joker {
 			"lapis",
 			}
 			local give_resource = pseudorandom_element(givable_resource)
-			add_craft_resource(give_resource,1,card,true)
+			add_craft_resource(give_resource,card.ability.extra.amount1,card,true)
 			return true
 		elseif context.destroying_card and context.destroying_card.ability.name == 'Deepslate Card'and not context.blueprint then 
 			local givable_resource2 ={
@@ -1653,8 +1587,8 @@ SMODS.Joker {
 			}
 			local give_resource2= pseudorandom_element(givable_resource2)
 			local give_resource3= pseudorandom_element(givable_resource2)
-			add_craft_resource(give_resource2,1,card,true)
-			add_craft_resource(give_resource3,1,card,true)
+			add_craft_resource(give_resource2,card.ability.extra.amount2/2,card,true)
+			add_craft_resource(give_resource3,card.ability.extra.amount2/2,card,true)
 			return true
 		end			
 	end	

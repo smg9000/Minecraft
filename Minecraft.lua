@@ -1549,14 +1549,14 @@ SMODS.Joker {
     loc_txt = {
         name = "Diamond Pickaxe",
         text = {
-				"Destroy {C:attention}Stone cards{} in {C:attention}played hand{} ",
-				"to gain {C:attention}1{} random {C:attention}resource{}",
+		"Destroy {C:attention}Stone cards{} in {C:attention}played hand{} ",
+		"to gain {C:attention}#1#{} random {C:attention}resource{} and {C:attention}#3# Cobblestone{}",
                 "Destroy {C:attention}Deepslate cards{} in {C:attention}played hand{} ",
-                "to gain {C:attention}2{} random {C:attention}resources{}",
-				"{C:dark_edition,s:0.7}art by : lolxDdj{}",
+                "to gain {C:attention}#2#{} random {C:attention}resources{}", 
+		"{C:dark_edition,s:0.7}art by : lolxDdj{}",
         }
     },
-    config = {extra = {amount1 = 1, amount2 = 2}},
+    config = {extra = {amount1 = 1, amount2 = 2, amount = 1 }},
     rarity = 3,
     pos = { x = 1, y = 0 },
     atlas = 'crafted_jokers',
@@ -1576,6 +1576,7 @@ SMODS.Joker {
 			}
 			local give_resource = pseudorandom_element(givable_resource)
 			add_craft_resource(give_resource,card.ability.extra.amount1,card,true)
+			add_craft_resource("cobblestone",card.ability.extra.amount3,card,true)
 			return true
 		elseif context.destroying_card and context.destroying_card.ability.name == 'Deepslate Card'and not context.blueprint then 
 			local givable_resource2 ={

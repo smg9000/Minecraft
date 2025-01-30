@@ -260,6 +260,8 @@ function G.UIDEF.resource_list()
 	_scale = 1
 		local dirt_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 0, 0)
 		dirt_sprite.states.drag.can = false
+		local cobble_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 0, 0)
+		cobble_sprite.states.drag.can = false
 		local coal_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 1, 0)
 		coal_sprite.states.drag.can = false
 		local copper_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 2, 0)
@@ -283,22 +285,27 @@ function G.UIDEF.resource_list()
 		local M_sprite = create_resource_sprite(0, 0, _scale*0.5, _scale*0.5, 10, 0)
 		M_sprite.states.drag.can = false
 
+
+
+
+	
     local text = "Resources"
-    local texta = "Dirt: " .. tostring(G.GAME.craftr["dirt"])
-    local textb = "Coal: " .. tostring(G.GAME.craftr["coal"])
-    local textc = "Copper: " .. tostring(G.GAME.craftr["copper"])
-    local textd = "Iron: " .. tostring(G.GAME.craftr["iron"])
-    local texte = "Gold: " .. tostring(G.GAME.craftr["gold"])
-    local textf = "Diamond: " .. tostring(G.GAME.craftr["diamond"])
-    local textg = "Emerald: " .. tostring(G.GAME.craftr["emerald"])
-    local texth = "Netherite: " .. tostring(G.GAME.craftr["netherite"])
-    local textj = "Logs: " .. tostring(G.GAME.craftr["logs"])
-    local textk = "Planks: " .. tostring(G.GAME.craftr["planks"])
-    local textl = "Sticks: " .. tostring(G.GAME.craftr["sticks"])
-    local lapis = "Lapis: " .. tostring(G.GAME.craftr["lapis"])
-    local redstone = "Redstone: " .. tostring(G.GAME.craftr["redstone"])
-    local quartz = "Quartz: " .. tostring(G.GAME.craftr["quartz"])
-	local M = "M: " .. tostring(G.GAME.craftr["m"])
+    local dirt = localize("dirt") .. ": " .. tostring(G.GAME.craftr["dirt"])
+    local cobble = localize("cobblestone") .. ": " .. tostring(G.GAME.craftr["cobblestone"])
+    local coal = localize("coal") .. ": " .. tostring(G.GAME.craftr["coal"])
+    local copper = localize("copper") .. ": " .. tostring(G.GAME.craftr["copper"])
+    local iron = localize("iron") .. ": " .. tostring(G.GAME.craftr["iron"])
+    local gold = localize("gold") .. ": " .. tostring(G.GAME.craftr["gold"])
+    local diamond = localize("diamond") .. ": " .. tostring(G.GAME.craftr["diamond"])
+    local emerald = localize("emerald") .. ": " .. tostring(G.GAME.craftr["emerald"])
+    local netherite = localize("netherite") .. ": " .. tostring(G.GAME.craftr["netherite"])
+    local logs = localize("logs") .. ": " .. tostring(G.GAME.craftr["logs"])
+    local planks = localize("planks") .. ": " .. tostring(G.GAME.craftr["planks"])
+    local sticks = localize("sticks") .. ": " .. tostring(G.GAME.craftr["sticks"])
+    local lapis = localize("lapis") .. ": " .. tostring(G.GAME.craftr["lapis"])
+    local redstone = localize("redstone") .. ": " .. tostring(G.GAME.craftr["redstone"])
+    local quartz = localize("quartz") .. ": " .. tostring(G.GAME.craftr["quartz"])
+	local M = localize("m") .. ": " .. tostring(G.GAME.craftr["m"])
     
     local texti = "  " 
     local t = {n=G.UIT.ROOT, config={align = "tl", colour = G.C.CLEAR}, nodes = {
@@ -307,35 +314,39 @@ function G.UIDEF.resource_list()
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = dirt_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = texta, scale = 0.35, colour = HEX("B38159"), shadow = true}},
+            {n=G.UIT.T, config={text = dirt, scale = 0.35, colour = HEX("B38159"), shadow = true}},
+        }},
+	{n=G.UIT.R, config={align = "tl"},nodes={
+			{n=G.UIT.O, config = {object = cobble_sprite, hover = true, can_collide = false}},
+            {n=G.UIT.T, config={text = cobble, scale = 0.35, colour = HEX("B38159"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = coal_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = textb, scale = 0.35, colour = HEX("252525"), shadow = true}},
+            {n=G.UIT.T, config={text = coal, scale = 0.35, colour = HEX("252525"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = copper_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = textc, scale = 0.35, colour = HEX("E27753"), shadow = true}},
+            {n=G.UIT.T, config={text = copper, scale = 0.35, colour = HEX("E27753"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = iron_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = textd, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
+            {n=G.UIT.T, config={text = iron, scale = 0.35, colour = HEX("D1D1D1"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = gold_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = texte, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
+            {n=G.UIT.T, config={text = gold, scale = 0.35, colour = HEX("F4ED5C"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = diamond_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = textf, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
+            {n=G.UIT.T, config={text = diamond, scale = 0.35, colour = HEX("6CEEE6"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = emerald_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = textg, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
+            {n=G.UIT.T, config={text = emerald, scale = 0.35, colour = HEX("16D65F"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = netherite_sprite, hover = true, can_collide = false}},
-            {n=G.UIT.T, config={text = texth, scale = 0.35, colour = HEX("101010"), shadow = true}},
+            {n=G.UIT.T, config={text = netherite, scale = 0.35, colour = HEX("101010"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
 			{n=G.UIT.O, config = {object = lapis_sprite, hover = true, can_collide = false}},
@@ -354,13 +365,13 @@ function G.UIDEF.resource_list()
             {n=G.UIT.T, config={text = M, scale = 0.35, colour = HEX("ddd4c6"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
-            {n=G.UIT.T, config={text = textj, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+            {n=G.UIT.T, config={text = logs, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
-            {n=G.UIT.T, config={text = textk, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+            {n=G.UIT.T, config={text = planks, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
-            {n=G.UIT.T, config={text = textl, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
+            {n=G.UIT.T, config={text = sticks, scale = 0.35, colour = HEX("c7892a"), shadow = true}},
         }},
         {n=G.UIT.R, config={align = "tl"},nodes={
             {n=G.UIT.T, config={text = texti, scale = 0.35, colour = HEX("101010"), shadow = true}},
@@ -401,6 +412,7 @@ function SMODS.current_mod.process_loc_text()
     G.localization.misc.dictionary["b_craft_sticks"] = "Craft Sticks"
     G.localization.misc.dictionary["k_craft"] = "Craft"
     G.localization.misc.dictionary['dirt'] = "Dirt"
+    G.localization.misc.dictionary['cobblestone'] = "Cobblestone"
     G.localization.misc.dictionary['coal'] = "Coal"
     G.localization.misc.dictionary['copper'] = "Copper"
     G.localization.misc.dictionary['iron'] = "Iron"
@@ -412,7 +424,9 @@ function SMODS.current_mod.process_loc_text()
     G.localization.misc.dictionary['redstone'] = "Redstone"
     G.localization.misc.dictionary['quartz'] = "Quartz"
     G.localization.misc.dictionary['logs'] = "Logs"
-	G.localization.misc.dictionary['m'] = "M"
+	G.localization.misc.dictionary['sticks'] = "Sticks"
+	G.localization.misc.dictionary['planks'] = "Planks"
+    G.localization.misc.dictionary['m'] = "M"
  
 	G.localization.descriptions.Craft = {
         mc_bucket = {

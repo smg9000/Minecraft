@@ -25,6 +25,7 @@ craftr = {
 	planks = 0,
 	sticks = 0,
 	m = 0,
+ 	cobblestone = 0,
 	},
 
 '''

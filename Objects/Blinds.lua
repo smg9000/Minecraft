@@ -1,5 +1,6 @@
+--This file contains boss blinds.
 
-
+--Creeper
 SMODS.Blind{
 	key = "creeper",
 	loc_txt = {
@@ -40,6 +41,7 @@ SMODS.Blind{
     end,
 }
 
+--Wither
 SMODS.Blind{
 	key = "wither",
 	loc_txt = {
@@ -56,6 +58,7 @@ SMODS.Blind{
     vars = {},
 	config = {},
 }
+
 local upd = Game.update
 function Game:update(dt)
 	upd(self, dt)

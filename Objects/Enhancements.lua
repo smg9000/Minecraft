@@ -1,3 +1,5 @@
+--This file contains enhancements
+
 local deepslate_card = SMODS.Enhancement {
     key = 'deepslate',
 	name = 'Deepslate Card',

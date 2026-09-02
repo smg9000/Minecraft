@@ -1,4 +1,6 @@
 
+--TODO: These seem obsolete with the addition of craftsweeper. Remove?
+
 local resourceType = SMODS.ConsumableType {
     key = "Resource",
     primary_colour = HEX("6A5700"),
@@ -142,7 +144,6 @@ SMODS.MC_Resource({
         return {vars = {self.config.extra.amount} }
     end
 })
-
 
 SMODS.MC_Resource({
     key = "mc_copper",

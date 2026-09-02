@@ -1,6 +1,4 @@
-
-
-
+--Add crafting resource
 function add_craft_resource(section, amount, card, message_)
     local message = true
     if message_ ~= nil then

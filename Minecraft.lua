@@ -303,6 +303,7 @@ SMODS.DrawStep{
 
 assert(SMODS.load_file("Utils/UtilFunctions.lua"))() --Utility Functions
 assert(SMODS.load_file("assets/Atlases.lua"))() --Sprite Atlases
+assert(SMODS.load_file("assets/Soundplayer.lua"))() --Sound Player
 assert(SMODS.load_file("Objects/Crafts.lua"))()
 assert(SMODS.load_file("Objects/Resources.lua"))()
 assert(SMODS.load_file("Objects/Blinds.lua"))()

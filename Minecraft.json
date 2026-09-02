@@ -1,0 +1,14 @@
+{
+    "id": "Minecraft",
+    "name": "Minecraft",
+    "author": ["SMG9000", "Mathguy", "Face" ],
+    "description": "a mod that adds minecraft to balatro in a way that you would not expect",
+    "prefix": "mc",
+    "priority": 1000,
+    "main_file": "Minecraft.lua",
+    "dependencies": [
+        "Steamodded (>=1.0.0~BETA-1323c)",
+		"Amulet (>=3.3.2)"
+    ],
+    "version": "0.0.2"
+}

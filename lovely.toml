@@ -24,9 +24,33 @@ craftr = {
 	logs = 0,
 	planks = 0,
 	sticks = 0,
-	m = 0,
  	cobblestone = 0,
+    rotten_flesh = 0,
+    ender_pearl = 0,
+    gunpowder = 0,
+    bone = 0
 	},
+angle = 0,
+resource_ui = nil,
+resource_ui_node = nil,
+available_weapons = {
+    mc_fist = true
+},
+mob_arena_values = {
+    mob_area = "none",
+    current_weapon = 1 ,
+    damage = 1,
+    cooldown = 1,
+    current_mob = nil,
+    mob_hp = 0,
+    mob_total_hp = 0,
+    damage_text = "",
+    cooldown_text= "",
+    timer = 0,
+    timer_text = "",
+    timer_started = false,
+    current_cooldown = 0,
+    },
 
 '''
 match_indent = true
@@ -38,7 +62,9 @@ match_indent = true
 target = 'functions/common_events.lua'
 pattern = '''(_c.set == 'Joker' and G.C.RARITY[_c.rarity]) or'''
 position = 'after'
-payload = '''(_c.set == 'Craft' and G.C.YELLOW) or'''
+payload = '''(_c.set == 'Craft' and HEX('D5D900')) or
+(_c.set == 'Weapon' and G.C.ORANGE) or
+(_c.set == 'Mob' and G.C.GREEN) or'''
 match_indent = true
 
 [[patches]]
@@ -46,7 +72,17 @@ match_indent = true
 target = 'game.lua'
 pattern = '''Stake = {},'''
 position = 'after'
-payload = '''Craft = {},'''
+payload = '''Craft = {},
+Weapon = {},
+Mob = {},
+MC_Resources = {},'''
+match_indent = true
+[[patches]]
+[patches.pattern]
+target = 'conf.lua'
+pattern = '''function love.conf(t),'''
+position = 'after'
+payload = '''   t.window.depth = 48'''
 match_indent = true
 
 
@@ -100,7 +136,14 @@ target = 'game.lua'
 pattern = '''self.P_LOCKED = {}'''
 position = 'after'
 payload = '''self.P_CRAFTS = {
-}'''	
+}
+self.P_WEAPONS = {
+}
+self.P_MOBS = {
+}
+self.P_MC_RESOURCES = {
+}
+'''	
 match_indent = true
 
 [[patches]]
@@ -111,6 +154,10 @@ position = 'after'
 payload = '''for k, v in pairs(G.P_CRAFTS) do
     SMODS._save_d_u(v)
     v._discovered_unlocked_overwritten = true
+end
+for k, v in pairs(G.P_WEAPONS) do
+    SMODS._save_d_u(v)
+    v._discovered_unlocked_overwritten = true
 end'''
 match_indent = true
 
@@ -119,7 +166,10 @@ match_indent = true
 target = 'game.lua'
 pattern = '''table.sort(self.P_CENTER_POOLS["Seal"], function (a, b) return a.order < b.order end)'''
 position = 'after'
-payload = '''table.sort(self.P_CENTER_POOLS["Craft"], function (a, b) return a.order < b.order end)'''
+payload = '''table.sort(self.P_CENTER_POOLS["Craft"], function (a, b) return a.order < b.order end)
+table.sort(self.P_CENTER_POOLS["Weapon"], function (a, b) return a.order < b.order end)
+table.sort(self.P_CENTER_POOLS["Mob"], function (a, b) return a.order < b.order end)
+table.sort(self.P_CENTER_POOLS["MC_Resources"], function (a, b) return a.order < b.order end)'''
 match_indent = true
 
 [[patches]]
@@ -129,6 +179,16 @@ pattern = '''elseif _c.set == 'Joker' then'''
 position = 'before'
 payload = '''elseif _c.set == 'Craft' then
     if card and card.area and card.area.config.craft_table and card.config.center and not G.GAME.crafts[card.config.center.key] then
+        localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = loc_vars}
+    end
+    if specific_vars and specific_vars.sticker then info_queue[#info_queue+1] = {key = string.lower(specific_vars.sticker)..'_sticker', set = 'Other'} end
+elseif _c.set == 'Weapon' then
+    if card and card.area then
+        localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = loc_vars}
+    end
+    if specific_vars and specific_vars.sticker then info_queue[#info_queue+1] = {key = string.lower(specific_vars.sticker)..'_sticker', set = 'Other'} end
+elseif _c.set == 'Mob' then
+    if card and card.area then
         localize{type = 'descriptions', key = _c.key, set = _c.set, nodes = desc_nodes, vars = loc_vars}
     end
     if specific_vars and specific_vars.sticker then info_queue[#info_queue+1] = {key = string.lower(specific_vars.sticker)..'_sticker', set = 'Other'} end'''
@@ -142,6 +202,43 @@ position = 'before'
 payload = '''elseif card.ability.set == 'Craft' then
     craft_joker(card)
     G.GAME.crafts[card.key] = true'''
+match_indent = true
+
+
+
+
+
+
+[[patches]]
+[patches.pattern]
+target = 'cardarea.lua'
+pattern = '''    else
+        if not self.children.area_uibox then '''
+position = 'before'
+payload = '''
+    elseif self.config.craft_table_resources == true then
+        if not self.children.area_uibox then 
+                local card_count = not self.config.no_card_count and self ~= G.shop_vouchers and {n=G.UIT.R, config={align = self == G.jokers and 'cl' or self == G.hand and 'cm' or 'cr', padding = 0.03, no_fill = true}, nodes={
+                    {n=G.UIT.B, config={w = 0.1,h=0.1}},
+                    {n=G.UIT.T, config={ref_table = self.config, ref_value = 'card_count', scale = 0.3, colour = G.C.WHITE}},
+                    {n=G.UIT.T, config={text = '/', scale = 0.3, colour = G.C.WHITE}},
+                    {n=G.UIT.T, config={ref_table = self.config.card_limits, ref_value = 'total_slots', scale = 0.3, colour = G.C.WHITE}},
+                    {n=G.UIT.B, config={w = 0.1,h=0.1}}
+                }} or nil
+
+                self.children.area_uibox = UIBox{
+                    definition = 
+                        {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
+                            {n=G.UIT.R, config={minw = self.T.w,minh = self.T.h,align = "cm", mid = true, ref_table = self}, nodes={
+                                {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, G.CARD_W*0.6, G.CARD_W*0.6, 'mc_inventory', { x = 0, y = 0 }),  }, nodes = {
+                                }},
+                            }},
+                            card_count
+                        }},
+                    config = { align = 'cm', offset = {x=0,y=0}, major = self, parent = self}
+                }
+            end
+        self.children.area_uibox:draw()'''
 match_indent = true
 
 
@@ -196,27 +293,18 @@ end'''
 match_indent = true
 
 
-
-
 [[patches]]
 [patches.pattern]
 target = 'functions/UI_definitions.lua'
-pattern = '''G.GAME.stake > 1 and {'''
-position = 'before'
-payload = '''{
-    label = localize('b_crafting'),
-    tab_definition_function = G.UIDEF.learned_craft,
-},'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
-target = 'functions/UI_definitions.lua'
-pattern = '''G.GAME.stake > 1 and {'''
-position = 'before'
+pattern = '''{
+            label = localize('b_vouchers'),
+            tab_definition_function = G.UIDEF.used_vouchers,
+        },'''
+position = 'after'
 payload = '''{
     label = localize('b_resources'),
-    tab_definition_function = G.UIDEF.resource_list,
+    tab_definition_function = G.UIDEF.resources_showing,
+    tab_definition_function_args = (resource_page or 1)
 },'''
 match_indent = true
 
@@ -233,6 +321,22 @@ payload = '''elseif card and card.area and card.area.config.craft_table then
         }},
     }}'''
 match_indent = true
+
+
+[[patches]]
+[patches.pattern]
+target = 'functions/UI_definitions.lua'
+pattern = '''{
+            label = localize('b_vouchers'),
+            tab_definition_function = G.UIDEF.used_vouchers,
+        },'''
+position = 'after'
+payload = '''{
+    label = localize('b_crafting'),
+    tab_definition_function = G.UIDEF.learned_craft,
+},'''
+match_indent = true
+
 
 [[patches]]
 [patches.pattern]

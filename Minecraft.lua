@@ -331,7 +331,7 @@ function SMODS.current_mod.process_loc_text()
     
 end
 
-assert(SMODS.load_file("assets.Atlases.lua"))() --Sprite Atlases
+assert(SMODS.load_file("assets/Atlases.lua"))() --Sprite Atlases
 assert(SMODS.load_file("Objects/Crafts.lua"))()
 assert(SMODS.load_file("Objects/Resources.lua"))()
 assert(SMODS.load_file("Objects/Blinds.lua"))()

@@ -1,4 +1,3 @@
---TODO: ???
 SMODS.Crafts = {}
 
 SMODS.Craft = SMODS.GameObject:extend {

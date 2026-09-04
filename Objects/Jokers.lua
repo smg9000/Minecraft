@@ -1,5 +1,58 @@
 --This file contains the jokers this mod adds.
 
+
+
+--Camera
+SMODS.Joker {
+    name = "mc_camera",
+    key = "camera",
+    atlas = "camera_joker",
+    pos = { x = 1, y = 0},
+
+    config = { extra = { XMULT = 1 }},
+    rarity = 2,
+    cost = 3,
+
+    loc_txt = {
+        name = "Camera",
+        text = {
+            "TODO: Add proper loc.txt!"
+        }
+    },
+
+    calculate = function (self, card, context)
+        if context.initial_scoring_step and context.cardarea == G.play and context.other_card:is_face() then
+            local is_first_face = false
+            for i = 1, #context.scoring_hand do
+                if context.scoring_hand[i]:is_face() then
+                    is_first_face = context.scoring_hand[i] == context.other_card
+                    break
+                end
+            end
+            if is_first_face then
+                print("EEEEE")
+                card.ability.extra.XMULT = card.ability.extra.XMULT + 0.1
+
+                local rand = math.random(1, 3)
+
+                return {
+                    message = "Say Cheese!",
+                    sound = "Camera_Snap_" .. rand
+                }
+            end
+        end
+        if context.joker_main then
+            if card.ability.extra.XMULT > 1 then
+                return {
+                    xmult = card.ability.extra.XMULT
+                }
+            end
+        end
+    end
+}
+
+
+
 --Bundle
 SMODS.Joker {
     name = "mc_bundle",
@@ -26,6 +79,7 @@ SMODS.Joker {
 }
 
 --Steve
+--[[
 if (SMODS.Mods.Cryptid or {}).can_load then                                                      -- checks if Cryptid is enabled
     local cry_config = SMODS.load_mod_config({ id = "Cryptid", path = SMODS.Mods.Cryptid.path }) -- loads Cryptid configs
 
@@ -221,6 +275,7 @@ if (SMODS.Mods.Cryptid or {}).can_load then                                     
         }
     end
 end
+--]]
 
 --Bucket
 SMODS.Joker {

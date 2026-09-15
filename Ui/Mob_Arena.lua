@@ -29,6 +29,17 @@ G.FUNCS.mob_fight = function(e)
             definition = G.UIDEF.mob_fight(),
             config = {no_esc = true}
         }
+    G.hotbar_selection = UIBox {
+        definition = {n=G.UIT.ROOT, config = { colour =G.C.CLEAR}, nodes = {
+            {n=G.UIT.R, config={ r = 0.08, padding = -0.25, align = "cm", minw = 3, minh = 1}, nodes={
+                {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, 1, 1, 'mc_hotbar_slots', { x = 0, y = 1 }), button_dist = 0, instance_type = "POPUP", button = 'select', ref_table = {sprite_x_pos = 0, id = "attack", selected = false} }},
+                {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, 1, 1, 'mc_hotbar_slots', { x = 1, y = 1 }), button_dist = 0, instance_type = "POPUP", button = 'select', ref_table = {sprite_x_pos = 1, id = "heal", selected = false} }},
+                {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, 1, 1, 'mc_hotbar_slots', { x = 2, y = 1 }), button_dist = 0, instance_type = "POPUP", button = 'select', ref_table = {sprite_x_pos = 2, id = "block", selected = false} }}
+            }},
+        }},
+        config = {major = G.OVERLAY_MENU:get_UIE_by_ID("hotbar_place"), instance_type = "POPUP", colour =G.C.CLEAR }
+
+    }
         spawn_mob()
 end
 G.FUNCS.can_LEAVE = function(e)
@@ -100,6 +111,23 @@ end
 function drop_chance(name, probability, absolute)
 	return pseudorandom(name) < (absolute and 1 or G.GAME.probabilities.normal)/probability
 end
+function button_select(parent_children, id_select)
+    for i = 1, #parent_children do
+        if parent_children[i].config.ref_table.id == id_select then
+            parent_children[i].config.ref_table.selected = true
+            parent_children[i].config.object:set_sprite_pos({ x = parent_children[i].config.ref_table.sprite_x_pos, y = 2 })
+
+        end
+        if parent_children[i].config.ref_table.id ~= id_select then
+            parent_children[i].config.ref_table.selected = false
+            parent_children[i].config.object:set_sprite_pos({ x = parent_children[i].config.ref_table.sprite_x_pos, y = 1 })
+        end 
+    end
+end
+G.FUNCS.select = function(e)
+    local button_selecting_id = e.config.ref_table.id
+    button_select(e.parent.children, button_selecting_id)
+end
 G.FUNCS.attack = function(e)
     G.GAME.mob_arena_values.mob_hp = G.GAME.mob_arena_values.mob_hp - G.GAME.mob_arena_values.damage
     Minecraft.mobslot.cards[1]:juice_up(0.7)
@@ -165,8 +193,6 @@ function G.UIDEF.mob_fight()
     G.GAME.mob_arena_values.cooldown = center[1].cooldown
     G.GAME.mob_arena_values.damage_text = "Damage: "..G.GAME.mob_arena_values.damage
     G.GAME.mob_arena_values.cooldown_text = "Cooldown: "..G.GAME.mob_arena_values.cooldown.."s"
-
-
     --local weapon = Card(0, 0, G.CARD_W, G.CARD_H, nil, shown_weapon[G.GAME.mob_arena_values.current_weapon])
     local weapon = Card(0, 0, G.CARD_W, G.CARD_H, nil, center[1])
     Minecraft.weaponslot = CardArea(0, 0, G.CARD_W, G.CARD_H, {card_limit = 1, type = 'title', highlight_limit = 1, weapon_slot = true})
@@ -189,22 +215,46 @@ function G.UIDEF.mob_fight()
                     {n=G.UIT.T, config={ text = "Mob:", scale = 0.75, colour = G.C.UI.TEXT_LIGHT, shadow = true}},  
                 }},
             }},
+             
             {n=G.UIT.R, config={align = "cm", minh = 0.5, minw = 12}, nodes={
+                --[[
                 {n=G.UIT.C, config={align = "cm", minw = 4}, nodes={
                     {n=G.UIT.O, config={object = DynaText({string = {{ ref_table = G.GAME.mob_arena_values, ref_value = "timer_text"}}, colours = {G.C.UI.TEXT_LIGHT}, scale = 0.75 , min_cycle_time = 0})}},  
                 }},
-            }},  
+                --]]    
+             }}, 
+            
             {n=G.UIT.R, config={ align = "cl", minh = 6, minw = 4.5}, nodes={
-                {n=G.UIT.C, config={ align = "cm", minw = 1,  hover = true, shadow = true, colour = HEX('966a2c'), r = 0.08, padding = 0.05, button = "weapon_left" ,func = "can_weapon_left"}, nodes={
+                {n=G.UIT.C, config={ align = "cl", minw = 0.4}, nodes={
+                    {n=G.UIT.T, config={ text = "", scale = 0.75, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+                }},
+                {n=G.UIT.C, config={ align = "cm", minw = 0.6,  hover = true, shadow = true, colour = HEX('966a2c'), r = 0.08, padding = 0.05, button = "weapon_left" ,func = "can_weapon_left" }, nodes={
                     {n=G.UIT.T, config={ text = "<", scale = 0.75, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
                 }},
-                {n=G.UIT.C, config={r = 0.08, colour = G.C.BLACK, align = "cm", minw = 3    }, nodes={
-                    {n=G.UIT.O, config={colour = G.C.BLUE, object = Minecraft.weaponslot , hover = false, can_collide = false}},
+                {n=G.UIT.C, config={r = 0.08, align = "cm", minw = 3    }, nodes={
+                    {n=G.UIT.R, config={r = 0.08, colour = G.C.BLACK, align = "cm", minw = 3, minh = 4    }, nodes={
+                        {n=G.UIT.C, config={align = "cm", padding = 0.05, colour = G.C.CLEAR}, nodes={
+                            {n=G.UIT.O, config={colour = G.C.BLUE, object = Minecraft.weaponslot , hover = false, can_collide = false}},
+                        }},
+                    }},
+                    {n=G.UIT.R, config={align = "cm", padding = 0.05, colour = G.C.CLEAR}, nodes={
+                            create_horizontal_slider({
+                            ref_table = G.GAME.mob_arena_values,
+                            ref_value = "mob_hp",
+                            w = 3,
+                            h = 0.25,
+                            min = 0,
+                            max = 1,
+                            colour = G.C.RED,
+                        }),
+                    }},
+                    
                 }},
-                {n=G.UIT.C, config={align = "cm", minw = 1,  hover = true, shadow = true, colour = HEX('966a2c'), r = 0.08, padding = 0.05, button = "weapon_right" ,func = "can_weapon_right"}, nodes={
+                {n=G.UIT.C, config={align = "cm", minw = 0.6,  hover = true, shadow = true, colour = HEX('966a2c'), r = 0.08, padding = 0.05, button = "weapon_right" ,func = "can_weapon_right"}, nodes={
                     {n=G.UIT.T, config={ text = ">", scale = 0.75, colour = G.C.UI.TEXT_LIGHT, shadow = true}},  
                 }},
-                {n=G.UIT.C, config={align = "cm", minw = 1}, nodes={
+                {n=G.UIT.C, config={align = "cm", minw = 5, minh = 4}, nodes={
+                    --[[
                     {n=G.UIT.R, config={ align = "tm", minh = 2, minw = 5}, nodes={
                         {n=G.UIT.C, config={ align = "cm", minw = 1}, nodes={
                             {n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "cm", minw = 3, minh = 1, hover = true, shadow = true, colour = HEX('966a2c'), button = 'timer_start',func = "can_timer_start"}, nodes={
@@ -218,40 +268,44 @@ function G.UIDEF.mob_fight()
                                 {n=G.UIT.T, config={text = "Exit",colour = G.C.UI.TEXT_LIGHT, scale = 1, shadow = true}}
                             }},
                         }},
-                    }}  
+                    }} 
+                    --]] 
                 }},
                 {n=G.UIT.C, config={ align = "cl", minw = 1}, nodes={
                     {n=G.UIT.T, config={ text = "", scale = 0.75, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
                 }},
-                {n=G.UIT.C, config={r = 0.08, colour = G.C.BLACK, align = "cm", minw = 3}, nodes={
-                    {n=G.UIT.O, config={colour = G.C.BLUE, object = Minecraft.mobslot, hover = false, can_collide = false}},
+                {n=G.UIT.C, config={r = 0.08, align = "cm", minw = 3    }, nodes={
+                    {n=G.UIT.R, config={r = 0.08, colour = G.C.BLACK, align = "cm", minw = 3, minh = 4    }, nodes={
+                        {n=G.UIT.C, config={align = "cm", padding = 0.05, colour = G.C.CLEAR}, nodes={
+                            {n=G.UIT.O, config={colour = G.C.BLUE, object = Minecraft.mobslot , hover = false, can_collide = false}},
+                        }},
+                    }},
+                    {n=G.UIT.R, config={align = "cm", padding = 0.05, colour = G.C.CLEAR}, nodes={
+                            create_horizontal_slider({
+                            ref_table = G.GAME.mob_arena_values,
+                            ref_value = "mob_hp",
+                            w = 3,
+                            h = 0.25,
+                            min = 0,
+                            max = 1,
+                            colour = G.C.RED,
+                        }),
+                    }},
+                    
                 }},
                 {n=G.UIT.C, config={align = "cl", minw = 1}, nodes={
                     {n=G.UIT.T, config={ text = "", scale = 0.75, colour = G.C.UI.TEXT_LIGHT, shadow = true}},  
                 }},
             }},
-            {n=G.UIT.R, config={align = "cr", padding = 0.05, colour = G.C.CLEAR}, nodes={
-                create_horizontal_slider({
-                    ref_table = G.GAME.mob_arena_values,
-                    ref_value = "mob_hp",
-                    w = 3,
-                    h = 0.25,
-                    min = 0,
-                    max = 1,
-                    colour = G.C.RED,
-                }),
-                {n=G.UIT.C, config={align = "cr", minw = 1}, nodes={
-                    {n=G.UIT.T, config={ text = "", scale = 0.75, colour = G.C.UI.TEXT_LIGHT, shadow = true}},  
-                }},
-            }},
-
             {n=G.UIT.R, config={align = "tl", minh = 0, minw = 4.5}, nodes={
                 {n=G.UIT.C, config={ padding = 0.05, align = "bl", minw = 6}, nodes={
                     {n=G.UIT.O, config={object = DynaText({string = {{ ref_table = G.GAME.mob_arena_values, ref_value = "damage_text"}}, colours = {G.C.UI.TEXT_LIGHT}, scale = 0.75 , min_cycle_time = 0})}},
                 }},
-                {n=G.UIT.C, config={ align = "cm", minw = 1}, nodes={
-                    {n=G.UIT.R, config={ r = 0.08, padding = 0.05, align = "cm", minw = 3, minh = 1, hover = true, shadow = true, colour = HEX('966a2c'), button = 'attack',func = "can_attack"}, nodes={
-                        {n=G.UIT.T, config={text = "Attack",colour = G.C.UI.TEXT_LIGHT, scale = 1, shadow = true}}
+                {n=G.UIT.C, config={ align = "cm", minw = 1, id = "hotbar_place"}, nodes={
+                    {n=G.UIT.R, config={ r = 0.08, padding = -0.25, align = "cm", minw = 3, minh = 1}, nodes={
+                        {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, 1, 1, 'mc_hotbar_slots', { x = 0, y = 0 }), button_dist = 0, button = 'select', ref_table = {sprite_x_pos = 0, id = "attack", selected = false} }},
+                        {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, 1, 1, 'mc_hotbar_slots', { x = 1, y = 0 }), button_dist = 0, button = 'select', ref_table = {sprite_x_pos = 1, id = "heal", selected = false} }},
+                        {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, 1, 1, 'mc_hotbar_slots', { x = 2, y = 0 }), button_dist = 0, button = 'select', ref_table = {sprite_x_pos = 2, id = "block", selected = false} }}
                     }},
                 }},
             }},
@@ -267,6 +321,11 @@ function G.UIDEF.mob_fight()
           }},
         }}, 
       }}
+
+
+
+
+    
     return t
 end
 local upd = Game.update

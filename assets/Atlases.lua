@@ -125,6 +125,13 @@ SMODS.Atlas({
     py = 20,
 })
 
+SMODS.Atlas({
+    key = "hotbar_slots",
+    path = "hotbar.png",
+    px = 26,
+    py = 26,
+})
+
 SMODS.Atlas({       
     key = "placeholder",
     path = "j_placeholder.png",

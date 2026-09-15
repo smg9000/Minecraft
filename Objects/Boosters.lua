@@ -63,9 +63,10 @@ function uncover_cell(e)
                         grid_config_around[8] = grid[index_x + 1].children[index_y + 1]
                     end
                 end
-                local local_mine_count = 0
                 for u, y in pairs(grid_config_around) do
-                    uncover_cell(y)
+                    if y.children[1].config.state == "undiscovered" then
+                        uncover_cell(y)
+                    end
                 end
             end
         end

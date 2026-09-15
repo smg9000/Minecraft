@@ -83,7 +83,7 @@ function G.UIDEF.learned_craft()
     local texti = "Crafting"
   
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
-		{n=G.UIT.C, config={align = "cm", minw = 3,minh = 7, padding = 0, r = 0.1, colour = G.C.ORANGE, emboss = 0.05},nodes={
+		{n=G.UIT.C, config={align = "cm", minw = 3,minh = 7, padding = 0, r = 0.1, colour =HEX("C6C6C6"), emboss = 0.05},nodes={
             {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
                 {n = G.UIT.O, config = { object = G.areas.resources[1],}},
                 {n = G.UIT.O, config = { object = G.areas.resources[2],}, nodes = {
@@ -133,7 +133,9 @@ function G.UIDEF.learned_craft()
             {n=G.UIT.R, config={align = "tm", minw = 9, minh = 1, padding = 0.2, r = 0.1, colour = G.C.GREEN, emboss = 0.05}, nodes={
                 {n=G.UIT.T, config={text = texti, scale = 1.5, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
             }},
-            {n=G.UIT.R, config={align = "tm", minw = 9, minh = 4, padding = 0.2, r = 0.1, colour = G.C.RED, emboss = 0.05}, nodes={}},
+            {n=G.UIT.R, config={align = "cm", minw = 9, minh = 4, padding = 0.2, r = 0.1, colour = G.C.RED, emboss = 0.05}, nodes={
+                {n=G.UIT.C, config={}, nodes={}}
+            }},
             {n=G.UIT.R, config={align = "tm", minw = 9, minh = 1, padding = 0.2, r = 0.1, colour = G.C.DARK_EDITION, emboss = 0.05}, nodes={}},
         }},
         {n=G.UIT.C, config={align = "cm", minw = 3, minh = 7, padding = 0.2, r = 0.1, colour = G.C.GREEN, emboss = 0.05}, nodes={

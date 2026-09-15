@@ -22,6 +22,7 @@ local sweeper_dimension_positions = {
 --Functions--
 
 --Uncover cells.
+--TODO: Add resource gain
 function uncover_cell(e)
     if e.children[1].config.state == "undiscovered" then
         if e.config.mine == true then
@@ -63,7 +64,6 @@ function uncover_cell(e)
                         grid_config_around[8] = grid[index_x + 1].children[index_y + 1]
                     end
                 end
-                local local_mine_count = 0
                 for u, y in pairs(grid_config_around) do
                     uncover_cell(y)
                 end
@@ -433,7 +433,11 @@ SMODS.Booster {
     cost = 4,
     name = "Overworld Resource Pack",
     pos = { x = 0, y = 0 },
-    config = { extra = 0, choose = 0, gridx = 16, gridy = 16, dimension = "Overworld", min_mines = 0, max_mines = 150, density = 5 },
+    config = { extra = 0, choose = 0, gridx = 16, gridy = 16, dimension = "Overworld", min_mines = 0, max_mines = 150, density = 5,
+    resourcePool = {
+        OakLog = {key = "logs", MinTileScore = 0, Chance = 25}
+    },
+},
     draw_hand = false,
 
     update_pack = update_minesweeper_pack,
@@ -467,7 +471,14 @@ SMODS.Booster {
     cost = 4,
     name = "Mine Resource Pack",
     pos = { x = 1, y = 0 },
-    config = { extra = 0, choose = 0, gridx = 16, gridy = 16, dimension = "Mine", min_mines = 0, max_mines = 150, density = 10 },
+    config = { extra = 0, choose = 0, gridx = 16, gridy = 16, dimension = "Mine", min_mines = 0, max_mines = 150, density = 10,
+    resourcePool = {
+        Cobblestone = {key = "cobblestone", MinTileScore = 0, Chance = 50},
+        Coal = {key = "coal", MinTileScore = 0, Chance = 25},
+        Raw_Copper = {key = "copper", MinTileScore = 1, Chance = 12.5},
+        Raw_Iron = {key = "iron", MinTileScore = 2, Chance = 12.5},
+    },
+    },
     draw_hand = false,
 
     update_pack = update_minesweeper_pack,
@@ -518,7 +529,18 @@ SMODS.Booster {
     cost = 4,
     name = "Deep Resource Pack",
     pos = { x = 0, y = 0 },
-    config = { extra = 0, choose = 0, gridx = 16, gridy = 16, dimension = "Deepslate", min_mines = 20, max_mines = 60, density = 15 },
+    config = { extra = 0, choose = 0, gridx = 16, gridy = 16, dimension = "Deepslate", min_mines = 20, max_mines = 60, density = 15,
+    resourcePool = {
+        Cobblestone = {key = "cobblestone", MinTileScore = 0, Chance = 50},
+        Coal = {key = "coal", MinTileScore = 0, Chance = 2.5},
+        Raw_Copper = {key = "copper", MinTileScore = 0, Chance = 2.5},
+        Raw_Iron = {key = "iron", MinTileScore = 0, Chance = 5},
+        Raw_Gold = {key = "gold", MinTileScore = 1, Chance = 15},
+        Redstone = {key = "redstone", MinTileScore = 1, Chance = 10},
+        Lapis = {key = "lapis", MinTileScore = 1, Chance = 10},
+        Diamond = {key = "diamond", MinTileScore = 3, Chance = 5}
+    },
+ },
     draw_hand = false,
 
     update_pack = update_minesweeper_pack,

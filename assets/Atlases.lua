@@ -18,7 +18,7 @@ SMODS.Atlas({
     py = 95,
 })
 
---Camera Joker (WIP, -Face)
+--Camera Joker
 SMODS.Atlas({
     key = "camera_joker",
     atlas_table = "ANIMATION_ATLAS",
@@ -38,21 +38,24 @@ SMODS.Atlas({
     py = 95,
 })
 
+--TODO: Remove once the old resource cards are gone.
 SMODS.Atlas({
     key = "resource_sprites",
     path = "resource_sprites.png",
     px = 34,
     py = 34	,
 })
+
+--These are the NEW resource card sprites for the crafting system! -F
 SMODS.Atlas({
     key = "resources",
-    path = "craft_resources.png",
+    path = "Resources.png",
     atlas_table = "ANIMATION_ATLAS",
     frames = 20,
-    --sprite_args = {frame_durations = {[1] = 10}},
     px = 71,
     py = 71	,
 })
+--TODO: Add atlases for animated resources once it's done!
 
 SMODS.Atlas({
     key = "minesweeper_sprites",

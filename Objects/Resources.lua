@@ -1,6 +1,5 @@
 --This file holds the resources the player can use/get.
 
---Resource Inventory(?)
 SMODS.MC_Resources = {}
 
 SMODS.MC_Resources = SMODS.Center:extend {
@@ -64,36 +63,31 @@ SMODS.MC_Resources = SMODS.Center:extend {
     end
 }
 
---Iron
-SMODS.MC_Resources {
-    order = 1,
-    key = 'mc_iron',
-    unlocked = true,
-    sprite_args = { frame_durations = { [1] = 10 } },
-    discovered = true,
-    atlas = 'mc_resources',
-    cost = 8,
-    name = "Iron Ingots",
-    set = 'MC_Resources',
-    pos = { x = 0, y = 0 },
-    config = {},
-    loc_vars = function(self, info_queue, card)
-        return { vars = {} }
-    end
-}
+--Note to SMG from Face (delete once read):
+--I did some adjustments here so it fits our resource atlas better. By default non-sprited resources will use the oak log sprite.
+--Also, when adding resources, please try to stick to the format I set here, it'll make things easier for both of us.
+
+--TODO: Add missing animated resource sprites: Iron Ingot, Gold Ingot, Copper Ingot, Diamond, Netherite Scrap, Netherite Ingot
+--FIXME: Why the [FIFTY PRECENT OFF] is the game thinking the resource atlas is animated???
+
+--Basic Resources--
 
 --Oak Log
 SMODS.MC_Resources {
-    order = 2,
     key = 'mc_logs',
-    unlocked = true,
-    discovered = true,
-    atlas = 'mc_resources',
-    cost = 8,
     name = "Oak Logs",
     set = 'MC_Resources',
-    pos = { x = 0, y = 1 },
+
+    atlas = 'mc_resources',
+    pos = { x = 0, y = 0 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 0, y = 1},
+
+    order = 1,
+    unlocked = true,
+    discovered = true,
     config = {},
+    
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
     end
@@ -101,16 +95,20 @@ SMODS.MC_Resources {
 
 --Oak Planks
 SMODS.MC_Resources {
-    order = 1,
     key = 'mc_planks',
-    unlocked = true,
-    discovered = true,
-    atlas = 'mc_resources',
-    cost = 8,
     name = "Oak Planks",
     set = 'MC_Resources',
-    pos = { x = 0, y = 2 },
+
+    atlas = 'mc_resources',
+    pos = { x = 1, y = 0 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 1, y = 1},
+
+    order = 2,
+    unlocked = true,
+    discovered = true,
     config = {},
+    
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
     end
@@ -118,16 +116,322 @@ SMODS.MC_Resources {
 
 --Sticks
 SMODS.MC_Resources {
-    order = 1,
     key = 'mc_sticks',
-    unlocked = true,
-    discovered = true,
-    atlas = 'mc_resources',
-    cost = 8,
     name = "Sticks",
     set = 'MC_Resources',
-    pos = { x = 0, y = 3 },
+
+    atlas = 'mc_resources',
+    pos = { x = 2, y = 0 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 2, y = 1},
+
+    order = 3,
+    unlocked = true,
+    discovered = true,
     config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Cave Resources--
+
+--Cobblestone
+SMODS.MC_Resources {
+    key = 'mc_cobblestone',
+    name = "Cobblestone",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 0, y = 2 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 0, y = 3},
+
+    order = 4,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Coal
+SMODS.MC_Resources {
+    key = 'mc_coal',
+    name = "Coal",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 1, y = 2 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 1, y = 3},
+
+    order = 5,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Raw Copper
+SMODS.MC_Resources {
+    key = 'mc_raw_copper',
+    name = "Raw Copper",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 2, y = 3 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 2, y = 4},
+
+    order = 6,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Raw Iron
+SMODS.MC_Resources {
+    key = 'mc_raw_iron',
+    name = "Raw Iron",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 3, y = 3 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 3, y = 4},
+
+    order = 7,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Raw Gold
+SMODS.MC_Resources {
+    key = 'mc_raw_gold',
+    name = "Raw Gold",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 4, y = 3 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 4, y = 4},
+
+    order = 8,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Deepslate Resources--
+
+--Redstone Dust
+SMODS.MC_Resources {
+    key = 'mc_redstone',
+    name = "Redstone Dust",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 0, y = 5 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 0, y = 6},
+
+    order = 9,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Lapis Lazuli
+SMODS.MC_Resources {
+    key = 'mc_lapis',
+    name = "Lapis Lazuli",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 1, y = 5 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 1, y = 6},
+
+    order = 10,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Nether Resources
+
+--Nether Quartz
+SMODS.MC_Resources {
+    key = 'mc_quartz',
+    name = "Nether Quartz",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 0, y = 7 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 0, y = 8},
+
+    order = 11,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Ancient Debris
+SMODS.MC_Resources {
+    key = 'mc_debris',
+    name = "Ancient Debris",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 1, y = 7 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 1, y = 8},
+
+    order = 12,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Glowstone Dust
+SMODS.MC_Resources {
+    key = 'mc_glowstone_dust',
+    name = "Glowstone Dust",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 2, y = 7 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 2, y = 8},
+
+    order = 13,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Trial/Dungeons/Mob Loot--
+
+--Rotten Flesh
+SMODS.MC_Resources {
+    key = 'mc_rotten_flesh',
+    name = "Rotten Flesh",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 0, y = 9 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 0, y = 10},
+
+    order = 14,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Bone
+SMODS.MC_Resources {
+    key = 'mc_bone',
+    name = "Bone",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 1, y = 9 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 1, y = 10},
+
+    order = 15,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Enderpearl
+SMODS.MC_Resources {
+    key = 'mc_ender_pearl',
+    name = "Ender Pearl",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 2, y = 9 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 2, y = 10},
+
+    order = 16,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
+    loc_vars = function(self, info_queue, card)
+        return { vars = {} }
+    end
+}
+
+--Gunpowder
+SMODS.MC_Resources {
+    key = 'mc_gunpowder',
+    name = "Gunpowder",
+    set = 'MC_Resources',
+
+    atlas = 'mc_resources',
+    pos = { x = 3, y = 9 },
+    soul_atlas = 'mc_resources',
+    soul_pos = { x = 3, y = 10},
+
+    order = 17,
+    unlocked = true,
+    discovered = true,
+    config = {},
+    
     loc_vars = function(self, info_queue, card)
         return { vars = {} }
     end

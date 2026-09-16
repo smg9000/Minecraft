@@ -16,16 +16,22 @@ SMODS.MapNode = SMODS.GameObject:extend {
     required_params = {
         'key',
         'type',
-        'dungeonPools',
+        -- 'dungeonPools',
         'rarity',
     },
+}
+SMODS.MapNode{
+    key = "overworld_mob_room_1",
+    type = "mob_encounter",
+    rarity = "mc_DungeonNode_Common"
+
 }
 
 --Dungeon Pools--
 SMODS.ObjectType {
     key = "Overworld_Dungeon_Pool",
     mapNodes = {
-        ["mc_exampleNode"] = false
+        ["overworld_mob_room_1"] = true
     },
     rarities = {
         {

@@ -65,7 +65,9 @@ function uncover_cell(e)
                     end
                 end
                 for u, y in pairs(grid_config_around) do
-                    uncover_cell(y)
+                    if y.children[1].config.state == "undiscovered" then
+                        uncover_cell(y)
+                    end
                 end
             end
         end

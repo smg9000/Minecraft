@@ -19,11 +19,11 @@ SMODS.Blind{
     vars = {"0:20"},
 	config = {},
 	set_blind = function(self)
-        G.GAME.blind.config.creepertiming = 20
+        G.GAME.blind.config.creepertiming = 60
     end,
     loc_vars = function(self, info_queue, card)
         if G.GAME.blind.config.creepertiming == nil then
-            return {vars = {"0:20.00"}}
+            return {vars = {"1:00.00"}}
         end
         local m = math.floor(G.GAME.blind.config.creepertiming / 60)
         local s = (G.GAME.blind.config.creepertiming - (60 * m))
@@ -64,14 +64,14 @@ function Game:update(dt)
 	upd(self, dt)
     if G.GAME and G.GAME.round_resets and G.GAME.blind and G.GAME.blind.name == "The Creeper" and G.GAME.blind.config and (G.GAME.blind.config.creepertiming ~= nil) and not G.GAME.blind.disabled then
         if Talisman then
-            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) then
+            if to_big(G.GAME.chips) < to_big(G.GAME.blind.chips) and G.STATE ~= G.STATES.HAND_PLAYED then
                 G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
+                G.GAME.blind:set_text() -- you can't do anything
             end
         else
-            if (G.GAME.chips) < (G.GAME.blind.chips) then
+            if (G.GAME.chips) < (G.GAME.blind.chips) and G.STATE ~= G.STATES.HAND_PLAYED then
                 G.GAME.blind.config.creepertiming = G.GAME.blind.config.creepertiming and math.max(0, (G.GAME.blind.config.creepertiming) - dt) or nil
-                G.GAME.blind:set_text()
+                G.GAME.blind:set_text() -- you can't do anything
             end
         end
 		if Talisman then

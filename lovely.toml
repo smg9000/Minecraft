@@ -10,25 +10,25 @@ pattern = '''chips_text = '0','''
 position = 'after'
 payload = '''crafts = {},
 craftr = {
-	dirt = 0,
-	coal = 0,
-	iron = 0,
-	gold = 0,
-	copper = 0,
-	diamond = 0,
-	emerald = 0,
-	netherite = 0,
-	lapis = 0,
-	redstone = 0,
-	quartz = 0,
-	logs = 0,
-	planks = 0,
-	sticks = 0,
- 	cobblestone = 0,
-    rotten_flesh = 0,
-    ender_pearl = 0,
-    gunpowder = 0,
-    bone = 0
+    mc_dirt = 0,
+	mc_coal = 0,
+	mc_iron = 0,
+	mc_gold = 0,
+	mc_copper = 0,
+	mc_diamond = 0,
+	mc_emerald = 0,
+	mc_netherite = 0,
+	mc_lapis = 0,
+	mc_redstone = 0,
+	mc_quartz = 0,
+	mc_logs = 0,
+	mc_planks = 0,
+	mc_sticks = 0,
+ 	mc_cobblestone = 0,
+    mc_rotten_flesh = 0,
+    mc_ender_pearl = 0,
+    mc_gunpowder = 0,
+    mc_bone = 0
 	},
 angle = 0,
 resource_ui = nil,
@@ -230,7 +230,7 @@ payload = '''
                     definition = 
                         {n=G.UIT.ROOT, config = {align = 'cm', colour = G.C.CLEAR}, nodes={
                             {n=G.UIT.R, config={minw = self.T.w,minh = self.T.h,align = "cm", mid = true, ref_table = self}, nodes={
-                                {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, G.CARD_W*0.6, G.CARD_W*0.6, 'mc_inventory', { x = 0, y = 0 }),  }, nodes = {
+                                {n = G.UIT.O, config = { object = SMODS.create_sprite(0, 0, G.CARD_W*0.88, G.CARD_W*0.88, 'mc_inventory', { x = 0, y = 0 }),  }, nodes = {
                                 }},
                             }},
                             card_count

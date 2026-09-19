@@ -6,7 +6,7 @@ SMODS.Craft = SMODS.GameObject:extend {
     set = 'Craft',
     required_params = {
         'key',
-        "req",
+        "recipe",
     },
     inject = function(self)
         G.P_CRAFTS[self.key] = {}
@@ -61,6 +61,15 @@ SMODS.Craft = SMODS.GameObject:extend {
         desc_nodes.background_colour = res.background_colour
     end
 }
+-- recipe formatted like
+-- 123
+-- 456
+-- 789
+-- fill airs will nil
+
+
+
+
 
 --Bucket
 SMODS.Craft {
@@ -71,7 +80,17 @@ SMODS.Craft {
     atlas = 'mc_crafted_jokers',
     cost = 8,
     name = "Bucket",
-    req = { iron = 3 },
+    recipe = { 
+        [1] = "air",
+        [2] = "air",
+        [3] = "air",
+        [4] = "mc_iron",
+        [5] = "air",
+        [6] = "mc_iron",
+        [7] = "air",
+        [8] = "mc_iron",
+        [9] = "air",
+        },
     craft_type = "joker",
     pos = { x = 0, y = 0 },
     set = "Craft",
@@ -92,7 +111,17 @@ SMODS.Craft {
     craft_type = "joker",
     cost = 8,
     name = "Diamond Pickaxe",
-    req = { diamond = 3, sticks = 2 },
+    recipe = { 
+        [1] = "mc_diamond",
+        [2] = "mc_diamond",
+        [3] = "mc_diamond",
+        [4] = "air",
+        [5] = "mc_sticks",
+        [6] = "air",
+        [7] = "air",
+        [8] = "mc_sticks",
+        [9] = "air",
+        },
     pos = { x = 1, y = 0 },
     set = "Craft",
     config = {},
@@ -112,7 +141,17 @@ SMODS.Craft {
     craft_type = "joker",
     cost = 8,
     name = "Gold Block",
-    req = { gold = 9 },
+    recipe = { 
+        [1] = "mc_gold",
+        [2] = "mc_gold",
+        [3] = "mc_gold",
+        [4] = "mc_gold",
+        [5] = "mc_gold",
+        [6] = "mc_gold",
+        [7] = "mc_gold",
+        [8] = "mc_gold",
+        [9] = "mc_gold",
+        },
     pos = { x = 2, y = 0 },
     set = "Craft",
     config = {},
@@ -132,10 +171,75 @@ SMODS.Craft {
     craft_type = "weapon",
     cost = 8,
     name = "Wooden_sword",
-    req = {
-        sticks = 1,
-        planks = 2,
-    },
+    recipe = { 
+        [1] = "air",
+        [2] = "mc_planks",
+        [3] = "air",
+        [4] = "air",
+        [5] = "mc_planks",
+        [6] = "air",
+        [7] = "air",
+        [8] = "mc_sticks",
+        [9] = "air",
+        },
+    pos = { x = 2, y = 0 },
+    set = "Craft",
+    config = {},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = { key = 'wooden_sword_craft_cost', set = 'Other' }
+        return { vars = {} }
+    end
+}
+
+SMODS.Craft {
+    order = 1,
+    key = 'mc_sticks_craft',
+    unlocked = true,
+    discovered = true,
+    atlas = 'mc_crafted_jokers',
+    craft_type = "resource",
+    cost = 8,
+    name = "Wooden_sword",
+    recipe = { 
+        [1] = "air",
+        [2] = "mc_planks",
+        [3] = "air",
+        [4] = "air",
+        [5] = "mc_planks",
+        [6] = "air",
+        [7] = "air",
+        [8] = "air",
+        [9] = "air",
+        },
+    pos = { x = 2, y = 0 },
+    set = "Craft",
+    config = {},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = { key = 'wooden_sword_craft_cost', set = 'Other' }
+        return { vars = {} }
+    end
+}
+
+SMODS.Craft {
+    order = 1,
+    key = 'mc_planks_craft',
+    unlocked = true,
+    discovered = true,
+    atlas = 'mc_crafted_jokers',
+    craft_type = "resource",
+    cost = 8,
+    name = "Wooden_sword",
+    recipe = { 
+        [1] = "air",
+        [2] = "air",
+        [3] = "air",
+        [4] = "air",
+        [5] = "mc_logs",
+        [6] = "air",
+        [7] = "air",
+        [8] = "air",
+        [9] = "air",
+        },
     pos = { x = 2, y = 0 },
     set = "Craft",
     config = {},

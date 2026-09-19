@@ -186,9 +186,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 2, y = 3 },
+    pos = { x = 2, y = 2 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 2, y = 4},
+    soul_pos = { x = 2, y = 3},
 
     order = 6,
     unlocked = true,
@@ -207,9 +207,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 3, y = 3 },
+    pos = { x = 3, y = 2 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 3, y = 4},
+    soul_pos = { x = 3, y = 3},
 
     order = 7,
     unlocked = true,
@@ -228,9 +228,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 4, y = 3 },
+    pos = { x = 4, y = 2 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 4, y = 4},
+    soul_pos = { x = 4, y = 3},
 
     order = 8,
     unlocked = true,
@@ -251,9 +251,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 0, y = 5 },
+    pos = { x = 0, y = 4 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 0, y = 6},
+    soul_pos = { x = 0, y = 5},
 
     order = 9,
     unlocked = true,
@@ -272,9 +272,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 1, y = 5 },
+    pos = { x = 1, y = 4 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 1, y = 6},
+    soul_pos = { x = 1, y = 5},
 
     order = 10,
     unlocked = true,
@@ -295,9 +295,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 0, y = 7 },
+    pos = { x = 0, y = 6 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 0, y = 8},
+    soul_pos = { x = 0, y = 7},
 
     order = 11,
     unlocked = true,
@@ -316,9 +316,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 1, y = 7 },
+    pos = { x = 1, y = 6 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 1, y = 8},
+    soul_pos = { x = 1, y = 7},
 
     order = 12,
     unlocked = true,
@@ -337,9 +337,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 2, y = 7 },
+    pos = { x = 2, y = 6 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 2, y = 8},
+    soul_pos = { x = 2, y = 7},
 
     order = 13,
     unlocked = true,
@@ -360,9 +360,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 0, y = 9 },
+    pos = { x = 0, y = 8 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 0, y = 10},
+    soul_pos = { x = 0, y = 9},
 
     order = 14,
     unlocked = true,
@@ -381,9 +381,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 1, y = 9 },
+    pos = { x = 1, y = 8 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 1, y = 10},
+    soul_pos = { x = 1, y = 9},
 
     order = 15,
     unlocked = true,
@@ -402,9 +402,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 2, y = 9 },
+    pos = { x = 2, y = 8 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 2, y = 10},
+    soul_pos = { x = 2, y = 9},
 
     order = 16,
     unlocked = true,
@@ -423,9 +423,9 @@ SMODS.MC_Resources {
     set = 'MC_Resources',
 
     atlas = 'mc_resources',
-    pos = { x = 3, y = 9 },
+    pos = { x = 3, y = 8 },
     soul_atlas = 'mc_resources',
-    soul_pos = { x = 3, y = 10},
+    soul_pos = { x = 3, y = 9},
 
     order = 17,
     unlocked = true,

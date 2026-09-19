@@ -17,27 +17,105 @@ end
 
 G.FUNCS.your_game_crafting_page = function(args)
     local shown_crafts = get_crafts()
-    local adding = 4  * ((args.cycle_config.current_option) - 1)
+    local adding = 12  * ((args.cycle_config.current_option) - 1)
     if not args or not args.cycle_config then return end
     for j = 1, #G.areas.resources do
-        for i = #G.areas.resources[j].cards,1, -1 do
-        local c =  G.areas[j]:remove_card(G.areas.resources[j].cards[i])
-        c:remove()
-        c = nil
+        if G.areas.resources[j].cards[1] then
+            local c = G.areas.resources[j].cards[1]
+            c:remove()
+            c = nil
+            G.OVERLAY_MENU:get_UIE_by_ID("resource_square_"..j).config.ref_table.card_center = nil
         end
     end
     for j = 1, #G.areas.resources do
         if (1+(j-1)+adding) <= #shown_crafts then
+            
             local center = shown_crafts[1+(j-1)+adding][1]
             if center then
-                local card = Card(G.areas.resources[j].T.x + G.areas.resources[j].T.w, G.areas.resources[j].T.y, G.CARD_W*0.5, G.CARD_W*0.5, nil, center)
+                G.OVERLAY_MENU:get_UIE_by_ID("resource_square_"..j).config.ref_table.card_center = center
+                local card = Card(G.areas.resources[j].T.x + G.areas.resources[j].T.w, G.areas.resources[j].T.y, G.CARD_W*0.75, G.CARD_W*0.75, nil, center)
                 card:start_materialize(nil, j>1)
                 G.areas.resources[j]:emplace(card)
             end
         end
     end
+    
 end
 
+
+
+G.FUNCS.check_craft = function(e)
+    local key
+    local output_recipe_bool
+    local ever_true = false 
+    
+    for i, j in pairs(G.P_CENTER_POOLS['Craft']) do
+        
+        output_recipe_bool = true
+        for p, l in pairs(j.recipe) do
+            if not G.areas.crafting[p].cards[1] then
+                key = "air"
+            else 
+                key = G.areas.crafting[p].cards[1].config.center.key
+            end
+            if key ~= l then
+                output_recipe_bool = false
+            end
+        end
+        if output_recipe_bool then
+            if not G.areas.final_craft.cards[1] then
+                local card = Card(G.areas.final_craft.T.x + G.areas.final_craft.T.w, G.areas.final_craft.T.y, G.CARD_W, G.CARD_H, nil, j)
+
+                card:start_materialize(nil, true)
+                G.areas.final_craft:emplace(card)
+                
+            end
+            ever_true = true
+        end
+    end
+    if ever_true == false then
+        if G.areas.final_craft.cards[1] then
+            local c = G.areas.final_craft.cards[1]
+            c:remove()
+            c = nil
+        end
+    end 
+end
+
+G.FUNCS.regen_resource = function(e)
+    if e.config.object.cards[1] then
+        if e.config.ref_table.card_center ~= e.config.object.cards[1].config.center  then
+            e.config.ref_table.card_center = e.config.object.cards[1].config.center
+        end
+    end
+    if not e.config.object.cards[1] then
+        if e.config.ref_table.card_center then
+            local card = Card(e.config.object.T.x + e.config.object.T.w, e.config.object.T.y, G.CARD_W*0.75, G.CARD_W*0.75, nil, e.config.ref_table.card_center)
+            card:start_materialize(nil, true)
+            e.config.object:emplace(card)
+        end
+    end
+end
+
+G.FUNCS.uifun = function(e)
+  e.states.hover.can = true
+  e.states.collide.can = true
+
+  if e.states.collide.is then
+    if e.config.ref_table.card and not e.config.ref_table.card.states.drag.is and not e.config.object.cards[1] then
+        draw_card(e.config.ref_table.card.area, e.config.object,nil,nil,nil, e.config.ref_table.card )
+    end
+    if e.config.ref_table.card == nil then
+        for i = 1, #G.I.CARD do
+            if G.I.CARD[i].states.drag.is then
+                e.config.ref_table.card = G.I.CARD[i]
+            end
+        end
+    end
+  else
+    e.config.ref_table.card = nil
+  end
+end
 
 function G.UIDEF.learned_craft()
     local shown_crafts = get_crafts()
@@ -45,7 +123,7 @@ function G.UIDEF.learned_craft()
         crafts_resource_page = nil
     end
     
-    local adding = 16  * ((crafts_resource_page or 1) - 1)
+    local adding = 12  * ((crafts_resource_page or 1) - 1)
     local rows = {}	
     for i = 1, 3 do
         table.insert(rows, {})
@@ -56,24 +134,29 @@ function G.UIDEF.learned_craft()
     end
     G.areas = {}
     G.areas.resources = {}
+    G.areas.crafting = {}
     G.areas.owned_jokers = {}
     
 
     local area_table = {}
-    for j = 1, 16 do
-        G.areas.resources[j] = CardArea(G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,G.CARD_W*0.55,G.CARD_W*0.55, {card_limit = 1, type = 'joker', highlight_limit = 4, no_card_count = true, craft_table_resources = true})
+    for j = 1, 12 do
+        G.areas.resources[j] = CardArea(G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,G.CARD_W*0.8,G.CARD_W*0.8, {card_limit = 1, type = 'joker', highlight_limit = 4, no_card_count = true, craft_table_resources = true})
     end
+    for j = 1, 9 do
+        G.areas.crafting[j] = CardArea(G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,G.CARD_W*0.8,G.CARD_W*0.8, {card_limit = 1, type = 'joker', highlight_limit = 1, no_card_count = true,})
+    end
+    G.areas.final_craft = CardArea(G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h, G.CARD_W, 1.25*G.CARD_W, {card_limit = 1, type = 'joker', highlight_limit = 1, no_card_count = true, craft_table = true})
 
     local craft_options = {}
-    for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/15))) do
-        table.insert(craft_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(math.max(1, math.ceil(#shown_crafts/15)))))
+    for i = 1, math.ceil(math.max(1, math.ceil(#shown_crafts/12))) do
+        table.insert(craft_options, localize('k_page')..' '..tostring(i)..'/'..tostring(math.ceil(math.max(1, math.ceil(#shown_crafts/12)))))
     end
 
     for j = 1, #G.areas.resources do    
         if (1+(j-1)+adding) <= #shown_crafts then
             local center = shown_crafts[1+(j-1)+adding][1]
             if center then
-                local card = Card(G.areas.resources[j].T.x + G.areas.resources[j].T.w, G.areas.resources[j].T.y, G.CARD_W*0.5, G.CARD_W*0.5, nil, center)
+                local card = Card(G.areas.resources[j].T.x + G.areas.resources[j].T.w, G.areas.resources[j].T.y, G.CARD_W*0.75, G.CARD_W*0.75, nil, center)
                 card:start_materialize(nil, j>1)
                 G.areas.resources[j]:emplace(card)
             end
@@ -84,43 +167,38 @@ function G.UIDEF.learned_craft()
   
     local t = {n=G.UIT.ROOT, config={align = "cm", colour = G.C.CLEAR}, nodes = {
 		{n=G.UIT.C, config={align = "cm", minw = 3,minh = 7, padding = 0, r = 0.1, colour =HEX("C6C6C6"), emboss = 0.05},nodes={
+            {n=G.UIT.R, config={align = "tm", minh = 0.25,padding = 0, r = 0.1}, nodes={
+
+            }},
             {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
-                {n = G.UIT.O, config = { object = G.areas.resources[1],}},
-                {n = G.UIT.O, config = { object = G.areas.resources[2],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[1], id = "resource_square_1", func = 'regen_resource',ref_table = {card_center = nil}}},
+                {n = G.UIT.O, config = { object = G.areas.resources[2], id = "resource_square_2", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
-                {n = G.UIT.O, config = { object = G.areas.resources[3],}, nodes = {
-                }},
-                {n = G.UIT.O, config = { object = G.areas.resources[4],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[3], id = "resource_square_3", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
             }},
             {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
-                {n = G.UIT.O, config = { object = G.areas.resources[5],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[4], id = "resource_square_4", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
-                {n = G.UIT.O, config = { object = G.areas.resources[6],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[5], id = "resource_square_5", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
-                {n = G.UIT.O, config = { object = G.areas.resources[7],}, nodes = {
-                }},
-                {n = G.UIT.O, config = { object = G.areas.resources[8],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[6], id = "resource_square_6", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
             }},
             {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
-                {n = G.UIT.O, config = { object = G.areas.resources[9],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[7], id = "resource_square_7", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
-                {n = G.UIT.O, config = { object = G.areas.resources[10],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[8], id = "resource_square_8", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
-                {n = G.UIT.O, config = { object = G.areas.resources[11],}, nodes = {
-                }},
-                {n = G.UIT.O, config = { object = G.areas.resources[12],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[9], id = "resource_square_9", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
             }}, 
             {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
-                {n = G.UIT.O, config = { object = G.areas.resources[13],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[10], id = "resource_square_10", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
-                {n = G.UIT.O, config = { object = G.areas.resources[14],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[11], id = "resource_square_11", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
-                {n = G.UIT.O, config = { object = G.areas.resources[15],}, nodes = {
-                }},
-                {n = G.UIT.O, config = { object = G.areas.resources[16],}, nodes = {
+                {n = G.UIT.O, config = { object = G.areas.resources[12], id = "resource_square_12", func = 'regen_resource',ref_table = {card_center = nil}}, nodes = {
                 }},
             }},
             {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
@@ -130,13 +208,41 @@ function G.UIDEF.learned_craft()
         }},
         
         {n=G.UIT.C, config={align = "tm", minw = 10, minh = 7, padding = 0.2, r = 0.1, colour = G.C.BLUE, emboss = 0.05}, nodes={
-            {n=G.UIT.R, config={align = "tm", minw = 9, minh = 1, padding = 0.2, r = 0.1, colour = G.C.GREEN, emboss = 0.05}, nodes={
+            {n=G.UIT.R, config={align = "tm", minw = 11 , minh = 1, padding = 0.2, r = 0.1, colour = G.C.GREEN, emboss = 0.05}, nodes={
                 {n=G.UIT.T, config={text = texti, scale = 1.5, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
             }},
-            {n=G.UIT.R, config={align = "cm", minw = 9, minh = 4, padding = 0.2, r = 0.1, colour = G.C.RED, emboss = 0.05}, nodes={
-                {n=G.UIT.C, config={}, nodes={}}
+            {n=G.UIT.R, config={align = "cm", minw = 11, minh = 6, padding = 0.2, r = 0.1, colour = G.C.RED, emboss = 0.05}, nodes={
+                {n=G.UIT.C, config={}, nodes={
+                    {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
+                        {n = G.UIT.O, config = { object =  G.areas.crafting[1], func = 'uifun',ref_table = {card = nil}}},
+                        {n = G.UIT.O, config = { object = G.areas.crafting[2],  func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                        {n = G.UIT.O, config = { object = G.areas.crafting[3], func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                    }},
+                    {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
+                        {n = G.UIT.O, config = { object = G.areas.crafting[4], func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                        {n = G.UIT.O, config = { object = G.areas.crafting[5], func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                        {n = G.UIT.O, config = { object = G.areas.crafting[6], func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                    }},
+                    {n=G.UIT.R, config={align = "tm", padding = 0, r = 0.1}, nodes={
+                        {n = G.UIT.O, config = { object = G.areas.crafting[7], func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                        {n = G.UIT.O, config = { object = G.areas.crafting[8], func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                        {n = G.UIT.O, config = { object = G.areas.crafting[9], func = 'uifun',ref_table = {card = nil}}, nodes = {
+                        }},
+                    }}, 
+                }},
+                {n=G.UIT.C, config={align = "cm",  padding = 1 }, nodes={
+                    {n = G.UIT.O, config = { object =  G.areas.final_craft, func = 'check_craft'}, nodes = {
+                    }},
+                }}
             }},
-            {n=G.UIT.R, config={align = "tm", minw = 9, minh = 1, padding = 0.2, r = 0.1, colour = G.C.DARK_EDITION, emboss = 0.05}, nodes={}},
+            {n=G.UIT.R, config={align = "tm", minw = 11, minh = 1, padding = 0.2, r = 0.1, colour = G.C.DARK_EDITION, emboss = 0.05}, nodes={}},
         }},
         {n=G.UIT.C, config={align = "cm", minw = 3, minh = 7, padding = 0.2, r = 0.1, colour = G.C.GREEN, emboss = 0.05}, nodes={
             --create_option_cycle({options = craft_options, w = 3.5, cycle_shoulders = true, opt_callback = 'your_game_crafting_page', focus_args = {snap_to = true, nav = 'wide'},current_option = (crafts_page or 1), colour = G.C.ORANGE, no_pips = true})
@@ -208,18 +314,9 @@ end
 function craft_joker(card)
     local obj = card.config.center
     local key = obj.key
-    for i,j in pairs(obj.req) do
-        if i == "jokers" then
-            for k, a in pairs(j) do
-                local found_jokers = SMODS.find_card(k)
-                if #found_jokers >= a then
-                    for o = 1, a do
-                        found_jokers[o]:remove()
-                    end
-                end
-            end
-        else 
-		    G.GAME.craftr[i] = G.GAME.craftr[i] - j
+    for i,j in pairs(obj.recipe) do
+        if j ~= "air" then
+		    G.GAME.craftr[j] = G.GAME.craftr[j] - 1
         end 
 	end
     if key == "mc_bucket"  then
@@ -240,6 +337,12 @@ function craft_joker(card)
     if key == "mc_wooden_sword_craft"  then
         G.GAME.available_weapons.mc_wooden_sword = true
     end
+     if key == "mc_planks_craft"  then
+        G.GAME.craftr["mc_planks"] = G.GAME.craftr["mc_planks"] + 4
+    end
+     if key == "mc_sticks_craft"  then
+        G.GAME.craftr["mc_sticks"] =  G.GAME.craftr["mc_sticks"] + 4
+    end
 end
 
 G.FUNCS.can_craft = function(e)
@@ -247,21 +350,6 @@ G.FUNCS.can_craft = function(e)
     if (e.config.ref_table.config.center.craft_type == "joker") and e.config.ref_table.config.center.key ~= "mc_orb_dom" then
 	     craft_req = #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit
     end
-	for i,j in pairs(e.config.ref_table.config.center.req) do
-        if i == "jokers" then
-            for k, a in pairs(j) do
-                local found_jokers = SMODS.find_card(k)
-                if #found_jokers < a then
-                    
-                    craft_req = false
-                    goto check_end
-                end
-            end
-        else
-		    if G.GAME.craftr[i] < j then craft_req = false end
-        end
-	end
-    ::check_end::
 	if craft_req == false then
         e.config.colour = G.C.UI.BACKGROUND_INACTIVE
         e.config.button = 'do_nothing'
